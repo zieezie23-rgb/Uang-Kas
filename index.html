@@ -175,13 +175,13 @@ th{background:#f7f9fb}
   </section>
 </main>
 
-<div class="footer">Uang Kas Kelas • Data tersimpan lokal di HP</div>
+<div class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
 
 <script>
 (function(){
 'use strict';
 
-const KEY='kasKelasV2';
+const KEY='kasKelasV3';
 const $=id=>document.getElementById(id);
 const today=()=>new Date().toISOString().slice(0,10);
 const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n)||0);
@@ -443,7 +443,6 @@ $('iDate').value=today();
 $('eDate').value=today();
 $('rFrom').value=today().slice(0,8)+'01';
 $('rTo').value=today();
-$('rMonth').value=today().slice(0,7);
 $('iMonthStart').value=today().slice(0,7);
 
 document.querySelectorAll('.tabs button').forEach(btn=>{
