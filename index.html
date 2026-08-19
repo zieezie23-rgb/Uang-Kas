@@ -144,12 +144,9 @@ th{background:#f7f9fb}
   <section id="report" class="page">
     <div class="section">
       <h2>Rekap kas</h2>
-      <div class="row">
-        <div class="field"><label for="rFrom">Periode mulai</label><input id="rFrom" type="date"></div>
-        <div class="field"><label for="rTo">Periode sampai</label><input id="rTo" type="date"></div>
-      </div>
+      <div class="notice">Menampilkan <b>semua data</b> pemasukan dan pengeluaran yang tersimpan, tanpa filter periode.</div>
       <div class="actions">
-        <button type="button" id="btnReport" class="primary">Tampilkan rekap</button>
+        <button type="button" id="btnReport" class="primary">🔄 Tampilkan semua data</button>
         <button type="button" id="btnPDF" class="primary">📄 Simpan/Cetak PDF</button>
         <button type="button" id="btnWA" class="primary">💬 Share WhatsApp</button>
       </div>
@@ -157,8 +154,8 @@ th{background:#f7f9fb}
     </div>
 
     <div class="section">
-      <h2>📅 Rekap semua siswa per bulan</h2>
-      <div class="notice">Semua 32 siswa ditampilkan sekaligus. Kolom berisi iuran setiap bulan mulai Agustus 2026, ditambah total pembayaran masing-masing siswa.</div>
+      <h2>👥 Rekap semua siswa</h2>
+      <div class="notice">Semua siswa ditampilkan sekaligus. Rekap berisi <b>total seluruh iuran</b> yang sudah dibayarkan masing-masing siswa, tanpa dipecah per bulan.</div>
       <div class="actions">
         <button type="button" id="btnStudentMonth" class="primary">🔄 Tampilkan / Perbarui Rekap</button>
         <button type="button" id="btnStudentPDF" class="primary">📄 PDF Rekap Semua</button>
@@ -441,8 +438,6 @@ function save(){
 
 $('iDate').value=today();
 $('eDate').value=today();
-$('rFrom').value=today().slice(0,8)+'01';
-$('rTo').value=today();
 $('iMonthStart').value=today().slice(0,7);
 
 document.querySelectorAll('.tabs button').forEach(btn=>{
@@ -587,25 +582,97 @@ function renderExpense(){
   '</tbody></table>':'<div class="empty">Belum ada pengeluaran.</div>';
 }
 
-function filtered(from,to){
-  const inc=db.income.filter(x=>{const d=x.month||String(x.date).slice(0,7); return (!from||d>=from.slice(0,7))&&(!to||d<=to.slice(0,7));});
-  const exp=db.expense.filter(x=>(!from||x.date>=from)&&(!to||x.date<=to));
-  return {inc,exp,ti:inc.reduce((s,x)=>s+x.amount,0),te:exp.reduce((s,x)=>s+x.amount,0)};
+function filtered(){
+  const inc=[...db.income];
+  const exp=[...db.expense];
+  return {inc,exp,ti:inc.reduce((s,x)=>s+Number(x.amount||0),0),te:exp.reduce((s,x)=>s+Number(x.amount||0),0)};
 }
 
 function renderReport(){
-  const {inc,exp,ti,te}=filtered($('rFrom').value,$('rTo').value);
+  const {inc,exp,ti,te}=filtered();
   $('reportBox').innerHTML=
   `<div class="cards">
-    <div class="card"><div class="label">Pemasukan periode</div><div class="amount in">${rupiah(ti)}</div></div>
-    <div class="card"><div class="label">Pengeluaran periode</div><div class="amount out">${rupiah(te)}</div></div>
-    <div class="card"><div class="label">Saldo periode</div><div class="amount bal">${rupiah(ti-te)}</div></div>
+    <div class="card"><div class="label">Total pemasukan</div><div class="amount in">${rupiah(ti)}</div></div>
+    <div class="card"><div class="label">Total pengeluaran</div><div class="amount out">${rupiah(te)}</div></div>
+    <div class="card"><div class="label">Saldo kas</div><div class="amount bal">${rupiah(ti-te)}</div></div>
     <div class="card"><div class="label">Siswa terdaftar</div><div class="amount">${db.students.length}</div></div>
   </div>
-  <div style="margin-top:14px"><h3 style="font-size:14px">Detail pemasukan</h3>
-  ${inc.length?'<table><tr><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th></tr>'+inc.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}
-  <h3 style="font-size:14px;margin-top:14px">Detail pengeluaran</h3>
-  ${exp.length?'<table><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}</div>`;
+  <div style="margin-top:14px"><h3 style="font-size:14px">Detail semua pemasukan</h3>
+  ${inc.length?'<div class="tablewrap"><table><tr><th>No</th><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th></tr>'+inc.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source||'-')}</td><td>${esc(x.desc||'-')}</td><td class="in">${rupiah(x.amount)}</td></tr>`).join('')+'</table></div>':'<div class="empty">Tidak ada pemasukan.</div>'}
+  <h3 style="font-size:14px;margin-top:14px">Detail semua pengeluaran</h3>
+  ${exp.length?'<div class="tablewrap"><table><tr><th>No</th><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc||'-')}</td><td class="out">${rupiah(x.amount)}</td></tr>`).join('')+'</table></div>':'<div class="empty">Tidak ada pengeluaran.</div>'}</div>`;
+}
+
+function allStudentMonthData(){
+  return db.students.map(s=>{
+    const total=db.income
+      .filter(x=>String(x.studentId)===String(s.id))
+      .reduce((sum,x)=>sum+Number(x.amount||0),0);
+    const transactions=db.income.filter(x=>String(x.studentId)===String(s.id)).length;
+    return {student:s,total,transactions};
+  });
+}
+
+function renderStudentMonth(){
+  const data=allStudentMonthData();
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  $('studentMonthBox').innerHTML=`
+    <div class="cards">
+      <div class="card"><div class="label">Total seluruh iuran</div><div class="amount in">${rupiah(grandTotal)}</div></div>
+      <div class="card"><div class="label">Jumlah siswa</div><div class="amount">${data.length}</div></div>
+      <div class="card"><div class="label">Siswa sudah bayar</div><div class="amount">${data.filter(x=>x.total>0).length}</div></div>
+      <div class="card"><div class="label">Siswa belum bayar</div><div class="amount">${data.filter(x=>x.total<=0).length}</div></div>
+    </div>
+    <div class="tablewrap" style="margin-top:12px">
+      <table id="studentMonthTable" style="min-width:620px">
+        <thead><tr><th>No</th><th>Nama siswa</th><th>Jumlah transaksi</th><th>Total iuran</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.length ? data.map((x,i)=>`<tr>
+            <td>${i+1}</td>
+            <td><b>${esc(x.student.name)}</b></td>
+            <td>${x.transactions} transaksi</td>
+            <td class="in"><b>${rupiah(x.total)}</b></td>
+            <td>${x.total>0?'✅ Sudah bayar':'❌ Belum bayar'}</td>
+          </tr>`).join('') : '<tr><td colspan="5" class="empty">Belum ada siswa.</td></tr>'}
+          <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="small" style="margin-top:8px">Semua transaksi iuran siswa dihitung ke total masing-masing siswa, tanpa pembagian berdasarkan bulan.</div>`;
+}
+
+function studentMonthText(){
+  const data=allStudentMonthData();
+  const lines=[
+    'REKAP UANG KAS SEMUA SISWA',
+    '',
+    'No | Nama siswa | Jumlah transaksi | Total iuran | Status'
+  ];
+  data.forEach((x,i)=>{
+    lines.push(`${i+1}. ${x.student.name} | ${x.transactions} transaksi | ${rupiah(x.total)} | ${x.total>0?'Sudah bayar':'Belum bayar'}`);
+  });
+  lines.push('');
+  lines.push('TOTAL SEMUA SISWA: '+rupiah(data.reduce((s,x)=>s+x.total,0)));
+  return lines.join('\n');
+}
+
+function downloadStudentPDF(){
+  renderStudentMonth();
+  const box=$('studentMonthBox');
+  const oldReport=$('reportBox').style.display;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  $('report').classList.add('active');
+  box.style.display='block';
+  window.print();
+  box.style.display=oldReport;
+}
+
+async function shareStudentWhatsApp(){
+  const text=studentMonthText();
+  if(navigator.share){
+    try{await navigator.share({title:'Rekap Kas Semua Siswa',text});return;}catch(e){}
+  }
+  location.href='https://wa.me/?text='+encodeURIComponent(text);
 }
 
 
@@ -731,23 +798,24 @@ function refresh(){
 }
 
 function reportText(){
-  const {inc,exp,ti,te}=filtered($('rFrom').value,$('rTo').value);
+  const {inc,exp,ti,te}=filtered();
   const lines=[
     'REKAP UANG KAS KELAS',
-    `Periode: ${$('rFrom').value||'-'} s/d ${$('rTo').value||'-'}`,
+    'SEMUA DATA',
     '',
     `Jumlah siswa: ${db.students.length}`,
     `TOTAL PEMASUKAN: ${rupiah(ti)}`,
     `TOTAL PENGELUARAN: ${rupiah(te)}`,
-    `SALDO PERIODE: ${rupiah(ti-te)}`,
+    `SALDO KAS: ${rupiah(ti-te)}`,
     '',
     'PEMASUKAN'
   ];
-  inc.forEach(x=>lines.push(`${x.date} | Bulan ${x.month||String(x.date).slice(0,7)} | ${db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-'} | ${x.source} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
+  inc.forEach((x,i)=>lines.push(`${i+1}. ${x.date} | Bulan ${x.month||String(x.date).slice(0,7)} | ${db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-'} | ${x.source||'-'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
   lines.push('','PENGELUARAN');
-  exp.forEach(x=>lines.push(`${x.date} | ${x.cat} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
+  exp.forEach((x,i)=>lines.push(`${i+1}. ${x.date} | ${x.cat||x.category||'Pengeluaran kas'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
   return lines.join('\n');
 }
+
 
 function downloadPDF(){
   renderReport();
