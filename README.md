@@ -1,4 +1,4 @@
-# Uang Kas Kelas — Android/PWA
+# Uang Kas Kelas 3B — Android/PWA
 
 Aplikasi kas kelas yang bisa dipakai di HP Android melalui Chrome dan dapat dipasang ke layar utama (Add to Home screen).
 
