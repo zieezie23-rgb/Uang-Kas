@@ -111,10 +111,16 @@ th{background:#f7f9fb}
     <div class="section">
       <h2>Catat pemasukan</h2>
       <div class="row3">
-        <div class="field"><label for="iDate">Tanggal</label><input id="iDate" type="date"></div>
-        <div class="field"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Lainnya</option></select></div>
-        <div class="field"><label for="iAmount">Nominal</label><input id="iAmount" type="number" inputmode="numeric" min="1" step="1" placeholder="5000"></div>
+        <div class="field"><label for="iDate">Tanggal bayar</label><input id="iDate" type="date"></div>
+        <div class="field"><label for="iStudent">Siswa</label><select id="iStudent"><option value="">-- Kas umum / lainnya --</option></select></div>
+        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="number" inputmode="numeric" min="1" step="1" placeholder="5000"></div>
       </div>
+      <div class="row" style="margin-top:10px">
+        <div class="field"><label for="iMonthStart">Mulai bulan pembayaran</label><input id="iMonthStart" type="month"></div>
+        <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" value="1" placeholder="1"></div>
+      </div>
+      <div class="notice" id="incomePreview">Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.</div>
+      <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Lainnya</option></select></div>
       <div style="margin-top:10px"><label for="iDesc">Keterangan</label><input id="iDesc" type="text" placeholder="Contoh: Kas minggu ke-1"></div>
       <div class="actions"><button type="button" id="btnIncome" class="primary">+ Simpan pemasukan</button></div>
     </div>
@@ -148,6 +154,20 @@ th{background:#f7f9fb}
         <button type="button" id="btnWA" class="primary">💬 Share WhatsApp</button>
       </div>
       <div id="reportBox" style="margin-top:14px"></div>
+    </div>
+
+    <div class="section">
+      <h2>📅 Rekap per siswa per bulan</h2>
+      <div class="row">
+        <div class="field"><label for="rMonth">Bulan</label><input id="rMonth" type="month"></div>
+        <div class="field"><label for="rStudent">Siswa (opsional)</label><select id="rStudent"><option value="">Semua siswa</option></select></div>
+      </div>
+      <div class="actions">
+        <button type="button" id="btnStudentMonth" class="primary">Tampilkan rekap siswa</button>
+        <button type="button" id="btnStudentPDF" class="primary">📄 PDF Rekap Siswa</button>
+        <button type="button" id="btnStudentWA" class="primary">💬 WhatsApp Rekap Siswa</button>
+      </div>
+      <div id="studentMonthBox" style="margin-top:14px"></div>
     </div>
     <div class="section">
       <h2>Data aplikasi</h2>
@@ -196,6 +216,8 @@ $('iDate').value=today();
 $('eDate').value=today();
 $('rFrom').value=today().slice(0,8)+'01';
 $('rTo').value=today();
+$('rMonth').value=today().slice(0,7);
+$('iMonthStart').value=today().slice(0,7);
 
 document.querySelectorAll('.tabs button').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -214,6 +236,15 @@ $('btnExpense').addEventListener('click',addExpense);
 $('btnReport').addEventListener('click',renderReport);
 $('btnPDF').addEventListener('click',downloadPDF);
 $('btnWA').addEventListener('click',shareWhatsApp);
+$('btnStudentMonth').addEventListener('click',renderStudentMonth);
+$('btnStudentPDF').addEventListener('click',downloadStudentPDF);
+$('btnStudentWA').addEventListener('click',shareStudentWhatsApp);
+$('rMonth').addEventListener('change',renderStudentMonth);
+$('rStudent').addEventListener('change',renderStudentMonth);
+$('iAmount').addEventListener('input',updateIncomePreview);
+$('iMonths').addEventListener('input',updateIncomePreview);
+$('iMonthStart').addEventListener('change',updateIncomePreview);
+$('iStudent').addEventListener('change',updateIncomePreview);
 $('btnClear').addEventListener('click',clearAll);
 $('sSearch').addEventListener('input',renderStudents);
 
@@ -229,12 +260,59 @@ function delStudent(id){
   if(confirm('Hapus siswa ini?')){db.students=db.students.filter(x=>x.id!==id);save();}
 }
 
+function updateIncomePreview(){
+  const amount=Number($('iAmount').value)||0;
+  const months=Math.max(1,Math.min(24,Number($('iMonths').value)||1));
+  const start=$('iMonthStart').value||today().slice(0,7);
+  const student=$('iStudent').selectedOptions[0]?.textContent||'kas umum';
+  const parts=[];
+  const d=new Date(start+'-01T00:00:00');
+  for(let i=0;i<months;i++){
+    const x=new Date(d);
+    x.setMonth(d.getMonth()+i);
+    parts.push(x.toLocaleDateString('id-ID',{month:'long',year:'numeric'}));
+  }
+  $('incomePreview').innerHTML=amount
+    ? `<b>${esc(student)}</b> akan dicatat untuk <b>${months} bulan</b>: ${parts.join(', ')}.<br>Total pembayaran: <b>${rupiah(amount*months)}</b>.`
+    : 'Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.';
+}
+
 function addIncome(){
   const amount=Number($('iAmount').value);
-  if(!amount || amount<1){alert('Nominal pemasukan wajib diisi.');$('iAmount').focus();return;}
-  db.income.push({id:Date.now()+Math.random(),date:$('iDate').value||today(),source:$('iSource').value,amount,desc:$('iDesc').value.trim()});
-  $('iAmount').value='';$('iDesc').value='';
-  save();$('iAmount').focus();
+  const months=Math.max(1,Math.min(24,Number($('iMonths').value)||1));
+  const studentId=$('iStudent').value||'';
+  const startMonth=$('iMonthStart').value||today().slice(0,7);
+  const payDate=$('iDate').value||today();
+
+  if(!amount || amount<1){alert('Nominal per bulan wajib diisi.');$('iAmount').focus();return;}
+  if(!studentId && months>1){
+    if(!confirm('Pembayaran lebih dari 1 bulan tetapi siswa belum dipilih. Lanjutkan sebagai kas umum?')) return;
+  }
+
+  // One payment record per month, all tied to the same payment batch.
+  const batchId=Date.now()+Math.random();
+  for(let i=0;i<months;i++){
+    const d=new Date(startMonth+'-01T00:00:00');
+    d.setMonth(d.getMonth()+i);
+    const ym=d.toISOString().slice(0,7);
+    db.income.push({
+      id:Date.now()+Math.random(),
+      batchId,
+      date:payDate,
+      studentId,
+      month:ym,
+      source:$('iSource').value,
+      amount,
+      desc:$('iDesc').value.trim() || `Kas ${ym}`
+    });
+  }
+
+  $('iAmount').value='';
+  $('iMonths').value='1';
+  $('iDesc').value='';
+  save();
+  $('iAmount').focus();
+  alert(`Berhasil menyimpan pembayaran ${months} bulan. Total: ${rupiah(amount*months)}`);
 }
 
 function addExpense(){
@@ -252,6 +330,16 @@ function del(type,id){
 window.delStudent=delStudent;
 window.del=del;
 
+function populateStudentSelects(){
+  const sorted=[...db.students].sort((a,b)=>a.name.localeCompare(b.name,'id'));
+  const currentIncome=$('iStudent').value;
+  const currentReport=$('rStudent').value;
+  $('iStudent').innerHTML='<option value="">-- Kas umum / lainnya --</option>'+sorted.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  $('rStudent').innerHTML='<option value="">Semua siswa</option>'+sorted.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  if(sorted.some(s=>String(s.id)===String(currentIncome))) $('iStudent').value=currentIncome;
+  if(sorted.some(s=>String(s.id)===String(currentReport))) $('rStudent').value=currentReport;
+}
+
 function renderStudents(){
   const q=($('sSearch').value||'').toLowerCase();
   const a=db.students.filter(x=>x.name.toLowerCase().includes(q));
@@ -265,8 +353,8 @@ function renderStudents(){
 function renderIncome(){
   const a=[...db.income].sort((x,y)=>y.date.localeCompare(x.date));
   $('incomeTable').innerHTML=a.length?
-  '<table><thead><tr><th>Tanggal</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
-  a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td class="in">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('income',${x.id})">Hapus</button></td></tr>`).join('')+
+  '<table><thead><tr><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
+  a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td class="in">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('income',${x.id})">Hapus</button></td></tr>`).join('')+
   '</tbody></table>':'<div class="empty">Belum ada pemasukan.</div>';
 }
 
@@ -279,7 +367,7 @@ function renderExpense(){
 }
 
 function filtered(from,to){
-  const inc=db.income.filter(x=>(!from||x.date>=from)&&(!to||x.date<=to));
+  const inc=db.income.filter(x=>{const d=x.month||String(x.date).slice(0,7); return (!from||d>=from.slice(0,7))&&(!to||d<=to.slice(0,7));});
   const exp=db.expense.filter(x=>(!from||x.date>=from)&&(!to||x.date<=to));
   return {inc,exp,ti:inc.reduce((s,x)=>s+x.amount,0),te:exp.reduce((s,x)=>s+x.amount,0)};
 }
@@ -294,12 +382,91 @@ function renderReport(){
     <div class="card"><div class="label">Siswa terdaftar</div><div class="amount">${db.students.length}</div></div>
   </div>
   <div style="margin-top:14px"><h3 style="font-size:14px">Detail pemasukan</h3>
-  ${inc.length?'<table><tr><th>Tanggal</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th></tr>'+inc.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}
+  ${inc.length?'<table><tr><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th></tr>'+inc.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}
   <h3 style="font-size:14px;margin-top:14px">Detail pengeluaran</h3>
   ${exp.length?'<table><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat)}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}</div>`;
 }
 
+
+function studentMonthData(){
+  const month=$('rMonth').value||today().slice(0,7);
+  const selected=$('rStudent').value||'';
+  const students=db.students.filter(s=>!selected||String(s.id)===String(selected));
+  return students.map(s=>{
+    const tx=db.income.filter(x=>String(x.studentId)===String(s.id)&&(String(x.month||x.date).slice(0,7)===month));
+    const total=tx.reduce((sum,x)=>sum+Number(x.amount||0),0);
+    return {student:s,total,count:tx.length,transactions:tx};
+  });
+}
+
+function renderStudentMonth(){
+  const month=$('rMonth').value||today().slice(0,7);
+  const data=studentMonthData();
+  const total=data.reduce((s,x)=>s+x.total,0);
+  const paid=data.filter(x=>x.total>0).length;
+  const notPaid=data.filter(x=>x.total===0).length;
+
+  $('studentMonthBox').innerHTML=`
+    <div class="cards">
+      <div class="card"><div class="label">Total kas siswa bulan ini</div><div class="amount in">${rupiah(total)}</div></div>
+      <div class="card"><div class="label">Sudah setor</div><div class="amount">${paid}</div></div>
+      <div class="card"><div class="label">Belum setor</div><div class="amount out">${notPaid}</div></div>
+      <div class="card"><div class="label">Jumlah siswa</div><div class="amount">${data.length}</div></div>
+    </div>
+    <div class="tablewrap" style="margin-top:12px">
+      <table id="studentMonthTable">
+        <thead><tr><th>No</th><th>Nama siswa</th><th>Total setor</th><th>Transaksi</th><th>Status</th></tr></thead>
+        <tbody>
+          ${data.length ? data.map((x,i)=>`<tr>
+            <td>${i+1}</td>
+            <td>${esc(x.student.name)}</td>
+            <td class="${x.total>0?'in':'out'}">${rupiah(x.total)}</td>
+            <td>${x.count}x</td>
+            <td><span class="pill">${x.total>0?'Sudah setor':'Belum setor'}</span></td>
+          </tr>`).join('') : '<tr><td colspan="5" class="empty">Belum ada siswa.</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+    <div class="small" style="margin-top:8px">Bulan: ${esc(month)}. Rekap dihitung dari transaksi pemasukan yang dikaitkan dengan masing-masing siswa.</div>`;
+}
+
+function studentMonthText(){
+  const month=$('rMonth').value||today().slice(0,7);
+  const data=studentMonthData();
+  const total=data.reduce((s,x)=>s+x.total,0);
+  return [
+    'REKAP KAS PER SISWA',
+    `Bulan: ${month}`,
+    '',
+    ...data.map((x,i)=>`${i+1}. ${x.student.name} | ${rupiah(x.total)} | ${x.total>0?'Sudah setor':'Belum setor'} | ${x.count} bulan/transaksi`),
+    '',
+    `TOTAL KAS SISWA: ${rupiah(total)}`,
+    `SUDAH SETOR: ${data.filter(x=>x.total>0).length}`,
+    `BELUM SETOR: ${data.filter(x=>x.total===0).length}`
+  ].join('\n');
+}
+
+function downloadStudentPDF(){
+  renderStudentMonth();
+  const box=$('studentMonthBox');
+  const oldReport=$('reportBox').style.display;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  $('report').classList.add('active');
+  box.style.display='block';
+  window.print();
+  box.style.display=oldReport;
+}
+
+async function shareStudentWhatsApp(){
+  const text=studentMonthText();
+  if(navigator.share){
+    try{await navigator.share({title:'Rekap Kas Per Siswa',text});return;}catch(e){}
+  }
+  location.href='https://wa.me/?text='+encodeURIComponent(text);
+}
+
 function refresh(){
+  populateStudentSelects();
   const ti=db.income.reduce((s,x)=>s+x.amount,0);
   const te=db.expense.reduce((s,x)=>s+x.amount,0);
   $('dIn').textContent=rupiah(ti);
@@ -323,7 +490,7 @@ function reportText(){
     '',
     'PEMASUKAN'
   ];
-  inc.forEach(x=>lines.push(`${x.date} | ${x.source} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
+  inc.forEach(x=>lines.push(`${x.date} | Bulan ${x.month||String(x.date).slice(0,7)} | ${db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-'} | ${x.source} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
   lines.push('','PENGELUARAN');
   exp.forEach(x=>lines.push(`${x.date} | ${x.cat} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
   return lines.join('\n');
@@ -350,6 +517,7 @@ function clearAll(){
 }
 
 refresh();
+updateIncomePreview();
 })();
 </script>
 </body>
