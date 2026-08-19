@@ -157,15 +157,12 @@ th{background:#f7f9fb}
     </div>
 
     <div class="section">
-      <h2>📅 Rekap per siswa per bulan</h2>
-      <div class="row">
-        <div class="field"><label for="rMonth">Bulan</label><input id="rMonth" type="month"></div>
-        <div class="field"><label for="rStudent">Siswa (opsional)</label><select id="rStudent"><option value="">Semua siswa</option></select></div>
-      </div>
+      <h2>📅 Rekap semua siswa per bulan</h2>
+      <div class="notice">Semua 32 siswa ditampilkan sekaligus. Kolom berisi iuran setiap bulan mulai Agustus 2026, ditambah total pembayaran masing-masing siswa.</div>
       <div class="actions">
-        <button type="button" id="btnStudentMonth" class="primary">Tampilkan rekap siswa</button>
-        <button type="button" id="btnStudentPDF" class="primary">📄 PDF Rekap Siswa</button>
-        <button type="button" id="btnStudentWA" class="primary">💬 WhatsApp Rekap Siswa</button>
+        <button type="button" id="btnStudentMonth" class="primary">🔄 Tampilkan / Perbarui Rekap</button>
+        <button type="button" id="btnStudentPDF" class="primary">📄 PDF Rekap Semua</button>
+        <button type="button" id="btnStudentWA" class="primary">💬 WhatsApp Rekap Semua</button>
       </div>
       <div id="studentMonthBox" style="margin-top:14px"></div>
     </div>
@@ -325,6 +322,118 @@ if(!localStorage.getItem('INITIAL_EXPENSES_V1')){
   localStorage.setItem(KEY,JSON.stringify(db));
 }
 
+// Migrasi data awal kas: memastikan data masuk walaupun browser sudah pernah
+// membuka versi sebelumnya dan marker V1 sudah tersimpan.
+if(!db.income.some(x=>x.batchId==='INITIAL_AUG2026_KAS')){
+  const migrateKas=[
+{id:930000000+0,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+1,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+2,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+3,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+4,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+5,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+5);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+6,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+6);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+7,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+7);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+8,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+8);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+9,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+9);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+10,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ARA TRIA UTOMO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+10);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+11,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALVAN SHATA A')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+12,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALVAN SHATA A')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+13,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALVAN SHATA A')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+14,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALVAN SHATA A')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+15,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALVAN SHATA A')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+16,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+17,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+18,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+19,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+20,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+21,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+5);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+22,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+6);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+23,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+7);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+24,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+8);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+25,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+9);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+26,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RADEYA PUTRI HARIANATA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+10);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+27,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+28,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+29,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+30,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+31,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+32,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+5);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+33,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+6);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+34,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+7);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+35,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+8);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+36,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+9);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+37,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEANU ALTHAF SYABIL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+10);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+38,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALFARUQ ZIKRI')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+39,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ATHAR AL FATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+40,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ATHAR AL FATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+41,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ATHAR AL FATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+42,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='AZRIL WAZZA P')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+43,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='AZRIL WAZZA P')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+44,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='AZRIL WAZZA P')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+45,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='AZRIL WAZZA P')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+46,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='AZRIL WAZZA P')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+47,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+48,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+49,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+50,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+51,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+52,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+5);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+53,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+6);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+54,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+7);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+55,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+8);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+56,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+9);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+57,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FADIL AL PATIH')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+10);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+58,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEEANU ATHALLAH RIO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+59,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='KEENAN ARSHAKA RIO')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+60,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RAFFASYA FATIH AL FIRDAUS')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+61,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='RAFFASYA FATIH AL FIRDAUS')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+62,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='SITI KHALISA NATHIFA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+63,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='SITI KHALISA NATHIFA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+64,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='SITI KHALISA NATHIFA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+65,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='SITI KHALISA NATHIFA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+66,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='SITI KHALISA NATHIFA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+67,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='GALANG ARJITYA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+68,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='GALANG ARJITYA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+69,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='GALANG ARJITYA')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+70,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HISYAM AL FARIZKI')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+71,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HISYAM AL FARIZKI')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+72,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HISYAM AL FARIZKI')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+73,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HISYAM AL FARIZKI')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+74,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HISYAM AL FARIZKI')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+75,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HAIDAR SHAQIL F')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+76,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HAIDAR SHAQIL F')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+77,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='HAIDAR SHAQIL F')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+78,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='M RASYA RAMADHAN')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+79,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='M RASYA RAMADHAN')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+80,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='M RASYA RAMADHAN')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+81,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='M RASYA RAMADHAN')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+82,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='M RASYA RAMADHAN')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+83,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+84,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+85,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+2);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+86,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+87,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+4);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+88,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+5);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+89,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+6);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+90,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+7);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+91,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+8);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+92,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='FAHIR AFDAL')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+9);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+93,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALIKA NAYYA A')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+0);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'},
+{id:930000000+94,batchId:'INITIAL_AUG2026_KAS',date:'2026-08-20',studentId:(db.students.find(s=>s.name==='ALIKA NAYYA A')||{}).id||'',month:(()=>{const d=new Date('2026-08-01T00:00:00');d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,7)})(),source:'Uang kas siswa',amount:10000,desc:'Kas awal - pembayaran data sebelumnya'}
+  ];
+  migrateKas.forEach(r=>{if(r.studentId) db.income.push(r);});
+}
+if(!db.expense.some(x=>x.id===920000000)){
+  db.expense.push(
+    {id:920000000,date:'2026-07-27',cat:'Pengeluaran kas',category:'Pengeluaran kas',amount:120000,desc:'Kenang-kenangan Faeyza Al Ghifari'},
+    {id:920000001,date:'2026-07-31',cat:'Pengeluaran kas',category:'Pengeluaran kas',amount:50000,desc:'Membeli Gantungan Map'},
+    {id:920000002,date:'2026-08-03',cat:'Pengeluaran kas',category:'Pengeluaran kas',amount:100000,desc:'Menjenguk Khitan Hisyam Al Farizki'},
+    {id:920000003,date:'2026-08-03',cat:'Pengeluaran kas',category:'Pengeluaran kas',amount:100000,desc:'Menjenguk Khitan Fahir Afdal'}
+  );
+}
+localStorage.setItem(KEY,JSON.stringify(db));
+
 function save(){
   localStorage.setItem(KEY,JSON.stringify(db));
   refresh();
@@ -357,8 +466,6 @@ $('btnWA').addEventListener('click',shareWhatsApp);
 $('btnStudentMonth').addEventListener('click',renderStudentMonth);
 $('btnStudentPDF').addEventListener('click',downloadStudentPDF);
 $('btnStudentWA').addEventListener('click',shareStudentWhatsApp);
-$('rMonth').addEventListener('change',renderStudentMonth);
-$('rStudent').addEventListener('change',renderStudentMonth);
 $('iAmount').addEventListener('input',updateIncomePreview);
 $('iMonths').addEventListener('input',updateIncomePreview);
 $('iMonthStart').addEventListener('change',updateIncomePreview);
@@ -451,11 +558,8 @@ window.del=del;
 function populateStudentSelects(){
   const sorted=[...db.students].sort((a,b)=>a.name.localeCompare(b.name,'id'));
   const currentIncome=$('iStudent').value;
-  const currentReport=$('rStudent').value;
   $('iStudent').innerHTML='<option value="">-- Kas umum / lainnya --</option>'+sorted.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
-  $('rStudent').innerHTML='<option value="">Semua siswa</option>'+sorted.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
   if(sorted.some(s=>String(s.id)===String(currentIncome))) $('iStudent').value=currentIncome;
-  if(sorted.some(s=>String(s.id)===String(currentReport))) $('rStudent').value=currentReport;
 }
 
 function renderStudents(){
@@ -480,7 +584,7 @@ function renderExpense(){
   const a=[...db.expense].sort((x,y)=>y.date.localeCompare(x.date));
   $('expenseTable').innerHTML=a.length?
   '<table><thead><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
-  a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat)}</td><td>${esc(x.desc)}</td><td class="out">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('expense',${x.id})">Hapus</button></td></tr>`).join('')+
+  a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc)}</td><td class="out">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('expense',${x.id})">Hapus</button></td></tr>`).join('')+
   '</tbody></table>':'<div class="empty">Belum ada pengeluaran.</div>';
 }
 
@@ -502,67 +606,99 @@ function renderReport(){
   <div style="margin-top:14px"><h3 style="font-size:14px">Detail pemasukan</h3>
   ${inc.length?'<table><tr><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th></tr>'+inc.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}
   <h3 style="font-size:14px;margin-top:14px">Detail pengeluaran</h3>
-  ${exp.length?'<table><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat)}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}</div>`;
+  ${exp.length?'<table><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc)}</td><td>${rupiah(x.amount)}</td></tr>`).join('')+'</table>':'<div class="empty">Tidak ada.</div>'}</div>`;
 }
 
 
-function studentMonthData(){
-  const month=$('rMonth').value||today().slice(0,7);
-  const selected=$('rStudent').value||'';
-  const students=db.students.filter(s=>!selected||String(s.id)===String(selected));
-  return students.map(s=>{
-    const tx=db.income.filter(x=>String(x.studentId)===String(s.id)&&(String(x.month||x.date).slice(0,7)===month));
-    const total=tx.reduce((sum,x)=>sum+Number(x.amount||0),0);
-    return {student:s,total,count:tx.length,transactions:tx};
+function getRekapMonths(){
+  const start='2026-08';
+  const months=new Set([start]);
+  db.income.forEach(x=>{
+    const m=String(x.month||x.date||'').slice(0,7);
+    if(/^\d{4}-\d{2}$/.test(m) && m>=start) months.add(m);
+  });
+  // Include current month so an empty current month is visible too.
+  const now=today().slice(0,7);
+  if(now>=start) months.add(now);
+  return Array.from(months).sort();
+}
+
+function monthLabel(ym){
+  const [y,m]=ym.split('-').map(Number);
+  return new Date(y,m-1,1).toLocaleDateString('id-ID',{month:'short',year:'numeric'});
+}
+
+function allStudentMonthData(){
+  const months=getRekapMonths();
+  return db.students.map(s=>{
+    const monthly={};
+    months.forEach(m=>{
+      monthly[m]=db.income
+        .filter(x=>String(x.studentId)===String(s.id) && String(x.month||x.date).slice(0,7)===m)
+        .reduce((sum,x)=>sum+Number(x.amount||0),0);
+    });
+    const total=months.reduce((sum,m)=>sum+monthly[m],0);
+    return {student:s,monthly,total};
   });
 }
 
 function renderStudentMonth(){
-  const month=$('rMonth').value||today().slice(0,7);
-  const data=studentMonthData();
-  const total=data.reduce((s,x)=>s+x.total,0);
-  const paid=data.filter(x=>x.total>0).length;
-  const notPaid=data.filter(x=>x.total===0).length;
+  const months=getRekapMonths();
+  const data=allStudentMonthData();
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const monthlyTotals=Object.fromEntries(months.map(m=>[m,data.reduce((s,x)=>s+x.monthly[m],0)]));
+  const paidThisMonth=months.length ? data.filter(x=>x.monthly[months[months.length-1]]>0).length : 0;
+
+  const headerMonths=months.map(m=>`<th>${esc(monthLabel(m))}</th>`).join('');
+  const totalRow=months.map(m=>`<td class="in"><b>${rupiah(monthlyTotals[m])}</b></td>`).join('');
 
   $('studentMonthBox').innerHTML=`
     <div class="cards">
-      <div class="card"><div class="label">Total kas siswa bulan ini</div><div class="amount in">${rupiah(total)}</div></div>
-      <div class="card"><div class="label">Sudah setor</div><div class="amount">${paid}</div></div>
-      <div class="card"><div class="label">Belum setor</div><div class="amount out">${notPaid}</div></div>
+      <div class="card"><div class="label">Total seluruh iuran</div><div class="amount in">${rupiah(grandTotal)}</div></div>
       <div class="card"><div class="label">Jumlah siswa</div><div class="amount">${data.length}</div></div>
+      <div class="card"><div class="label">Bulan direkap</div><div class="amount">${months.length}</div></div>
+      <div class="card"><div class="label">Setor bulan terakhir</div><div class="amount">${paidThisMonth} siswa</div></div>
     </div>
     <div class="tablewrap" style="margin-top:12px">
-      <table id="studentMonthTable">
-        <thead><tr><th>No</th><th>Nama siswa</th><th>Total setor</th><th>Transaksi</th><th>Status</th></tr></thead>
+      <table id="studentMonthTable" style="min-width:${Math.max(720, 180+months.length*110)}px">
+        <thead>
+          <tr><th>No</th><th>Nama siswa</th>${headerMonths}<th>Total</th></tr>
+        </thead>
         <tbody>
           ${data.length ? data.map((x,i)=>`<tr>
             <td>${i+1}</td>
-            <td>${esc(x.student.name)}</td>
-            <td class="${x.total>0?'in':'out'}">${rupiah(x.total)}</td>
-            <td>${x.count}x</td>
-            <td><span class="pill">${x.total>0?'Sudah setor':'Belum setor'}</span></td>
-          </tr>`).join('') : '<tr><td colspan="5" class="empty">Belum ada siswa.</td></tr>'}
+            <td><b>${esc(x.student.name)}</b></td>
+            ${months.map(m=>`<td class="${x.monthly[m]>0?'in':''}">${x.monthly[m]>0?rupiah(x.monthly[m]):'—'}</td>`).join('')}
+            <td class="in"><b>${rupiah(x.total)}</b></td>
+          </tr>`).join('') : '<tr><td colspan="'+(months.length+3)+'" class="empty">Belum ada siswa.</td></tr>'}
+          <tr>
+            <td colspan="2"><b>TOTAL PER BULAN</b></td>
+            ${totalRow}
+            <td class="in"><b>${rupiah(grandTotal)}</b></td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <div class="small" style="margin-top:8px">Bulan: ${esc(month)}. Rekap dihitung dari transaksi pemasukan yang dikaitkan dengan masing-masing siswa.</div>`;
+    <div class="small" style="margin-top:8px">Rekap dimulai Agustus 2026. Setiap pembayaran siswa ditempatkan pada bulan kas yang dibayar, bukan hanya pada tanggal uang diterima.</div>`;
 }
 
 function studentMonthText(){
-  const month=$('rMonth').value||today().slice(0,7);
-  const data=studentMonthData();
-  const total=data.reduce((s,x)=>s+x.total,0);
-  return [
-    'REKAP KAS PER SISWA',
-    `Bulan: ${month}`,
+  const months=getRekapMonths();
+  const data=allStudentMonthData();
+  const lines=[
+    'REKAP UANG KAS SEMUA SISWA',
+    'Mulai: Agustus 2026',
     '',
-    ...data.map((x,i)=>`${i+1}. ${x.student.name} | ${rupiah(x.total)} | ${x.total>0?'Sudah setor':'Belum setor'} | ${x.count} bulan/transaksi`),
-    '',
-    `TOTAL KAS SISWA: ${rupiah(total)}`,
-    `SUDAH SETOR: ${data.filter(x=>x.total>0).length}`,
-    `BELUM SETOR: ${data.filter(x=>x.total===0).length}`
-  ].join('\n');
+    'Nama siswa | '+months.map(monthLabel).join(' | ')+' | TOTAL'
+  ];
+  data.forEach((x,i)=>{
+    lines.push(`${i+1}. ${x.student.name} | ${months.map(m=>x.monthly[m] ? rupiah(x.monthly[m]) : '-').join(' | ')} | ${rupiah(x.total)}`);
+  });
+  lines.push('');
+  lines.push('TOTAL PER BULAN | '+months.map(m=>rupiah(data.reduce((s,x)=>s+x.monthly[m],0))).join(' | ')+' | '+rupiah(data.reduce((s,x)=>s+x.total,0)));
+  return lines.join('\n');
 }
+
 
 function downloadStudentPDF(){
   renderStudentMonth();
@@ -636,6 +772,8 @@ function clearAll(){
 
 refresh();
 updateIncomePreview();
+renderReport();
+renderStudentMonth();
 })();
 </script>
 </body>
