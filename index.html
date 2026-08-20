@@ -54,10 +54,20 @@ th{background:#f7f9fb}
 }
 @media(min-width:700px){.cards{grid-template-columns:repeat(4,1fr)}}
 @media print{
- header,.tabs,.actions,.footer,.no-print{display:none!important}
- body{background:#fff}
- .page{display:block!important}
- .section,.card{box-shadow:none;border:1px solid #ddd}
+ body>*:not(#printArea){display:none!important}
+ #printArea{display:block!important;background:#fff;color:#17212b;padding:18px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+ #printArea h1{font-size:20px;margin:0 0 4px}
+ #printArea h2{font-size:16px;margin:16px 0 8px}
+ #printArea .print-meta{font-size:11px;color:#68737d;margin-bottom:12px}
+ #printArea .print-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+ #printArea .print-card{border:1px solid #ddd;border-radius:8px;padding:9px}
+ #printArea .print-label{font-size:10px;color:#68737d}
+ #printArea .print-value{font-size:16px;font-weight:800;margin-top:3px}
+ #printArea table{width:100%;border-collapse:collapse;font-size:11px}
+ #printArea th,#printArea td{padding:6px;border:1px solid #ddd;text-align:left}
+ #printArea th{background:#f3f5f7}
+ #printArea .in{color:#14804a}
+ @page{size:auto;margin:12mm}
 }
 </style>
 </head>
@@ -146,8 +156,7 @@ th{background:#f7f9fb}
       <h2>Rekap kas</h2>
       <div class="notice">Menampilkan <b>semua data</b> pemasukan dan pengeluaran yang tersimpan, tanpa filter periode.</div>
       <div class="actions">
-        <button type="button" id="btnReport" class="primary">🔄 Tampilkan semua data</button>
-        <button type="button" id="btnPDF" class="primary">📄 Simpan/Cetak PDF</button>
+        <button type="button" id="btnPDF" class="primary">📄 Simpan PDF</button>
         <button type="button" id="btnWA" class="primary">💬 Share WhatsApp</button>
       </div>
       <div id="reportBox" style="margin-top:14px"></div>
@@ -158,7 +167,7 @@ th{background:#f7f9fb}
       <div class="notice">Semua siswa ditampilkan sekaligus. Rekap berisi <b>total seluruh iuran</b> yang sudah dibayarkan masing-masing siswa, tanpa dipecah per bulan.</div>
       <div class="actions">
         <button type="button" id="btnStudentMonth" class="primary">🔄 Tampilkan / Perbarui Rekap</button>
-        <button type="button" id="btnStudentPDF" class="primary">📄 PDF Rekap Semua</button>
+        <button type="button" id="btnStudentPDF" class="primary">📄 Simpan PDF Rekap Siswa</button>
         <button type="button" id="btnStudentWA" class="primary">💬 WhatsApp Rekap Semua</button>
       </div>
       <div id="studentMonthBox" style="margin-top:14px"></div>
@@ -167,10 +176,11 @@ th{background:#f7f9fb}
       <h2>Data aplikasi</h2>
       <div class="actions"><button type="button" id="btnClear" class="danger">Hapus semua data</button></div>
       <div class="small" style="margin-top:8px">Data tersimpan lokal di perangkat ini (offline).</div>
-      <div class="notice">Tip: gunakan tombol PDF untuk menyimpan rekap sebagai PDF melalui menu cetak Android.</div>
+      <div class="notice">Tip: tombol PDF akan membuka menu Android untuk menyimpan rekap sebagai file PDF.</div>
     </div>
   </section>
 </main>
+<div id="printArea" style="display:none"></div>
 
 <div class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
 
@@ -454,7 +464,6 @@ document.querySelectorAll('.tabs button').forEach(btn=>{
 $('btnAddStudent').addEventListener('click',addStudent);
 $('btnIncome').addEventListener('click',addIncome);
 $('btnExpense').addEventListener('click',addExpense);
-$('btnReport').addEventListener('click',renderReport);
 $('btnPDF').addEventListener('click',downloadPDF);
 $('btnWA').addEventListener('click',shareWhatsApp);
 $('btnStudentMonth').addEventListener('click',renderStudentMonth);
@@ -617,82 +626,6 @@ function renderReport(){
 }
 
 function allStudentMonthData(){
-  const data=db.students.map(s=>{
-    const payments=db.income.filter(x=>String(x.studentId)===String(s.id));
-    const total=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
-    // Hitung bulan yang sudah dibayar berdasarkan bulan kas.
-    // Jika ada lebih dari satu transaksi pada bulan yang sama, tetap dihitung 1 bulan.
-    const paidMonths=new Set(payments.map(x=>String(x.month||x.date||"").slice(0,7)).filter(Boolean));
-    return {student:s,total,paidMonths:paidMonths.size,transactions:payments.length};
-  });
-  return data.sort((a,b)=>b.paidMonths-a.paidMonths || b.total-a.total || a.student.name.localeCompare(b.student.name));
-}
-
-function renderStudentMonth(){
-  const data=allStudentMonthData();
-  const grandTotal=data.reduce((s,x)=>s+x.total,0);
-  $('studentMonthBox').innerHTML=`
-    <div class="cards">
-      <div class="card"><div class="label">Total seluruh iuran</div><div class="amount in">${rupiah(grandTotal)}</div></div>
-      <div class="card"><div class="label">Jumlah siswa</div><div class="amount">${data.length}</div></div>
-      <div class="card"><div class="label">Siswa sudah bayar</div><div class="amount">${data.filter(x=>x.paidMonths>0).length}</div></div>
-      <div class="card"><div class="label">Siswa belum bayar</div><div class="amount">${data.filter(x=>x.paidMonths<=0).length}</div></div>
-    </div>
-    <div class="tablewrap" style="margin-top:12px">
-      <table id="studentMonthTable" style="min-width:560px">
-        <thead><tr><th>No</th><th>Nama siswa</th><th>Sudah bayar</th><th>Total nominal</th></tr></thead>
-        <tbody>
-          ${data.length ? data.map((x,i)=>`<tr>
-            <td>${i+1}</td>
-            <td><b>${esc(x.student.name)}</b></td>
-            <td>${x.paidMonths} bulan</td>
-            <td class="in"><b>${rupiah(x.total)}</b></td>
-          </tr>`).join('') : '<tr><td colspan="4" class="empty">Belum ada siswa.</td></tr>'}
-          <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="small" style="margin-top:8px">Urutan berdasarkan jumlah bulan yang sudah dibayar terbanyak. Jika sama, diurutkan berdasarkan total nominal terbesar. Tidak ada rincian per bulan.</div>`;
-}
-
-function studentMonthText(){
-  const data=allStudentMonthData();
-  const lines=[
-    'REKAP UANG KAS SEMUA SISWA',
-    'Urutan: jumlah bulan dibayar terbanyak',
-    '',
-    'No | Nama siswa | Sudah bayar | Total nominal'
-  ];
-  data.forEach((x,i)=>{
-    lines.push(`${i+1}. ${x.student.name} | ${x.paidMonths} bulan | ${rupiah(x.total)}`);
-  });
-  lines.push('');
-  lines.push('TOTAL SEMUA SISWA: '+rupiah(data.reduce((s,x)=>s+x.total,0)));
-  return lines.join('\n');
-}
-
-
-function downloadStudentPDF(){
-  renderStudentMonth();
-  const box=$('studentMonthBox');
-  const oldReport=$('reportBox').style.display;
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  $('report').classList.add('active');
-  box.style.display='block';
-  window.print();
-  box.style.display=oldReport;
-}
-
-async function shareStudentWhatsApp(){
-  const text=studentMonthText();
-  if(navigator.share){
-    try{await navigator.share({title:'Rekap Kas Semua Siswa',text});return;}catch(e){}
-  }
-  location.href='https://wa.me/?text='+encodeURIComponent(text);
-}
-
-
-function allStudentMonthData(){
   return db.students.map(s=>{
     const payments=db.income.filter(x=>String(x.studentId)===String(s.id));
     const total=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
@@ -807,9 +740,24 @@ function reportText(){
 }
 
 
+function buildReportPrint(){
+  const {inc,ti,te}=filtered();
+  const sources=sourceSummary(inc);
+  return `
+    <h1>Rekap Uang Kas Kelas</h1>
+    <div class="print-meta">Semua data • tanpa rincian transaksi.</div>
+    <div class="print-cards">
+      <div class="print-card"><div class="print-label">Total pemasukan</div><div class="print-value in">${rupiah(ti)}</div></div>
+      <div class="print-card"><div class="print-label">Total pengeluaran</div><div class="print-value">${rupiah(filtered().te)}</div></div>
+      <div class="print-card"><div class="print-label">Saldo kas</div><div class="print-value">${rupiah(ti-te)}</div></div>
+      <div class="print-card"><div class="print-label">Siswa terdaftar</div><div class="print-value">${db.students.length}</div></div>
+    </div>
+    <h2>Rekap sumber pemasukan</h2>
+    ${sources.length ? `<table><thead><tr><th>No</th><th>Sumber pemasukan</th><th>Transaksi</th><th>Total nominal</th></tr></thead><tbody>${sources.map(([source,v],i)=>`<tr><td>${i+1}</td><td>${esc(source)}</td><td>${v.count} transaksi</td><td class="in">${rupiah(v.total)}</td></tr>`).join('')}<tr><td colspan="3"><b>TOTAL PEMASUKAN</b></td><td class="in"><b>${rupiah(ti)}</b></td></tr></tbody></table>` : '<div>Tidak ada pemasukan.</div>'}`;
+}
+
 function downloadPDF(){
-  renderReport();
-  window.print();
+  openPrintArea(buildReportPrint());
 }
 
 async function shareWhatsApp(){
