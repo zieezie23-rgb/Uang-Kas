@@ -211,6 +211,7 @@ input[type="number"] { ime-mode: numeric; }
     <button type="button" data-page="expense">Pengeluaran</button>
     <button type="button" data-page="report">Rekap</button>
      <button type="button" data-page="monthly">Rekap Bulanan</button>
+     <button type="button" data-page="tik">Rekap TIK</button>
   </nav>
 
   <section id="students" class="page active">
@@ -249,7 +250,7 @@ input[type="number"] { ime-mode: numeric; }
         <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" autocomplete="off" value="1" placeholder="1"></div>
       </div>
       <div class="notice" id="incomePreview">Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.</div>
-      <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Dana Kegiatan</option><option>Lainnya</option></select></div>
+      <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Iuran TIK</option><option>Sumbangan</option><option>Dana Kegiatan</option><option>Lainnya</option></select></div>
       <div style="margin-top:10px"><label for="iDesc">Keterangan</label><input id="iDesc" type="text" placeholder="Contoh: Kas minggu ke-1"></div>
       <div class="actions"><button type="button" id="btnIncome" class="primary">+ Simpan pemasukan</button></div>
     </div>
@@ -263,7 +264,7 @@ input[type="number"] { ime-mode: numeric; }
       <h2>Catat pengeluaran</h2>
       <div class="row3">
         <div class="field"><label for="eDate">Tanggal</label><input id="eDate" type="date"></div>
-        <div class="field"><label for="eCat">Kategori</label><select id="eCat"><option>ATK</option><option>Kegiatan</option><option>Konsumsi</option><option>Kebersihan</option><option>Lainnya</option></select></div>
+        <div class="field"><label for="eCat">Kategori</label><select id="eCat"><option>ATK</option><option>Kegiatan</option><option>Konsumsi</option><option>Kebersihan</option><option>Setoran TIK</option><option>Lainnya</option></select></div>
         <div class="field"><label for="eAmount">Nominal</label><input id="eAmount" type="number" inputmode="numeric" min="0" step="1" autocomplete="off" placeholder="25000"></div>
       </div>
       <div style="margin-top:10px"><label for="eDesc">Keterangan</label><input id="eDesc" type="text" placeholder="Contoh: Beli spidol"></div>
@@ -332,6 +333,32 @@ input[type="number"] { ime-mode: numeric; }
         </div>
       </div>
       <div id="monthlyBox" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="tik" class="page">
+    <div class="section">
+      <h2>💻 Rekap Iuran TIK</h2>
+      <div class="notice">Halaman ini khusus untuk <b>Iuran TIK</b> (pemasukan) dan <b>Setoran TIK</b> (pengeluaran).</div>
+      <div id="tikBox" style="margin-top:14px"></div>
+    </div>
+    <div class="section">
+      <h2>📅 Rekap Bulanan TIK (per siswa)</h2>
+      <div class="notice">Periode default: <b>Agustus 2026</b> sampai <b>Juni 2027</b>.</div>
+      <div class="monthly-controls" style="margin-top:12px">
+        <div class="field">
+          <label for="tikMonthlyStart">Mulai bulan</label>
+          <input id="tikMonthlyStart" type="month" value="2026-08">
+        </div>
+        <div class="field">
+          <label for="tikMonthlyEnd">Sampai bulan</label>
+          <input id="tikMonthlyEnd" type="month" value="2027-06">
+        </div>
+        <div class="actions" style="margin-top:0">
+          <button type="button" id="btnTikMonthlyRefresh" class="primary">🔄 Tampilkan Rekap</button>
+        </div>
+      </div>
+      <div id="tikMonthlyBox" style="margin-top:14px"></div>
     </div>
   </section>
 </main>
@@ -510,6 +537,90 @@ if(!localStorage.getItem(EXPENSE_SCREENSHOT_APPLIED_KEY)){
   localStorage.setItem(KEY,JSON.stringify(db));
 }
 
+// Import data Iuran TIK dari spreadsheet (sekali saja).
+// Sumber: https://docs.google.com/spreadsheets/d/11nW4NB5wXcAk2cbD6NuPB-Ze2kp6Ol2cQHzLMMRwbOQ/
+// Catatan: hanya menambahkan transaksi yang belum ada (berdasarkan siswa+bulan+sumber).
+const TIK_SHEET_IMPORT_KEY='SHEET_TIK_AUG2026_MAY2027_V3_APPLIED';
+const TIK_SHEET_BATCH='SHEET_TIK_AUG2026_MAY2027_V3';
+if(!localStorage.getItem(TIK_SHEET_IMPORT_KEY)){
+  const TIK_SHEET_CSV=`Uang TIK ( Komputer ) Kelas 3B Agust 26 - Mei 27,,,,,,,,,,,,
+NO,NAMA SISWA,TOTAL TIK,2026,,,,,2027,,,,
+,,,Agu,Sep,Okt,Nov,Des,Jan,Feb,Mar,Apr,Mei
+,,,,,,,,,,,,
+1,ALFARUQ ZIKRI, 15.000   , 15 Rb ,    ,    ,    ,    ,    ,    ,    ,    ,    
+2,ALIKA NAYYA A, 30.000   , 15 Rb , 15 Rb ,    ,    ,    ,    ,    ,    ,    ,    
+3,ALVAN SHATA A,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+4,ARA TRIA UTOMO,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+5,ATHAR AL FATIH,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+6,AYNINDIRRA PUTRI M,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+7,AZRIL WAZZA P, 30.000   , 15 Rb , 15 Rb ,    ,    ,    ,    ,    ,    ,    ,    
+8,CHERLY MARCELIN,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+9,FADIL AL PATIH, 150.000   , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb 
+10,FAHIR AFDAL,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+11,GALANG ARJITYA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+12,HAFIKA MAKAILA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+13,HISYAM AL FARIZKI, 75.000   , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb ,    ,    ,    ,    ,    
+14,HAIDAR SHAQIL F, 15.000   , 15 Rb ,    ,    ,    ,    ,    ,    ,    ,    ,    
+15,INARA SAKHI A,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+16,KALA NAIRA ZAIDA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+17,KEANU ALTHAF SYABIL, 150.000   , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb 
+18,KIRANA MAHARANI F,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+19,MUHAMMAD ALIF FAREZA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+20,M RASYA RAMADHAN,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+21,M RIZKI RAMADHAN,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+22,NUR AZIZAH AL WAISY,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+23,PRIYA ABDI KURNIAWAN,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+24,RADEYA PUTRI HARIANATA, 150.000   , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb 
+25,RAFFA FEBRIAN PRATAMA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+26,RAFFASYA BYANZA N, 150.000   , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb , 15 Rb 
+27,RAFFASYA FATIH AL FIRDAUS,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+28,SITI AYRA FARZANA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+29,SITI KHALISA NATHIFA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+30,YUMNA FARIHA,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+31,KEEANU ATHALLAH RIO,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+32,KEENAN ARSHAKA RIO,    ,    ,    ,    ,    ,    ,    ,    ,    ,    ,    
+,,,,,,,,,,,,
+TOTAL,, 765.000   ,,,,,,,,,,`;
+
+  const tikMonths=['2026-08','2026-09','2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04','2027-05'];
+  const tikAmount=15000;
+  const normalizeName=(s)=>String(s||'').trim().toUpperCase().replace(/\s+/g,' ');
+
+  const lines=TIK_SHEET_CSV.split(/\r?\n/);
+  lines.forEach((line)=>{
+    const cols=line.split(',');
+    const no=parseInt(String(cols[0]||'').trim(),10);
+    if(!Number.isFinite(no) || no<1) return;
+    const nameRaw=cols[1]||'';
+    const name=normalizeName(nameRaw);
+    const student=db.students.find(st=>normalizeName(st.name)===name);
+    if(!student) return;
+    tikMonths.forEach((ym,idx)=>{
+      const cell=String(cols[3+idx]||'').trim();
+      if(!cell) return;
+      const exists=(db.income||[]).some(x=>
+        String(x.studentId)===String(student.id) &&
+        String(x.month||'')===ym &&
+        String(x.source||'')==='Iuran TIK'
+      );
+      if(exists) return;
+      db.income.push({
+        id:Date.now()+Math.random(),
+        batchId:TIK_SHEET_BATCH,
+        date:`${ym}-01`,
+        studentId:student.id,
+        month:ym,
+        source:'Iuran TIK',
+        amount:tikAmount,
+        desc:''
+      });
+    });
+  });
+
+  localStorage.setItem(TIK_SHEET_IMPORT_KEY,'1');
+  localStorage.setItem(KEY,JSON.stringify(db));
+}
+
 function save(){
   localStorage.setItem(KEY,JSON.stringify(db));
   refresh();
@@ -545,6 +656,7 @@ document.querySelectorAll('.tabs button').forEach(btn=>{
     if(page==='expense') renderExpense();
     if(page==='report') renderReport();
     if(page==='monthly') renderMonthly();
+    if(page==='tik') { renderTIK(); renderMonthlyTIK(); }
     window.scrollTo({top:0,behavior:'smooth'});
   });
 });
@@ -564,6 +676,9 @@ $('btnMonthlyPDF').addEventListener('click',downloadMonthlyPDF);
 $('btnMonthlyWA').addEventListener('click',shareMonthlyWhatsApp);
 $('monthlyStart').addEventListener('change',renderMonthly);
 $('monthlyEnd').addEventListener('change',renderMonthly);
+$('btnTikMonthlyRefresh').addEventListener('click',renderMonthlyTIK);
+$('tikMonthlyStart').addEventListener('change',renderMonthlyTIK);
+$('tikMonthlyEnd').addEventListener('change',renderMonthlyTIK);
 $('iAmount').addEventListener('input',updateIncomePreview);
 $('iMonths').addEventListener('input',updateIncomePreview);
 $('eAmount').addEventListener('input',()=>{});
@@ -1165,9 +1280,122 @@ function downloadMonthlyPDF(){
   showDownloadToast('✅ PDF (1 halaman penuh) berhasil dibuat dan diunduh.');
 }
 
+// =========================
+// Rekap khusus Iuran TIK
+// =========================
+function tikFiltered(){
+  const inc=(db.income||[]).filter(x=>String(x.source||'')==='Iuran TIK');
+  const exp=(db.expense||[]).filter(x=>String(x.cat||x.category||'')==='Setoran TIK');
+  const ti=inc.reduce((s,x)=>s+Number(x.amount||0),0);
+  const te=exp.reduce((s,x)=>s+Number(x.amount||0),0);
+  return {inc,exp,ti,te};
+}
+
+function renderTIK(){
+  const box=$('tikBox');
+  if(!box) return;
+  const {inc,exp,ti,te}=tikFiltered();
+  const saldo=ti-te;
+  const incCount=inc.length;
+  const expCount=exp.length;
+  const expRows=[...exp].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||Number(b.id||0)-Number(a.id||0));
+  box.innerHTML=`
+    <div class="cards">
+      <div class="card"><div class="label">Total iuran TIK</div><div class="amount in">${rupiah(ti)}</div><div class="small">${incCount} transaksi</div></div>
+      <div class="card"><div class="label">Total setoran TIK</div><div class="amount out">${rupiah(te)}</div><div class="small">${expCount} transaksi</div></div>
+      <div class="card"><div class="label">Saldo TIK</div><div class="amount bal">${rupiah(saldo)}</div><div class="small">Iuran - Setoran</div></div>
+      <div class="card"><div class="label">Siswa terdaftar</div><div class="amount">${db.students.length}</div><div class="small">Data aplikasi</div></div>
+    </div>
+    <div style="margin-top:14px">
+      <h3 style="font-size:14px;margin:0 0 8px">Detail pengeluaran Setoran TIK</h3>
+      ${expRows.length
+        ? `<div class="tablewrap"><table><thead><tr><th>No</th><th>Tanggal</th><th>Keterangan</th><th>Nominal</th></tr></thead><tbody>
+            ${expRows.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date||'-')}</td><td>${esc(x.desc||'-')}</td><td class="out">${rupiah(x.amount)}</td></tr>`).join('')}
+            <tr><td colspan="3"><b>TOTAL</b></td><td class="out"><b>${rupiah(te)}</b></td></tr>
+          </tbody></table></div>`
+        : '<div class="empty">Belum ada pengeluaran Setoran TIK.</div>'
+      }
+      <div class="small" style="margin-top:8px">Pemasukan TIK diambil dari transaksi pemasukan dengan sumber <b>Iuran TIK</b>. Pengeluaran TIK diambil dari kategori <b>Setoran TIK</b>.</div>
+    </div>`;
+}
+
+function monthlyMatrixDataIncome(months, incomeFilterFn){
+  const filterFn=typeof incomeFilterFn==='function' ? incomeFilterFn : (()=>true);
+  return db.students.map((student,index)=>{
+    const values=months.map(ym=>db.income
+      .filter(x=>
+        filterFn(x) &&
+        String(x.studentId)===String(student.id) &&
+        String(x.month||x.date||'').slice(0,7)===ym
+      )
+      .reduce((sum,x)=>sum+Number(x.amount||0),0));
+    const total=values.reduce((sum,n)=>sum+n,0);
+    return {student,index,values,total};
+  });
+}
+
+function renderMonthlyTIK(){
+  const box=$('tikMonthlyBox');
+  if(!box) return;
+  const start=$('tikMonthlyStart')?.value||'2026-08';
+  const end=$('tikMonthlyEnd')?.value||'2027-06';
+  if(start>end){
+    box.innerHTML='<div class="notice" style="background:#fff2f2;color:#a22">Bulan mulai tidak boleh lebih besar dari bulan akhir.</div>';
+    return;
+  }
+  const months=buildMonthRange(start,end);
+  const data=monthlyMatrixDataIncome(months, x=>String(x.source||'')==='Iuran TIK');
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const groups=monthlyHeaderGroups(months);
+
+  const yearHeader=groups.map(g=>{
+    const cls=g.year==='2026'?'head-2026':'head-2027';
+    return `<th class="${cls}" colspan="${g.count}">${g.year}</th>`;
+  }).join('');
+  const monthHeader=months.map(ym=>{
+    const cls=ym.slice(0,4)==='2026'?'month-2026':'month-2027';
+    return `<th class="${cls}">${monthLabel(ym)}</th>`;
+  }).join('');
+
+  box.innerHTML=`
+    <div class="small" style="margin-bottom:8px"><b>Periode:</b> ${monthLongLabel(start)} — ${monthLongLabel(end)} • ${months.length} bulan</div>
+    <div class="monthly-table-wrap">
+      <table class="monthly-table" id="tikMonthlyTable">
+        <thead>
+          <tr>
+            <th class="head-blue sticky-no" rowspan="2">NO</th>
+            <th class="head-blue sticky-name" rowspan="2">NAMA SISWA</th>
+            <th class="head-blue" rowspan="2">TOTAL TIK</th>
+            ${yearHeader}
+          </tr>
+          <tr>${monthHeader}</tr>
+        </thead>
+        <tbody>
+          ${data.length ? data.map((x,i)=>`
+            <tr>
+              <td class="no-cell sticky-no">${i+1}</td>
+              <td class="student-name sticky-name">${esc(x.student.name)}</td>
+              <td class="total-cell">${x.total ? kasCellAmount(x.total) : ''}</td>
+              ${x.values.map((v)=>`<td class="${v?'paid-cell':'empty-cell'}">${v?esc(kasCellAmount(v)):''}</td>`).join('')}
+            </tr>`).join('') :
+            `<tr><td colspan="${3+months.length}" class="empty">Belum ada siswa.</td></tr>`}
+          <tr>
+            <td class="grand-total" colspan="2">TOTAL</td>
+            <td class="grand-total">${grandTotal?esc(kasCellAmount(grandTotal)):''}</td>
+            ${months.map((ym,j)=>{
+              const t=data.reduce((s,x)=>s+x.values[j],0);
+              return `<td class="grand-total">${t?esc(kasCellAmount(t)):''}</td>`;
+            }).join('')}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="small" style="margin-top:8px">Angka per bulan diambil dari transaksi pemasukan dengan sumber <b>Iuran TIK</b> pada bulan tersebut.</div>`;
+}
+
 function refresh(){
   populateStudentSelects();
-  renderStudents();renderIncome();renderExpense();renderReport();renderStudentMonth();renderMonthly();
+  renderStudents();renderIncome();renderExpense();renderReport();renderStudentMonth();renderMonthly();renderTIK();renderMonthlyTIK();
 }
 
 function reportText(){
@@ -1308,6 +1536,7 @@ if(restoredPage==='income') renderIncome();
 if(restoredPage==='expense') renderExpense();
 if(restoredPage==='report') renderReport();
 if(restoredPage==='monthly') renderMonthly();
+if(restoredPage==='tik') { renderTIK(); renderMonthlyTIK(); }
 
 const pendingToast=sessionStorage.getItem(PENDING_TOAST_KEY);
 if(pendingToast){
