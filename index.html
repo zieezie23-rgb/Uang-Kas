@@ -168,7 +168,6 @@ tbody tr:hover{background:#F8FAFD}
 </style>
 
 <style>
-/* Mobile-friendly controls: compact but easy to tap/type */
 @media(max-width:699px){
   input,select,textarea{min-height:40px;padding:8px 10px;font-size:14px;}
   .field{min-width:0;}
@@ -182,7 +181,6 @@ tbody tr:hover{background:#F8FAFD}
   .actions button{min-height:40px;padding:9px 12px;}
 }
 
-/* v4: Android-safe inputs and compact custom student picker */
 input, textarea, select, button { -webkit-tap-highlight-color: transparent; }
 input, textarea { pointer-events:auto !important; user-select:text !important; -webkit-user-select:text !important; -webkit-user-modify:read-write !important; position:relative; z-index:50; }
 input[type="number"] { ime-mode: numeric; }
@@ -344,7 +342,6 @@ input[type="number"] { ime-mode: numeric; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-
 function showToast(message){
   const el=document.getElementById('appToast');
   if(!el) return;
@@ -365,7 +362,6 @@ function showDownloadToast(message){
   clearTimeout(window.__downloadToastTimer);
   window.__downloadToastTimer=setTimeout(()=>toast.classList.remove('show'),2600);
 }
-
 
 const KEY='kasKelasV3';
 const LAST_PAGE_KEY='kasKelasLastPageV1';
@@ -398,9 +394,6 @@ function updateBrand(){
   if($('className')) $('className').value=name;
 }
 
-// PEMULIHAN DATA: bila versi sebelumnya terlanjur menyimpan database kosong,
-// aktifkan kembali data awal yang sudah kita miliki. Database yang tidak kosong
-// tidak disentuh sehingga data pengguna tetap aman.
 if(db.students.length===0 && db.income.length===0 && db.expense.length===0 && !localStorage.getItem('RECOVERY_EMPTY_DB_V1')){
   localStorage.removeItem('INITIAL_AUG2026_KAS_V1');
   localStorage.removeItem('INITIAL_EXPENSES_V1');
@@ -415,22 +408,14 @@ DAFTAR_SISWA_AWAL.forEach((name, i) => {
 });
 localStorage.setItem(KEY, JSON.stringify(db));
 
-// DATA PEMASUKAN (DISET SESUAI SCREENSHOT):
-// - Semua pemasukan akan DIGANTI sesuai tabel yang diberikan user
-// - Di-breakdown per bulan @Rp10.000
-// - Mulai dari Agustus 2026
-// Catatan: kita simpan backup pemasukan lama sekali saja, supaya bisa dipulihkan kalau perlu.
 const NEW_INCOME_BATCH='IMAGE_AUG2026_KAS_V3';
 const INCOME_BACKUP_KEY='INCOME_BACKUP_BEFORE_IMAGE_AUG2026_KAS_V3';
 if(!localStorage.getItem('IMAGE_AUG2026_KAS_V3_APPLIED')){
   if(!localStorage.getItem(INCOME_BACKUP_KEY)){
     try{ localStorage.setItem(INCOME_BACKUP_KEY, JSON.stringify(db.income||[])); }catch(e){}
   }
-
-  // Sesuai permintaan: ubah SEMUA data pemasukan menjadi data dari screenshot.
   db.income = [];
-
-  const PAY_DATE='2026-08-20';
+  const PAY_DATE=today();
   const START_MONTH='2026-08';
   const imageIncomeRows=[
     {name:'ALFARUQ ZIKRI', months:1},
@@ -539,11 +524,11 @@ $('btnWA').addEventListener('click',shareWhatsApp);
 $('btnStudentMonth').addEventListener('click',renderStudentMonth);
 $('btnStudentPDF').addEventListener('click',downloadStudentPDF);
 $('btnStudentWA').addEventListener('click',shareStudentWhatsApp);
-  $('btnMonthlyRefresh').addEventListener('click',renderMonthly);
-  $('btnMonthlyPDF').addEventListener('click',downloadMonthlyPDF);
-  $('btnMonthlyWA').addEventListener('click',shareMonthlyWhatsApp);
-  $('monthlyStart').addEventListener('change',renderMonthly);
-  $('monthlyEnd').addEventListener('change',renderMonthly);
+$('btnMonthlyRefresh').addEventListener('click',renderMonthly);
+$('btnMonthlyPDF').addEventListener('click',downloadMonthlyPDF);
+$('btnMonthlyWA').addEventListener('click',shareMonthlyWhatsApp);
+$('monthlyStart').addEventListener('change',renderMonthly);
+$('monthlyEnd').addEventListener('change',renderMonthly);
 $('iAmount').addEventListener('input',updateIncomePreview);
 $('iMonths').addEventListener('input',updateIncomePreview);
 $('eAmount').addEventListener('input',()=>{});
@@ -611,7 +596,6 @@ function addIncome(){
     if(!confirm('Pembayaran lebih dari 1 bulan tetapi siswa belum dipilih. Lanjutkan sebagai kas umum?')) return;
   }
 
-  // One payment record per month, all tied to the same payment batch.
   const batchId=Date.now()+Math.random();
   for(let i=0;i<months;i++){
     const d=new Date(startMonth+'-01T00:00:00');
@@ -819,7 +803,6 @@ function allStudentMonthData(){
   return db.students.map(s=>{
     const payments=db.income.filter(x=>String(x.studentId)===String(s.id));
     const total=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
-    // Satu bulan hanya dihitung satu kali, walaupun ada lebih dari satu transaksi pada bulan yang sama.
     const paidMonths=new Set(
       payments
         .map(x=>String(x.month||x.date||'').slice(0,7))
@@ -877,7 +860,6 @@ function studentMonthText(){
   lines.push('TOTAL SEMUA SISWA: '+rupiah(data.reduce((s,x)=>s+x.total,0)));
   return lines.join('\n');
 }
-
 
 function buildStudentPrint(){
   const data=allStudentMonthData();
@@ -938,7 +920,6 @@ async function shareStudentWhatsApp(){
   }
   location.href='https://wa.me/?text='+encodeURIComponent(text);
 }
-
 
 function monthLabel(ym){
   const d=new Date(ym+'-01T00:00:00');
@@ -1095,11 +1076,9 @@ function downloadMonthlyPDF(){
     const t=data.reduce((s,x)=>s+x.values[j],0); return t?kasCellAmount(t):'';
   })];
 
-  // Lebar kolom dihitung agar seluruh bulan tetap terbaca, apapun panjang periodenya.
   const noW=9,nameW=52,totalW=22,monthW=13.5;
   const widths=[noW,nameW,totalW,...months.map(()=>monthW)];
   const marginLR=8;
-  // Lebar halaman menyesuaikan jumlah kolom (bulan) supaya seluruh tabel selalu muat ke samping.
   const pageWidth=marginLR*2+widths.reduce((a,b)=>a+b,0);
   const titleTop=22;
 
@@ -1133,13 +1112,11 @@ function downloadMonthlyPDF(){
     }
   });
 
-  // Tahap 1: render di kanvas sangat tinggi untuk mengukur tinggi total tabel.
   const scratch=new JSPDF({unit:'mm',format:[pageWidth,2000]});
   scratch.autoTable(tableOptions(scratch));
   const contentHeight=scratch.lastAutoTable.finalY;
   const pageHeight=Math.max(90,contentHeight+10);
 
-  // Tahap 2: buat halaman PDF berukuran pas dengan seluruh isi, sehingga selalu 1 halaman utuh.
   const doc=new JSPDF({unit:'mm',format:[pageWidth,pageHeight]});
   doc.setFontSize(15);
   doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),marginLR,12);
@@ -1176,7 +1153,6 @@ function reportText(){
   return lines.join('\n');
 }
 
-
 function buildReportPrint(){
   const {inc,ti,te}=filtered();
   const sources=sourceSummary(inc);
@@ -1204,9 +1180,6 @@ function downloadPDF(){
   const grandTotal=students.reduce((s,x)=>s+x.total,0);
   const paid=students.filter(x=>x.paidMonths>0).length;
 
-  // =========================
-  // 1. REKAP KAS
-  // =========================
   doc.setFontSize(17);
   doc.text('REKAP KAS - '+getAppName(),14,16);
   doc.setFontSize(9);
@@ -1250,9 +1223,6 @@ function downloadPDF(){
     margin:{left:14,right:14}
   });
 
-  // =========================
-  // 2. REKAP SEMUA SISWA
-  // =========================
   y=doc.lastAutoTable.finalY+12;
   if(y>245){doc.addPage();y=18;}
   doc.setFontSize(15);
@@ -1291,7 +1261,6 @@ function clearAll(){
 updateBrand();
 refresh();
 
-// Pertahankan halaman terakhir setelah reload.
 const savedPage=localStorage.getItem(LAST_PAGE_KEY)||'students';
 document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
 document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
