@@ -88,7 +88,7 @@ th{background:#f7f9fb}
   </nav>
 
   <section id="students" class="page active">
-    <div class="notice" style="margin-top:10px"><b>Data awal:</b> total iuran Rp950.000, total pengeluaran Rp370.000, sehingga saldo awal Rp580.000.</div>
+    <div class="notice" style="margin-top:10px"><b>Data kas tersimpan:</b> data siswa dan transaksi disimpan lokal di HP. Versi ini mempertahankan penyimpanan data sebelumnya.</div>
     <div class="section">
       <h2>Daftar siswa <span id="sCount" class="pill">0</span></h2>
       <input id="sSearch" class="search" type="search" placeholder="Cari nama siswa...">
@@ -103,7 +103,6 @@ th{background:#f7f9fb}
       <div class="actions"><button type="button" id="btnAddStudent" class="primary">+ Tambah siswa</button></div>
     </div>
   </section>
-
 
   <section id="income" class="page">
     <div class="section">
@@ -210,6 +209,15 @@ try{
   if(!db || !Array.isArray(db.students) || !Array.isArray(db.income) || !Array.isArray(db.expense)) throw new Error();
 }catch(e){
   db={students:[],income:[],expense:[]};
+}
+
+// PEMULIHAN DATA: bila versi sebelumnya terlanjur menyimpan database kosong,
+// aktifkan kembali data awal yang sudah kita miliki. Database yang tidak kosong
+// tidak disentuh sehingga data pengguna tetap aman.
+if(db.students.length===0 && db.income.length===0 && db.expense.length===0 && !localStorage.getItem('RECOVERY_EMPTY_DB_V1')){
+  localStorage.removeItem('INITIAL_AUG2026_KAS_V1');
+  localStorage.removeItem('INITIAL_EXPENSES_V1');
+  localStorage.setItem('RECOVERY_EMPTY_DB_V1','1');
 }
 
 const namaSudahAda = new Set(db.students.map(x => String(x.name || '').trim().toUpperCase()));
@@ -771,6 +779,13 @@ async function shareStudentWhatsApp(){
 
 function refresh(){
   populateStudentSelects();
+  const ti=db.income.reduce((s,x)=>s+x.amount,0);
+  const te=db.expense.reduce((s,x)=>s+x.amount,0);
+  $('dIn').textContent=rupiah(ti);
+  $('dOut').textContent=rupiah(te);
+  $('dBal').textContent=rupiah(ti-te);
+  $('dStudents').textContent=db.students.length;
+  $('dashText').textContent=`Ada ${db.income.length} transaksi pemasukan dan ${db.expense.length} transaksi pengeluaran. Saldo saat ini ${rupiah(ti-te)}.`;
   renderStudents();renderIncome();renderExpense();renderReport();
 }
 
@@ -906,6 +921,12 @@ function clearAll(){
 
 updateBrand();
 refresh();
+// Pastikan halaman awal selalu Daftar Siswa.
+document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+const firstStudentsTab=document.querySelector('.tabs button[data-page=\"students\"]');
+if(firstStudentsTab) firstStudentsTab.classList.add('active');
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+if($('students')) $('students').classList.add('active');
 updateIncomePreview();
 renderReport();
 renderStudentMonth();
