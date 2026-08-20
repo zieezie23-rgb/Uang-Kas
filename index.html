@@ -176,7 +176,7 @@ th{background:#f7f9fb}
       <h2>Data aplikasi</h2>
       <div class="actions"><button type="button" id="btnClear" class="danger">Hapus semua data</button></div>
       <div class="small" style="margin-top:8px">Data tersimpan lokal di perangkat ini (offline).</div>
-      <div class="notice">Tip: tombol PDF akan membuka menu Android untuk menyimpan rekap sebagai file PDF.</div>
+      <div class="notice">Tip: tombol PDF akan langsung membuat file PDF berisi Rekap Kas dan Rekap Semua Siswa.</div>
     </div>
   </section>
 </main>
@@ -809,49 +809,63 @@ function downloadPDF(){
   const grandTotal=students.reduce((s,x)=>s+x.total,0);
   const paid=students.filter(x=>x.paidMonths>0).length;
 
-  // Judul PDF
+  // =========================
+  // 1. REKAP KAS
+  // =========================
   doc.setFontSize(17);
-  doc.text('REKAP UANG KAS KELAS',14,16);
+  doc.text('REKAP KAS',14,16);
   doc.setFontSize(9);
-  doc.text('Semua data tersimpan • tanpa rincian pemasukan per transaksi',14,23);
+  doc.text('Semua data • ringkas sesuai tampilan Rekap Kas',14,23);
 
-  // 1. Rekap sumber pemasukan
-  doc.setFontSize(13);
-  doc.text('1. REKAP SUMBER PEMASUKAN',14,34);
+  doc.setFontSize(11);
+  doc.text('Ringkasan kas',14,32);
   doc.autoTable({
-    startY:39,
-    head:[['No','Sumber pemasukan','Transaksi','Total nominal']],
-    body:(sources.length ? sources.map(([source,v],i)=>[i+1,source,v.count+' transaksi',rupiah(v.total)]) : [['-','Belum ada pemasukan','0 transaksi','Rp 0']])
-      .concat([['','','TOTAL PEMASUKAN',rupiah(ti)]]),
-    styles:{fontSize:9,cellPadding:2.5},
+    startY:36,
+    head:[['Total pemasukan','Total pengeluaran','Saldo kas','Siswa terdaftar']],
+    body:[[rupiah(ti),rupiah(te),rupiah(ti-te),String(db.students.length)]],
+    styles:{fontSize:9,cellPadding:3},
     headStyles:{fillColor:[23,105,170]},
     margin:{left:14,right:14}
   });
 
-  // 2. Rekap semua pengeluaran
-  let y=doc.lastAutoTable.finalY+12;
-  if(y>245){doc.addPage();y=18;}
-  doc.setFontSize(13);
-  doc.text('2. REKAP SEMUA PENGELUARAN',14,y);
+  let y=doc.lastAutoTable.finalY+9;
+  doc.setFontSize(12);
+  doc.text('Rekap sumber pemasukan',14,y);
+  doc.autoTable({
+    startY:y+5,
+    head:[['No','Sumber pemasukan','Transaksi','Total nominal']],
+    body:(sources.length ? sources.map(([source,v],i)=>[i+1,source,v.count+' transaksi',rupiah(v.total)]) : [['-','Belum ada pemasukan','0 transaksi','Rp 0']])
+      .concat([['','','TOTAL PEMASUKAN',rupiah(ti)]]),
+    styles:{fontSize:8.5,cellPadding:2.3},
+    headStyles:{fillColor:[23,105,170]},
+    margin:{left:14,right:14}
+  });
+
+  y=doc.lastAutoTable.finalY+9;
+  if(y>245){doc.addPage();y=18;doc.setFontSize(12);doc.text('REKAP KAS (lanjutan)',14,y);y+=7;}
+  doc.setFontSize(12);
+  doc.text('Rekap semua pengeluaran',14,y);
   doc.autoTable({
     startY:y+5,
     head:[['No','Tanggal','Kategori','Keterangan','Nominal']],
     body:(exp.length ? exp.map((x,i)=>[i+1,x.date,x.cat||x.category||'Pengeluaran kas',x.desc||'-',rupiah(x.amount)]) : [['-','-','-','Belum ada pengeluaran','Rp 0']])
       .concat([['','','','TOTAL PENGELUARAN',rupiah(te)]]),
-    styles:{fontSize:8.5,cellPadding:2.2},
+    styles:{fontSize:8.2,cellPadding:2.1},
     headStyles:{fillColor:[23,105,170]},
     margin:{left:14,right:14}
   });
 
-  // 3. Rekap semua siswa
+  // =========================
+  // 2. REKAP SEMUA SISWA
+  // =========================
   y=doc.lastAutoTable.finalY+12;
   if(y>245){doc.addPage();y=18;}
-  doc.setFontSize(13);
-  doc.text('3. REKAP SEMUA SISWA',14,y);
+  doc.setFontSize(15);
+  doc.text('REKAP SEMUA SISWA',14,y);
   doc.setFontSize(9);
-  doc.text(`Jumlah siswa: ${students.length} • Sudah bayar: ${paid} • Belum bayar: ${students.length-paid}`,14,y+6);
+  doc.text(`Jumlah siswa: ${students.length} • Sudah bayar: ${paid} • Belum bayar: ${students.length-paid}`,14,y+7);
   doc.autoTable({
-    startY:y+11,
+    startY:y+12,
     head:[['No','Nama siswa','Sudah bayar','Total nominal']],
     body:students.map((x,i)=>[i+1,x.student.name,x.paidMonths+' bulan',rupiah(x.total)])
       .concat([['','','TOTAL SEMUA SISWA',rupiah(grandTotal)]]),
@@ -860,13 +874,7 @@ function downloadPDF(){
     margin:{left:14,right:14}
   });
 
-  // Ringkasan saldo di halaman terakhir
-  y=doc.lastAutoTable.finalY+10;
-  if(y>270){doc.addPage();y=18;}
-  doc.setFontSize(10);
-  doc.text('Saldo kas: '+rupiah(ti-te),14,y);
-
-  doc.save('Rekap-Uang-Kas-Kelas.pdf');
+  doc.save('Rekap-Kas-dan-Semua-Siswa.pdf');
 }
 
 async function shareWhatsApp(){
