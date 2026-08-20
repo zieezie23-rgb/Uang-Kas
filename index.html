@@ -47,8 +47,15 @@ header{
   position:sticky;top:0;z-index:10;
   box-shadow:0 6px 18px rgba(15,30,50,.18);
 }
+.header-edit-btn{position:absolute;top:18px;right:16px;width:38px;height:38px;border:1.5px solid rgba(255,255,255,.35);border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-size:16px;line-height:1;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;transition:background .15s ease}
+.header-edit-btn:hover,.header-edit-btn:active{background:rgba(255,255,255,.26)}
+.modal-overlay{position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--surface);border-radius:16px;padding:20px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.32)}
+.modal-box h3{margin:0 0 14px;font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--indigo)}
+button.secondary{border:1.5px solid var(--line);background:#fff;color:var(--ink);padding:9px 12px;border-radius:10px;font-weight:700;font-size:13px;min-height:40px;cursor:pointer;touch-action:manipulation}
 .wrap{max-width:900px;margin:auto;padding:0 14px}
-header .wrap{padding:0}
+header .wrap{padding:0;padding-right:48px}
 h1{margin:0;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.2px}
 header p{margin:5px 0 0;opacity:.82;font-size:12.5px;font-weight:500;letter-spacing:.2px}
 h2{font-family:var(--font-display);font-weight:600}
@@ -202,7 +209,25 @@ input[type="number"] { ime-mode: numeric; }
     <h1 id="appTitle">💰 Uang Kas Kelas</h1>
     <p>Daftar siswa • Pemasukan • Pengeluaran • Rekap • PDF • WhatsApp</p>
   </div>
+  <button type="button" id="btnEditClassName" class="header-edit-btn" title="Ubah nama kelas" aria-label="Ubah nama kelas">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+  </button>
 </header>
+
+<div id="classNameModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>⚙️ Ubah Nama Kelas</h3>
+    <div class="field">
+      <label for="className">Nama kelas / nama aplikasi</label>
+      <input id="className" type="text" maxlength="60" placeholder="Contoh: Uang Kas Kelas 3B">
+    </div>
+    <div class="small" style="margin-top:8px">Nama ini akan digunakan di header aplikasi, judul PDF, dan Share WhatsApp.</div>
+    <div class="actions">
+      <button type="button" id="btnSaveClassName" class="primary">💾 Simpan</button>
+      <button type="button" id="btnCancelClassName" class="secondary">Batal</button>
+    </div>
+  </div>
+</div>
 
 <main class="wrap">
   <nav class="tabs" aria-label="Menu aplikasi">
@@ -295,15 +320,6 @@ input[type="number"] { ime-mode: numeric; }
         <button type="button" id="btnStudentWA" class="primary">💬 WhatsApp Rekap Semua</button>
       </div>
       <div id="studentMonthBox" style="margin-top:14px"></div>
-    </div>
-    <div class="section">
-      <h2>⚙️ Pengaturan Nama Kelas</h2>
-      <div class="field">
-        <label for="className">Nama kelas / nama aplikasi</label>
-        <input id="className" type="text" maxlength="60" placeholder="Contoh: Uang Kas Kelas 3B">
-      </div>
-      <div class="actions"><button type="button" id="btnSaveClassName" class="primary">💾 Simpan Nama</button></div>
-      <div class="small" style="margin-top:8px">Nama ini akan digunakan di header aplikasi, judul PDF, dan Share WhatsApp.</div>
     </div>
     <div class="section">
       <h2>Data aplikasi</h2>
@@ -693,7 +709,19 @@ $('studentPickerButton').addEventListener('click',function(e){ e.preventDefault(
 document.addEventListener('click',function(e){ const p=$('studentPicker'); if(p && !p.contains(e.target)) closeStudentPicker(); });
 $('btnClear').addEventListener('click',clearAll);
 $('btnSaveClassName').addEventListener('click',saveClassName);
+$('btnEditClassName').addEventListener('click',openClassNameModal);
+$('btnCancelClassName').addEventListener('click',closeClassNameModal);
+$('classNameModal').addEventListener('click',function(e){ if(e.target===this) closeClassNameModal(); });
 $('sSearch').addEventListener('input',renderStudents);
+
+function openClassNameModal(){
+  $('className').value=getAppName();
+  $('classNameModal').classList.add('show');
+  setTimeout(()=>$('className').focus(),50);
+}
+function closeClassNameModal(){
+  $('classNameModal').classList.remove('show');
+}
 
 function saveClassName(){
   const name=$('className').value.trim();
@@ -703,7 +731,8 @@ function saveClassName(){
   updateBrand();
   renderReport();
   renderStudentMonth();
-  alert('Nama berhasil disimpan: '+name);
+  closeClassNameModal();
+  showToast('✅ Nama kelas berhasil disimpan: '+name);
 }
 
 function addStudent(){
