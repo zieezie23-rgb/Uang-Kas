@@ -120,7 +120,7 @@ th{background:#f7f9fb}
         <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" value="1" placeholder="1"></div>
       </div>
       <div class="notice" id="incomePreview">Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.</div>
-      <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Lainnya</option></select></div>
+      <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Dana Kegiatan</option><option>Lainnya</option></select></div>
       <div style="margin-top:10px"><label for="iDesc">Keterangan</label><input id="iDesc" type="text" placeholder="Contoh: Kas minggu ke-1"></div>
       <div class="actions"><button type="button" id="btnIncome" class="primary">+ Simpan pemasukan</button></div>
     </div>
@@ -588,8 +588,21 @@ function filtered(){
   return {inc,exp,ti:inc.reduce((s,x)=>s+Number(x.amount||0),0),te:exp.reduce((s,x)=>s+Number(x.amount||0),0)};
 }
 
+function sourceSummary(inc){
+  const map={};
+  inc.forEach(x=>{
+    const source=(x.source||'Lainnya').trim()||'Lainnya';
+    if(!map[source]) map[source]={total:0,count:0};
+    map[source].total+=Number(x.amount||0);
+    map[source].count++;
+  });
+  return Object.entries(map).sort((a,b)=>b[1].total-a[1].total || a[0].localeCompare(b[0],'id'));
+}
+
 function renderReport(){
   const {inc,exp,ti,te}=filtered();
+  const sources=sourceSummary(inc);
+  const sourceRows=sources.map(([source,v],i)=>`<tr><td>${i+1}</td><td><b>${esc(source)}</b></td><td>${v.count} transaksi</td><td class="in"><b>${rupiah(v.total)}</b></td></tr>`).join('');
   $('reportBox').innerHTML=
   `<div class="cards">
     <div class="card"><div class="label">Total pemasukan</div><div class="amount in">${rupiah(ti)}</div></div>
@@ -597,7 +610,9 @@ function renderReport(){
     <div class="card"><div class="label">Saldo kas</div><div class="amount bal">${rupiah(ti-te)}</div></div>
     <div class="card"><div class="label">Siswa terdaftar</div><div class="amount">${db.students.length}</div></div>
   </div>
-  <div style="margin-top:14px"><h3 style="font-size:14px">Detail semua pemasukan</h3>
+  <div style="margin-top:14px"><h3 style="font-size:14px">Rekap sumber pemasukan</h3>
+  ${sources.length?`<div class="tablewrap"><table><tr><th>No</th><th>Sumber pemasukan</th><th>Transaksi</th><th>Total nominal</th></tr>${sourceRows}<tr><td colspan="3"><b>TOTAL PEMASUKAN</b></td><td class="in"><b>${rupiah(ti)}</b></td></tr></table></div>`:'<div class="empty">Tidak ada pemasukan.</div>'}
+  <h3 style="font-size:14px;margin-top:14px">Detail semua pemasukan</h3>
   ${inc.length?'<div class="tablewrap"><table><tr><th>No</th><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th></tr>'+inc.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source||'-')}</td><td>${esc(x.desc||'-')}</td><td class="in">${rupiah(x.amount)}</td></tr>`).join('')+'</table></div>':'<div class="empty">Tidak ada pemasukan.</div>'}
   <h3 style="font-size:14px;margin-top:14px">Detail semua pengeluaran</h3>
   ${exp.length?'<div class="tablewrap"><table><tr><th>No</th><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc||'-')}</td><td class="out">${rupiah(x.amount)}</td></tr>`).join('')+'</table></div>':'<div class="empty">Tidak ada pengeluaran.</div>'}</div>`;
@@ -785,8 +800,10 @@ function reportText(){
     `TOTAL PENGELUARAN: ${rupiah(te)}`,
     `SALDO KAS: ${rupiah(ti-te)}`,
     '',
-    'PEMASUKAN'
+    'REKAP SUMBER PEMASUKAN'
   ];
+  sourceSummary(inc).forEach(([source,v],i)=>lines.push(`${i+1}. ${source} | ${v.count} transaksi | ${rupiah(v.total)}`));
+  lines.push(`TOTAL PEMASUKAN | ${rupiah(ti)}`,'','PEMASUKAN');
   inc.forEach((x,i)=>lines.push(`${i+1}. ${x.date} | Bulan ${x.month||String(x.date).slice(0,7)} | ${db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-'} | ${x.source||'-'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
   lines.push('','PENGELUARAN');
   exp.forEach((x,i)=>lines.push(`${i+1}. ${x.date} | ${x.cat||x.category||'Pengeluaran kas'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
