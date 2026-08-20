@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1769aa">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Uang Kas Kelas</title>
+<title id="docTitle">Uang Kas Kelas</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;min-height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f4f7fb;color:#17212b}
@@ -74,7 +74,7 @@ th{background:#f7f9fb}
 <body>
 <header>
   <div class="wrap">
-    <h1>💰 Uang Kas Kelas</h1>
+    <h1 id="appTitle">💰 Uang Kas Kelas</h1>
     <p>Daftar siswa • Pemasukan • Pengeluaran • Rekap • PDF • WhatsApp</p>
   </div>
 </header>
@@ -173,6 +173,15 @@ th{background:#f7f9fb}
       <div id="studentMonthBox" style="margin-top:14px"></div>
     </div>
     <div class="section">
+      <h2>⚙️ Pengaturan Nama Kelas</h2>
+      <div class="field">
+        <label for="className">Nama kelas / nama aplikasi</label>
+        <input id="className" type="text" maxlength="60" placeholder="Contoh: Uang Kas Kelas 3B">
+      </div>
+      <div class="actions"><button type="button" id="btnSaveClassName" class="primary">💾 Simpan Nama</button></div>
+      <div class="small" style="margin-top:8px">Nama ini akan digunakan di header aplikasi, judul PDF, dan Share WhatsApp.</div>
+    </div>
+    <div class="section">
       <h2>Data aplikasi</h2>
       <div class="actions"><button type="button" id="btnClear" class="danger">Hapus semua data</button></div>
       <div class="small" style="margin-top:8px">Data tersimpan lokal di perangkat ini (offline).</div>
@@ -182,7 +191,7 @@ th{background:#f7f9fb}
 </main>
 <div id="printArea" style="display:none"></div>
 
-<div class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
+<div id="appFooter" class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -195,6 +204,16 @@ const $=id=>document.getElementById(id);
 const today=()=>new Date().toISOString().slice(0,10);
 const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n)||0);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+
+if(typeof db.appName!=='string' || !db.appName.trim()) db.appName='Uang Kas Kelas';
+function getAppName(){ return (db.appName||'Uang Kas Kelas').trim() || 'Uang Kas Kelas'; }
+function updateBrand(){
+  const name=getAppName();
+  $('appTitle').textContent='💰 '+name;
+  $('docTitle').textContent=name;
+  $('appFooter').textContent=name+' • Data tersimpan lokal di HP • v3';
+  if($('className')) $('className').value=name;
+}
 
 const DAFTAR_SISWA_AWAL=["ALFARUQ ZIKRI", "ALIKA NAYYA A", "ALVAN SHATA A", "ARA TRIA UTOMO", "ATHAR AL FATIH", "AYNINDIRRA PUTRI M", "AZRIL WAZZA P", "CHERLY MARCELIN", "FADIL AL PATIH", "FAHIR AFDAL", "GALANG ARJITYA", "HAFIKA MAKAILA", "HISYAM AL FARIZKI", "HAIDAR SHAQIL F", "INARA SAKHI A", "KALA NAIRA ZAIDA", "KEANU ALTHAF SYABIL", "KIRANA MAHARANI F", "MUHAMMAD ALIF FAREZA", "M RASYA RAMADHAN", "M RIZKI RAMADHAN", "NUR AZIZAH AL WAISY", "PRIYA ABDI KURNIAWAN", "RADEYA PUTRI HARIANATA", "RAFFA FEBRIAN PRATAMA", "RAFFASYA BYANZA N", "RAFFASYA FATIH AL FIRDAUS", "SITI AYRA FARZANA", "SITI KHALISA NATHIFA", "YUMNA FARIHA", "KEEANU ATHALLAH RIO", "KEENAN ARSHAKA RIO"];
 let db;
@@ -476,7 +495,19 @@ $('iMonths').addEventListener('input',updateIncomePreview);
 $('iMonthStart').addEventListener('change',updateIncomePreview);
 $('iStudent').addEventListener('change',updateIncomePreview);
 $('btnClear').addEventListener('click',clearAll);
+$('btnSaveClassName').addEventListener('click',saveClassName);
 $('sSearch').addEventListener('input',renderStudents);
+
+function saveClassName(){
+  const name=$('className').value.trim();
+  if(!name){ alert('Nama kelas tidak boleh kosong.'); $('className').focus(); return; }
+  db.appName=name;
+  localStorage.setItem(KEY,JSON.stringify(db));
+  updateBrand();
+  renderReport();
+  renderStudentMonth();
+  alert('Nama berhasil disimpan: '+name);
+}
 
 function addStudent(){
   const n=$('sName').value.trim();
@@ -696,7 +727,7 @@ function buildStudentPrint(){
   const grandTotal=data.reduce((s,x)=>s+x.total,0);
   const paid=data.filter(x=>x.paidMonths>0).length;
   return `
-    <h1>Rekap Uang Kas — Semua Siswa</h1>
+    <h1>Rekap Semua Siswa — ${esc(getAppName())}</h1>
     <div class="print-meta">Diurutkan dari siswa yang sudah membayar paling banyak.</div>
     <div class="print-cards">
       <div class="print-card"><div class="print-label">Total seluruh iuran</div><div class="print-value in">${rupiah(grandTotal)}</div></div>
@@ -731,7 +762,7 @@ function downloadStudentPDF(){
   const data=allStudentMonthData();
   const grandTotal=data.reduce((s,x)=>s+x.total,0);
   const paid=data.filter(x=>x.paidMonths>0).length;
-  doc.setFontSize(16); doc.text('Rekap Uang Kas - Semua Siswa',14,16);
+  doc.setFontSize(16); doc.text('Rekap Semua Siswa - '+getAppName(),14,16);
   doc.setFontSize(9); doc.text('Diurutkan dari siswa yang sudah membayar paling banyak.',14,23);
   doc.setFontSize(11);
   doc.text('Total seluruh iuran: '+rupiah(grandTotal),14,32);
@@ -745,7 +776,7 @@ function downloadStudentPDF(){
 async function shareStudentWhatsApp(){
   const text=studentMonthText();
   if(navigator.share){
-    try{await navigator.share({title:'Rekap Kas Per Siswa',text});return;}catch(e){}
+    try{await navigator.share({title:'Rekap Semua Siswa - '+getAppName(),text});return;}catch(e){}
   }
   location.href='https://wa.me/?text='+encodeURIComponent(text);
 }
@@ -765,7 +796,7 @@ function refresh(){
 function reportText(){
   const {inc,exp,ti,te}=filtered();
   const lines=[
-    'REKAP UANG KAS KELAS',
+    'REKAP '+getAppName().toUpperCase(),
     'SEMUA DATA',
     '',
     `Jumlah siswa: ${db.students.length}`,
@@ -786,7 +817,7 @@ function buildReportPrint(){
   const {inc,ti,te}=filtered();
   const sources=sourceSummary(inc);
   return `
-    <h1>Rekap Uang Kas Kelas</h1>
+    <h1>Rekap Kas — ${esc(getAppName())}</h1>
     <div class="print-meta">Semua data • tanpa rincian transaksi.</div>
     <div class="print-cards">
       <div class="print-card"><div class="print-label">Total pemasukan</div><div class="print-value in">${rupiah(ti)}</div></div>
@@ -813,7 +844,7 @@ function downloadPDF(){
   // 1. REKAP KAS
   // =========================
   doc.setFontSize(17);
-  doc.text('REKAP KAS',14,16);
+  doc.text('REKAP KAS - '+getAppName(),14,16);
   doc.setFontSize(9);
   doc.text('Semua data • ringkas sesuai tampilan Rekap Kas',14,23);
 
@@ -880,18 +911,19 @@ function downloadPDF(){
 async function shareWhatsApp(){
   const text=reportText();
   if(navigator.share){
-    try{await navigator.share({title:'Rekap Uang Kas Kelas',text});return;}catch(e){}
+    try{await navigator.share({title:'Rekap '+getAppName(),text});return;}catch(e){}
   }
   location.href='https://wa.me/?text='+encodeURIComponent(text);
 }
 
 function clearAll(){
   if(confirm('Semua data siswa dan transaksi akan dihapus. Lanjutkan?')){
-    db={students:[],income:[],expense:[]};
+    db={students:[],income:[],expense:[],appName:getAppName()};
     save();
   }
 }
 
+updateBrand();
 refresh();
 updateIncomePreview();
 renderReport();
