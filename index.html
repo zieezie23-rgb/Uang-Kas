@@ -604,13 +604,15 @@ function renderReport(){
 }
 
 function allStudentMonthData(){
-  return db.students.map(s=>{
-    const total=db.income
-      .filter(x=>String(x.studentId)===String(s.id))
-      .reduce((sum,x)=>sum+Number(x.amount||0),0);
-    const transactions=db.income.filter(x=>String(x.studentId)===String(s.id)).length;
-    return {student:s,total,transactions};
+  const data=db.students.map(s=>{
+    const payments=db.income.filter(x=>String(x.studentId)===String(s.id));
+    const total=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
+    // Hitung bulan yang sudah dibayar berdasarkan bulan kas.
+    // Jika ada lebih dari satu transaksi pada bulan yang sama, tetap dihitung 1 bulan.
+    const paidMonths=new Set(payments.map(x=>String(x.month||x.date||"").slice(0,7)).filter(Boolean));
+    return {student:s,total,paidMonths:paidMonths.size,transactions:payments.length};
   });
+  return data.sort((a,b)=>b.paidMonths-a.paidMonths || b.total-a.total || a.student.name.localeCompare(b.student.name));
 }
 
 function renderStudentMonth(){
@@ -620,41 +622,42 @@ function renderStudentMonth(){
     <div class="cards">
       <div class="card"><div class="label">Total seluruh iuran</div><div class="amount in">${rupiah(grandTotal)}</div></div>
       <div class="card"><div class="label">Jumlah siswa</div><div class="amount">${data.length}</div></div>
-      <div class="card"><div class="label">Siswa sudah bayar</div><div class="amount">${data.filter(x=>x.total>0).length}</div></div>
-      <div class="card"><div class="label">Siswa belum bayar</div><div class="amount">${data.filter(x=>x.total<=0).length}</div></div>
+      <div class="card"><div class="label">Siswa sudah bayar</div><div class="amount">${data.filter(x=>x.paidMonths>0).length}</div></div>
+      <div class="card"><div class="label">Siswa belum bayar</div><div class="amount">${data.filter(x=>x.paidMonths<=0).length}</div></div>
     </div>
     <div class="tablewrap" style="margin-top:12px">
-      <table id="studentMonthTable" style="min-width:620px">
-        <thead><tr><th>No</th><th>Nama siswa</th><th>Jumlah transaksi</th><th>Total iuran</th><th>Status</th></tr></thead>
+      <table id="studentMonthTable" style="min-width:560px">
+        <thead><tr><th>No</th><th>Nama siswa</th><th>Sudah bayar</th><th>Total nominal</th></tr></thead>
         <tbody>
           ${data.length ? data.map((x,i)=>`<tr>
             <td>${i+1}</td>
             <td><b>${esc(x.student.name)}</b></td>
-            <td>${x.transactions} transaksi</td>
+            <td>${x.paidMonths} bulan</td>
             <td class="in"><b>${rupiah(x.total)}</b></td>
-            <td>${x.total>0?'✅ Sudah bayar':'❌ Belum bayar'}</td>
-          </tr>`).join('') : '<tr><td colspan="5" class="empty">Belum ada siswa.</td></tr>'}
-          <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td><td></td></tr>
+          </tr>`).join('') : '<tr><td colspan="4" class="empty">Belum ada siswa.</td></tr>'}
+          <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td></tr>
         </tbody>
       </table>
     </div>
-    <div class="small" style="margin-top:8px">Semua transaksi iuran siswa dihitung ke total masing-masing siswa, tanpa pembagian berdasarkan bulan.</div>`;
+    <div class="small" style="margin-top:8px">Urutan berdasarkan jumlah bulan yang sudah dibayar terbanyak. Jika sama, diurutkan berdasarkan total nominal terbesar. Tidak ada rincian per bulan.</div>`;
 }
 
 function studentMonthText(){
   const data=allStudentMonthData();
   const lines=[
     'REKAP UANG KAS SEMUA SISWA',
+    'Urutan: jumlah bulan dibayar terbanyak',
     '',
-    'No | Nama siswa | Jumlah transaksi | Total iuran | Status'
+    'No | Nama siswa | Sudah bayar | Total nominal'
   ];
   data.forEach((x,i)=>{
-    lines.push(`${i+1}. ${x.student.name} | ${x.transactions} transaksi | ${rupiah(x.total)} | ${x.total>0?'Sudah bayar':'Belum bayar'}`);
+    lines.push(`${i+1}. ${x.student.name} | ${x.paidMonths} bulan | ${rupiah(x.total)}`);
   });
   lines.push('');
   lines.push('TOTAL SEMUA SISWA: '+rupiah(data.reduce((s,x)=>s+x.total,0)));
   return lines.join('\n');
 }
+
 
 function downloadStudentPDF(){
   renderStudentMonth();
