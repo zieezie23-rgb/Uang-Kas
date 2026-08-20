@@ -95,10 +95,12 @@ th{background:#f7f9fb}
  @page{size:auto;margin:12mm}
 }
 </style>
+
 <style>
 #downloadToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1f2937;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:99999;max-width:90%;text-align:center}
 #downloadToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-</style></head>
+</style>
+</head>
 <body><div id="downloadToast" role="status" aria-live="polite"></div>
 <header>
   <div class="wrap">
@@ -237,9 +239,10 @@ th{background:#f7f9fb}
 <script>
 (function(){
 'use strict';
+
 function showDownloadToast(message){
   const toast=document.getElementById('downloadToast');
-  if(!toast)return;
+  if(!toast) return;
   toast.textContent=message;
   toast.classList.add('show');
   clearTimeout(window.__downloadToastTimer);
@@ -534,8 +537,10 @@ document.querySelectorAll('.tabs button').forEach(btn=>{
     document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
     btn.classList.add('active');
     $(btn.dataset.page).classList.add('active');
+    if(btn.dataset.page==='income') renderIncome();
+    if(btn.dataset.page==='expense') renderExpense();
     if(btn.dataset.page==='report') renderReport();
-     if(btn.dataset.page==='monthly') renderMonthly();
+    if(btn.dataset.page==='monthly') renderMonthly();
     window.scrollTo({top:0,behavior:'smooth'});
   });
 });
@@ -979,119 +984,56 @@ async function shareMonthlyWhatsApp(){
 function downloadMonthlyPDF(){
   const JSPDF=window.jspdf&&window.jspdf.jsPDF;
   if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
-
   const start=$('monthlyStart').value||'2026-08';
   const end=$('monthlyEnd').value||'2027-06';
   const months=buildMonthRange(start,end);
-  if(!months.length || start>end){ alert('Periode bulan tidak valid.'); return; }
-
+  if(!months.length || start>end){alert('Periode bulan tidak valid.');return;}
   const data=monthlyMatrixData(months);
   const groups=monthlyHeaderGroups(months);
   const doc=new JSPDF({unit:'mm',format:'a4',orientation:'landscape'});
-
-  const body=data.map((x,i)=>[
-    String(i+1),
-    x.student.name,
-    x.total ? kasCellAmount(x.total) : '',
-    ...x.values.map(v=>v ? kasCellAmount(v) : '')
-  ]);
-
-  // Baris total seluruh siswa + total masing-masing bulan.
-  const totals=[
-    '',
-    'TOTAL',
-    data.reduce((s,x)=>s+x.total,0) ? kasCellAmount(data.reduce((s,x)=>s+x.total,0)) : '',
-    ...months.map((ym,j)=>{
-      const t=data.reduce((s,x)=>s+x.values[j],0);
-      return t ? kasCellAmount(t) : '';
-    })
-  ];
-
-  // Header dua tingkat dengan penggabungan tahun seperti spreadsheet:
-  // 2026 menaungi Agu-Des, 2027 menaungi Jan-Jun.
-  const head1=[
-    {content:'NO',rowSpan:2},
-    {content:'NAMA SISWA',rowSpan:2},
-    {content:'TOTAL KAS',rowSpan:2}
-  ];
-  groups.forEach(g=>head1.push({content:g.year,colSpan:g.count}));
-
-  const head2=months.map(ym=>({content:monthLabel(ym)}));
-
-  const widths=[8,54,18,...months.map(()=>15.2)];
   const pageWidth=doc.internal.pageSize.getWidth();
-  const usableWidth=pageWidth-16;
-  const rawTotal=widths.reduce((a,b)=>a+b,0);
-  const scale=Math.min(1,usableWidth/rawTotal);
-  const scaledWidths=widths.map(w=>w*scale);
+  doc.setFontSize(15);
+  doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),10,12);
+  doc.setFontSize(8.5);
+  doc.text(`Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)}`,10,18);
 
-  // Dipadatkan agar seluruh 32 siswa + header + total muat dalam 1 halaman A4 landscape.
-  doc.setFontSize(10);
-  doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),4,6.5);
-  doc.setFontSize(5.5);
-  doc.text(`Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)} | ${months.length} bulan | ${data.length} siswa`,4,10);
+  const head1=['NO','NAMA SISWA','TOTAL KAS',...groups.map(g=>g.year)];
+  const head2=['','','',...months.map(monthLabel)];
+  const body=data.map((x,i)=>[
+    i+1,x.student.name,rupiah(x.total),...x.values.map(v=>v?kasCellAmount(v):'')
+  ]);
+  const totals=['','TOTAL',rupiah(data.reduce((s,x)=>s+x.total,0)),...months.map((ym,j)=>{
+    const t=data.reduce((s,x)=>s+x.values[j],0); return t?kasCellAmount(t):'';
+  })];
 
+  const widths=[10,55,22,...months.map(()=>16)];
   doc.autoTable({
-    startY:12,
+    startY:22,
     head:[head1,head2],
     body:body.concat([totals]),
-    margin:{left:4,right:4,top:12,bottom:4},
-    tableWidth:pageWidth-8,
-    theme:'grid',
-    styles:{
-      fontSize:5.5,
-      cellPadding:{top:0.45,right:0.45,bottom:0.45,left:0.45},
-      halign:'center',
-      valign:'middle',
-      lineWidth:0.18,
-      overflow:'hidden',
-      minCellHeight:4.55
-    },
-    headStyles:{
-      fillColor:[31,78,120],
-      textColor:255,
-      fontStyle:'bold',
-      halign:'center',
-      valign:'middle'
-    },
-    columnStyles:Object.fromEntries(scaledWidths.map((w,i)=>[i,{cellWidth:w}])),
+    styles:{fontSize:7.2,cellPadding:1.5,halign:'center',valign:'middle'},
+    headStyles:{fillColor:[31,78,120],textColor:255,fontStyle:'bold',halign:'center'},
+    columnStyles:Object.fromEntries(widths.map((w,i)=>[i,{cellWidth:w}])),
+    margin:{left:8,right:8},
     didParseCell:function(d){
-      if(d.section==='head'){
-        if(d.row.index===0 && d.column.index>=3){
-          const year=d.cell.raw && d.cell.raw.content ? d.cell.raw.content : d.cell.raw;
-          d.cell.styles.fillColor=String(year)==='2026'?[107,47,8]:[79,125,43];
-          d.cell.styles.fontSize=8;
-        } else if(d.row.index===1 && d.column.index>=3){
-          const ym=months[d.column.index-3]||'';
-          d.cell.styles.fillColor=ym.startsWith('2026')?[91,29,21]:[61,103,32];
-          d.cell.styles.fontSize=5.3;
-        }
+      if(d.section==='head' && d.row.index===0 && d.column.index>=3){
+        d.cell.styles.fillColor=d.cell.raw==='2026'?[107,47,8]:[79,125,43];
       }
-      if(d.section==='body'){
-        const totalRow=data.length;
-        if(d.row.index===totalRow){
-          d.cell.styles.fillColor=[31,78,120];
-          d.cell.styles.textColor=255;
-          d.cell.styles.fontStyle='bold';
-        } else if(d.column.index===1){
-          d.cell.styles.halign='left';
-        } else if(d.column.index>=3){
-          // Nominal yang sudah dibayar diberi kuning tipis agar mudah dibaca.
-          const raw=d.cell.raw;
-          if(raw!=='' && raw!==null && raw!==undefined){
-            d.cell.styles.fillColor=[255,248,190];
-            d.cell.styles.textColor=[25,25,25];
-          }
-        }
+      if(d.section==='head' && d.row.index===1 && d.column.index>=3){
+        d.cell.styles.fillColor=[91,29,21];
       }
-    },
-    didDrawPage:function(d){
-      doc.setFontSize(4.5);
-      doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),4,doc.internal.pageSize.getHeight()-2.5);
-      doc.text('Halaman '+doc.internal.getNumberOfPages(),pageWidth-18,doc.internal.pageSize.getHeight()-2.5);
+      if(d.section==='body' && d.row.index===data.length){
+        d.cell.styles.fillColor=[31,78,120]; d.cell.styles.textColor=255; d.cell.styles.fontStyle='bold';
+      }
+      if(d.section==='body' && d.row.index<data.length && d.column.index===1){
+        d.cell.styles.halign='left';
+      }
+      if(d.section==='body' && d.row.index<data.length && d.column.index>=3 && d.cell.raw!==''){
+        d.cell.styles.fillColor=[255,248,210];
+        d.cell.styles.textColor=[40,40,40];
+      }
     }
   });
-
   doc.save('Rekap-Kas-Per-Siswa-Per-Bulan.pdf');
   showDownloadToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
 }
