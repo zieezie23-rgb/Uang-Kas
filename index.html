@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16324F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title id="docTitle">Uang Kas Kelas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#182338;
+  --muted:#66738A;
+  --paper:#F3F6FB;
+  --surface:#FFFFFF;
+  --line:#E2E8F1;
+  --indigo:#16324F;
+  --indigo-2:#1F4C78;
+  --indigo-soft:#E8EFF7;
+  --teal:#0E8F7E;
+  --teal-soft:#E3F5F1;
+  --coral:#D14B43;
+  --coral-soft:#FBE9E7;
+  --amber:#C98A2B;
+  --amber-soft:#FBF0DD;
+  --radius:16px;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --font-num:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%;font-family:var(--font-body);background:var(--paper);color:var(--ink)}
+body{
+  padding-bottom:28px;
+  background-image:
+    radial-gradient(circle at 0% 0%, #EAF2FA 0%, transparent 45%),
+    repeating-linear-gradient(180deg, transparent, transparent 34px, #E7EDF6 35px);
+  background-attachment:local, local;
+}
+header{
+  background:linear-gradient(135deg,var(--indigo) 0%,var(--indigo-2) 100%);
+  color:#fff;
+  padding:20px 16px 16px;
+  position:sticky;top:0;z-index:10;
+  box-shadow:0 6px 18px rgba(15,30,50,.18);
+}
+.wrap{max-width:900px;margin:auto;padding:0 14px}
+header .wrap{padding:0}
+h1{margin:0;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.2px}
+header p{margin:5px 0 0;opacity:.82;font-size:12.5px;font-weight:500;letter-spacing:.2px}
+h2{font-family:var(--font-display);font-weight:600}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:12px 0;margin:0;position:sticky;top:82px;background:var(--paper);z-index:8;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-radius:11px;padding:10px 14px;background:transparent;color:var(--muted);font-weight:700;font-size:13.5px;white-space:nowrap;min-height:44px;cursor:pointer;touch-action:manipulation;transition:background .15s ease,color .15s ease}
+.tabs button:hover{background:var(--indigo-soft);color:var(--indigo)}
+.tabs button.active{background:var(--indigo);color:#fff;box-shadow:0 4px 10px rgba(22,50,79,.25)}
+.page{display:none}.page.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.card,.section{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:0 1px 2px rgba(20,35,60,.04),0 8px 20px rgba(20,35,60,.05);border:1px solid var(--line)}
+.card{border-left:4px solid var(--indigo);padding-left:14px}
+.section{margin-bottom:14px}
+.section h2{font-size:17px;margin:0 0 12px;color:var(--indigo);display:flex;align-items:center;gap:8px}
+.label,label{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.amount{font-family:var(--font-num);font-size:20px;font-weight:700;margin-top:5px;letter-spacing:-.3px}
+.in{color:var(--teal)}.out{color:var(--coral)}.bal{color:var(--indigo-2)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.field{min-width:0}
+.field label{display:block;margin-bottom:6px}
+input,select,textarea{display:block;width:100%;min-height:40px;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;font:inherit;font-size:14px;background:#fbfcfe;color:var(--ink);outline:none;cursor:text;pointer-events:auto;position:relative;z-index:1;-webkit-user-select:text;user-select:text;transition:border-color .15s ease,box-shadow .15s ease,background .15s ease} select{cursor:pointer;min-height:40px}
+select{cursor:pointer}
+input:focus,select:focus,textarea:focus{border-color:var(--indigo-2);box-shadow:0 0 0 3px rgba(31,76,120,.15);background:#fff}
+button{font:inherit}
+button.primary{border:0;background:var(--indigo);background:linear-gradient(135deg,var(--indigo-2),var(--indigo));color:#fff;padding:12px 16px;border-radius:11px;font-weight:700;font-size:13.5px;min-height:46px;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 12px rgba(22,50,79,.22);transition:transform .12s ease,box-shadow .12s ease}
+button.primary:active{transform:translateY(1px);box-shadow:0 2px 6px rgba(22,50,79,.22)}
+button.danger{border:1.5px solid #F0C9C6;background:var(--coral-soft);color:var(--coral);padding:9px 12px;border-radius:10px;font-weight:700;font-size:13px;min-height:40px;cursor:pointer;touch-action:manipulation}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tablewrap{overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{background:var(--indigo-soft);color:var(--indigo);font-size:11px;text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+tbody tr:hover{background:#F8FAFD}
+.empty{text-align:center;color:var(--muted);padding:22px;font-size:13.5px}
+.small{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;padding:4px 10px;border-radius:99px;background:var(--amber-soft);color:var(--amber);font-size:11px;font-weight:800;letter-spacing:.3px}
+.footer{text-align:center;color:var(--muted);font-size:11.5px;padding:22px 18px 6px;letter-spacing:.2px}
+.notice{background:var(--teal-soft);color:#0B6D5F;padding:11px 13px;border-radius:11px;font-size:13px;margin-top:10px;border:1px solid #CBEBE4}
+.search{margin-bottom:10px}
+@media(max-width:699px){
+ .row,.row3{grid-template-columns:1fr}
+ .tabs{top:80px}
+ .cards{grid-template-columns:1fr 1fr}
+}
+@media(min-width:700px){.cards{grid-template-columns:repeat(4,1fr)}}
+.monthly-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.monthly-controls .field{flex:1 1 180px}
+.monthly-table-wrap{overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:12px}
+.monthly-table{border-collapse:separate;border-spacing:0;min-width:980px;width:max-content;font-size:12px;background:var(--surface);font-family:var(--font-num)}
+.monthly-table th,.monthly-table td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 9px;text-align:center;white-space:nowrap;height:34px}
+.monthly-table thead th{color:#fff;font-weight:700;font-family:var(--font-body)}
+.monthly-table .head-blue{background:var(--indigo)}
+.monthly-table .head-2026{background:#8A5A22}
+.monthly-table .head-2027{background:#3F7A57}
+.monthly-table .month-2026{background:var(--indigo-2);color:#fff;font-family:var(--font-body);font-weight:600}
+.monthly-table .month-2027{background:var(--indigo-2);color:#fff;font-family:var(--font-body);font-weight:600}
+.monthly-table td{background:#fff;color:var(--ink)}
+.monthly-table .paid-cell{background:var(--teal-soft);color:#0B6D5F;font-weight:700}
+.monthly-table .empty-cell{background:#fff;color:transparent}
+.monthly-table .total-cell{background:var(--amber-soft);color:#8A5A22;font-weight:800}
+.monthly-table .student-name{min-width:255px;text-align:left;background:#fff;color:var(--ink);font-weight:700;font-family:var(--font-body)}
+.monthly-table .no-cell{min-width:48px;background:#fff;color:var(--muted);font-weight:700;font-family:var(--font-body)}
+.monthly-table .grand-total{background:var(--indigo-soft);color:var(--indigo);font-weight:800}
+.monthly-table .sticky-no{position:sticky;left:0;z-index:4}
+.monthly-table .sticky-name{position:sticky;left:48px;z-index:4}
+.monthly-table thead .sticky-no,.monthly-table thead .sticky-name{z-index:6}
+@media(max-width:699px){
+  .monthly-table{min-width:980px;font-size:11px}
+  .monthly-table .student-name{min-width:220px}
+}
+
+@media print{
+ body>*:not(#printArea){display:none!important}
+ #printArea{display:block!important;background:#fff;color:#17212b;padding:18px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+ #printArea h1{font-size:20px;margin:0 0 4px}
+ #printArea h2{font-size:16px;margin:16px 0 8px}
+ #printArea .print-meta{font-size:11px;color:#68737d;margin-bottom:12px}
+ #printArea .print-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+ #printArea .print-card{border:1px solid #ddd;border-radius:8px;padding:9px}
+ #printArea .print-label{font-size:10px;color:#68737d}
+ #printArea .print-value{font-size:16px;font-weight:800;margin-top:3px}
+ #printArea table{width:100%;border-collapse:collapse;font-size:11px}
+ #printArea th,#printArea td{padding:6px;border:1px solid #ddd;text-align:left}
+ #printArea th{background:#f3f5f7}
+ #printArea .in{color:#14804a}
+ @page{size:auto;margin:12mm}
+}
+</style>
+
+<style>
+#downloadToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--indigo);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:99999;max-width:90%;text-align:center}
+#downloadToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+
+<style>
+#appToast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translate(-50%,20px);
+  background:var(--indigo);
+  color:#fff;
+  padding:11px 18px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:600;
+  box-shadow:0 7px 24px rgba(0,0,0,.18);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .22s ease, transform .22s ease;
+  z-index:999999;
+  max-width:90%;
+  text-align:center;
+}
+#appToast.show{opacity:1;transform:translate(-50%,0);}
+</style>
+
+<style>
+/* Mobile-friendly controls: compact but easy to tap/type */
+@media(max-width:699px){
+  input,select,textarea{min-height:40px;padding:8px 10px;font-size:14px;}
+  .field{min-width:0;}
+  .tabs button{min-height:38px;padding:8px 11px;font-size:12.5px;border-radius:9px;}
+  .actions button{min-height:40px;padding:9px 12px;}
+}
+@media(max-width:699px){
+  input,select,textarea{min-height:40px;padding:8px 10px;font-size:16px;}
+  .field{min-width:0;}
+  .tabs button{min-height:38px;padding:8px 11px;font-size:12.5px;border-radius:9px;}
+  .actions button{min-height:40px;padding:9px 12px;}
+}
+
+/* v4: Android-safe inputs and compact custom student picker */
+input, textarea, select, button { -webkit-tap-highlight-color: transparent; }
+input, textarea { pointer-events:auto !important; user-select:text !important; -webkit-user-select:text !important; -webkit-user-modify:read-write !important; position:relative; z-index:50; }
+input[type="number"] { ime-mode: numeric; }
+.native-student-select { display:none !important; }
+.compact-select { position:relative; width:100%; z-index:100; }
+.compact-select-button { width:100%; min-height:40px; padding:8px 10px; border:1.5px solid var(--line); border-radius:9px; background:#fbfcfe; color:var(--ink); font:inherit; font-size:16px; text-align:left; display:flex; align-items:center; justify-content:space-between; cursor:pointer; position:relative; z-index:101; }
+.compact-select-menu { display:none; position:absolute; left:0; right:0; top:calc(100% + 4px); max-height:180px; overflow-y:auto; background:#fff; border:1px solid var(--line); border-radius:9px; box-shadow:0 8px 18px rgba(20,35,60,.18); padding:3px; z-index:10000; }
+.compact-select.open .compact-select-menu { display:block; }
+.compact-option { display:block; width:100%; border:0; background:#fff; color:var(--ink); text-align:left; padding:7px 9px; min-height:34px; border-radius:6px; font:inherit; font-size:14px; cursor:pointer; }
+.compact-option.selected { background:var(--indigo-soft); color:var(--indigo); font-weight:700; }
+.field, .row, .row3, .section { position:relative; }
+@media(max-width:699px){ input,textarea,select{font-size:16px!important; min-height:40px;} .compact-select-menu{max-height:180px;} }
+</style>
+
+</head>
+<body><div id="appToast" role="status" aria-live="polite"></div><div id="downloadToast" role="status" aria-live="polite"></div>
+<header>
+  <div class="wrap">
+    <h1 id="appTitle">💰 Uang Kas Kelas</h1>
+    <p>Daftar siswa • Pemasukan • Pengeluaran • Rekap • PDF • WhatsApp</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="tabs" aria-label="Menu aplikasi">
+    <button type="button" class="active" data-page="students">Siswa</button>
+    <button type="button" data-page="income">Pemasukan</button>
+    <button type="button" data-page="expense">Pengeluaran</button>
+    <button type="button" data-page="report">Rekap</button>
+     <button type="button" data-page="monthly">Rekap Bulanan</button>
+  </nav>
+
+  <section id="students" class="page active">
+    <div class="notice" style="margin-top:10px"><b>Data kas tersimpan:</b> data siswa dan transaksi disimpan lokal di HP. Versi ini mempertahankan penyimpanan data sebelumnya.</div>
+    <div class="section">
+      <h2>Daftar siswa <span id="sCount" class="pill">0</span></h2>
+      <input id="sSearch" class="search" type="search" placeholder="Cari nama siswa...">
+      <div id="studentTable" class="tablewrap"></div>
+    </div>
+    <div class="section">
+      <h2>Tambah siswa</h2>
+      <div class="row">
+        <div class="field"><label for="sName">Nama siswa</label><input id="sName" type="text" autocomplete="name" placeholder="Contoh: Ahmad"></div>
+        <div class="field"><label for="sNote">Keterangan (opsional)</label><input id="sNote" type="text" placeholder="Contoh: Ketua kelas"></div>
+      </div>
+      <div class="actions"><button type="button" id="btnAddStudent" class="primary">+ Tambah siswa</button></div>
+    </div>
+  </section>
+
+  <section id="income" class="page">
+    <div class="section">
+      <h2>Catat pemasukan</h2>
+      <div class="row3">
+        <div class="field"><label for="iDate">Tanggal bayar</label><input id="iDate" type="date"></div>
+        <div class="field"><label for="iStudent">Siswa</label>
+  <input id="iStudent" type="hidden" value="">
+  <div class="compact-select" id="studentPicker">
+    <button type="button" class="compact-select-button" id="studentPickerButton" aria-haspopup="listbox" aria-expanded="false"><span class="picker-label">-- Kas umum / lainnya --</span><span>▾</span></button>
+    <div class="compact-select-menu" id="studentPickerMenu" role="listbox"></div>
+  </div>
+</div>
+        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="number" inputmode="numeric" min="0" step="1" autocomplete="off" placeholder="5000"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="field"><label for="iMonthStart">Mulai bulan pembayaran</label><input id="iMonthStart" type="month"></div>
+        <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" autocomplete="off" value="1" placeholder="1"></div>
+      </div>
+      <div class="notice" id="incomePreview">Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.</div>
+      <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Dana Kegiatan</option><option>Lainnya</option></select></div>
+      <div style="margin-top:10px"><label for="iDesc">Keterangan</label><input id="iDesc" type="text" placeholder="Contoh: Kas minggu ke-1"></div>
+      <div class="actions"><button type="button" id="btnIncome" class="primary">+ Simpan pemasukan</button></div>
+    </div>
+    <div class="section"><h2>Riwayat pemasukan</h2>
+      <div class="actions" style="margin-top:0;margin-bottom:12px"><button type="button" id="btnIncomeDetailPDF" class="primary">📄 Unduh rincian</button></div>
+      <div id="incomeTable" class="tablewrap"></div></div>
+  </section>
+
+  <section id="expense" class="page">
+    <div class="section">
+      <h2>Catat pengeluaran</h2>
+      <div class="row3">
+        <div class="field"><label for="eDate">Tanggal</label><input id="eDate" type="date"></div>
+        <div class="field"><label for="eCat">Kategori</label><select id="eCat"><option>ATK</option><option>Kegiatan</option><option>Konsumsi</option><option>Kebersihan</option><option>Lainnya</option></select></div>
+        <div class="field"><label for="eAmount">Nominal</label><input id="eAmount" type="number" inputmode="numeric" min="0" step="1" autocomplete="off" placeholder="25000"></div>
+      </div>
+      <div style="margin-top:10px"><label for="eDesc">Keterangan</label><input id="eDesc" type="text" placeholder="Contoh: Beli spidol"></div>
+      <div class="actions"><button type="button" id="btnExpense" class="primary">+ Simpan pengeluaran</button></div>
+    </div>
+    <div class="section"><h2>Riwayat pengeluaran</h2>
+      <div class="actions" style="margin-top:0;margin-bottom:12px"><button type="button" id="btnExpenseDetailPDF" class="primary">📄 Unduh rincian</button></div>
+      <div id="expenseTable" class="tablewrap"></div></div>
+  </section>
+
+  <section id="report" class="page">
+    <div class="section">
+      <h2>Rekap kas</h2>
+      <div class="notice">Menampilkan <b>semua data</b> pemasukan dan pengeluaran yang tersimpan, tanpa filter periode.</div>
+      <div class="actions">
+        <button type="button" id="btnPDF" class="primary">📄 Simpan PDF</button>
+        <button type="button" id="btnWA" class="primary">💬 Share WhatsApp</button>
+      </div>
+      <div id="reportBox" style="margin-top:14px"></div>
+    </div>
+
+    <div class="section">
+      <h2>👥 Rekap semua siswa</h2>
+      <div class="notice">Semua siswa ditampilkan sekaligus. Rekap berisi <b>total seluruh iuran</b> yang sudah dibayarkan masing-masing siswa, tanpa dipecah per bulan.</div>
+      <div class="actions">
+        <button type="button" id="btnStudentMonth" class="primary">🔄 Tampilkan / Perbarui Rekap</button>
+        <button type="button" id="btnStudentPDF" class="primary">📄 Simpan PDF Rekap Siswa</button>
+        <button type="button" id="btnStudentWA" class="primary">💬 WhatsApp Rekap Semua</button>
+      </div>
+      <div id="studentMonthBox" style="margin-top:14px"></div>
+    </div>
+    <div class="section">
+      <h2>⚙️ Pengaturan Nama Kelas</h2>
+      <div class="field">
+        <label for="className">Nama kelas / nama aplikasi</label>
+        <input id="className" type="text" maxlength="60" placeholder="Contoh: Uang Kas Kelas 3B">
+      </div>
+      <div class="actions"><button type="button" id="btnSaveClassName" class="primary">💾 Simpan Nama</button></div>
+      <div class="small" style="margin-top:8px">Nama ini akan digunakan di header aplikasi, judul PDF, dan Share WhatsApp.</div>
+    </div>
+    <div class="section">
+      <h2>Data aplikasi</h2>
+      <div class="actions"><button type="button" id="btnClear" class="danger">Hapus semua data</button></div>
+      <div class="small" style="margin-top:8px">Data tersimpan lokal di perangkat ini (offline).</div>
+      <div class="notice">Tip: tombol PDF akan langsung membuat file PDF berisi Rekap Kas dan Rekap Semua Siswa.</div>
+    </div>
+  </section>
+
+  <section id="monthly" class="page">
+    <div class="section">
+      <h2>📊 Rekap Kas Per Siswa Per Bulan</h2>
+      <div class="notice">Format tabel mengikuti rekap spreadsheet: nomor, nama siswa, total kas, lalu kolom pembayaran per bulan. Jika suatu bulan belum dibayar, kolom akan kosong.</div>
+      <div class="monthly-controls" style="margin-top:12px">
+        <div class="field">
+          <label for="monthlyStart">Mulai bulan</label>
+          <input id="monthlyStart" type="month" value="2026-08">
+        </div>
+        <div class="field">
+          <label for="monthlyEnd">Sampai bulan</label>
+          <input id="monthlyEnd" type="month" value="2027-06">
+        </div>
+        <div class="actions" style="margin-top:0">
+          <button type="button" id="btnMonthlyRefresh" class="primary">🔄 Tampilkan Rekap</button>
+          <button type="button" id="btnMonthlyPDF" class="primary">📄 Simpan PDF</button>
+          <button type="button" id="btnMonthlyWA" class="primary">💬 WhatsApp</button>
+        </div>
+      </div>
+      <div id="monthlyBox" style="margin-top:14px"></div>
+    </div>
+  </section>
+</main>
+<div id="printArea" style="display:none"></div>
+
+<div id="appFooter" class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+
+function showToast(message){
+  const el=document.getElementById('appToast');
+  if(!el) return;
+  el.textContent=message;
+  el.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+(function(){
+'use strict';
+
+function showDownloadToast(message){
+  const toast=document.getElementById('downloadToast');
+  if(!toast) return;
+  toast.textContent=message;
+  toast.classList.add('show');
+  clearTimeout(window.__downloadToastTimer);
+  window.__downloadToastTimer=setTimeout(()=>toast.classList.remove('show'),2600);
+}
+
+
+const KEY='kasKelasV3';
+const LAST_PAGE_KEY='kasKelasLastPageV1';
+const PENDING_TOAST_KEY='kasKelasPendingToastV1';
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toISOString().slice(0,10);
+const rupiah=n=>{
+  const v=Number(n)||0;
+  if(v===0) return '-';
+  return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(v);
+};
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+
+const DAFTAR_SISWA_AWAL=["ALFARUQ ZIKRI", "ALIKA NAYYA A", "ALVAN SHATA A", "ARA TRIA UTOMO", "ATHAR AL FATIH", "AYNINDIRRA PUTRI M", "AZRIL WAZZA P", "CHERLY MARCELIN", "FADIL AL PATIH", "FAHIR AFDAL", "GALANG ARJITYA", "HAFIKA MAKAILA", "HISYAM AL FARIZKI", "HAIDAR SHAQIL F", "INARA SAKHI A", "KALA NAIRA ZAIDA", "KEANU ALTHAF SYABIL", "KIRANA MAHARANI F", "MUHAMMAD ALIF FAREZA", "M RASYA RAMADHAN", "M RIZKI RAMADHAN", "NUR AZIZAH AL WAISY", "PRIYA ABDI KURNIAWAN", "RADEYA PUTRI HARIANATA", "RAFFA FEBRIAN PRATAMA", "RAFFASYA BYANZA N", "RAFFASYA FATIH AL FIRDAUS", "SITI AYRA FARZANA", "SITI KHALISA NATHIFA", "YUMNA FARIHA", "KEEANU ATHALLAH RIO", "KEENAN ARSHAKA RIO"];
+let db;
+try{
+  db=JSON.parse(localStorage.getItem(KEY)||'{"students":[],"income":[],"expense":[]}');
+  if(!db || !Array.isArray(db.students) || !Array.isArray(db.income) || !Array.isArray(db.expense)) throw new Error();
+}catch(e){
+  db={students:[],income:[],expense:[]};
+}
+
+if(typeof db.appName!=='string' || !db.appName.trim()) db.appName='Uang Kas Kelas';
+function getAppName(){ return (db.appName||'Uang Kas Kelas').trim() || 'Uang Kas Kelas'; }
+function updateBrand(){
+  const name=getAppName();
+  $('appTitle').textContent='💰 '+name;
+  $('docTitle').textContent=name;
+  $('appFooter').textContent=name+' • Data tersimpan lokal di HP • v3';
+  if($('className')) $('className').value=name;
+}
+
+// PEMULIHAN DATA: bila versi sebelumnya terlanjur menyimpan database kosong,
+// aktifkan kembali data awal yang sudah kita miliki. Database yang tidak kosong
+// tidak disentuh sehingga data pengguna tetap aman.
+if(db.students.length===0 && db.income.length===0 && db.expense.length===0 && !localStorage.getItem('RECOVERY_EMPTY_DB_V1')){
+  localStorage.removeItem('INITIAL_AUG2026_KAS_V1');
+  localStorage.removeItem('INITIAL_EXPENSES_V1');
+  localStorage.setItem('RECOVERY_EMPTY_DB_V1','1');
+}
+
+const namaSudahAda = new Set(db.students.map(x => String(x.name || '').trim().toUpperCase()));
+DAFTAR_SISWA_AWAL.forEach((name, i) => {
+  if (!namaSudahAda.has(name)) {
+    db.students.push({id: 1000000000 + i, name, note:''});
+  }
+});
+localStorage.setItem(KEY, JSON.stringify(db));
+
+// DATA PEMASUKAN AWAL — diambil dari tabel pengguna (20 transaksi, total Rp1.060.000).
+// Setiap baris diperluas menjadi pembayaran per bulan agar rekap bulanan tetap akurat.
+const NEW_INCOME_BATCH='IMAGE_AUG2026_KAS_V2';
+if(!localStorage.getItem('IMAGE_AUG2026_KAS_V2_APPLIED')){
+  // Hanya hapus batch pemasukan awal versi sebelumnya; data pemasukan manual pengguna tetap dipertahankan.
+  db.income = db.income.filter(x => x.batchId !== 'INITIAL_AUG2026_KAS' && x.batchId !== 'IMAGE_AUG2026_KAS_V1');
+  const imageIncomeRows=[
+    {date:'2026-07-16',months:11,start:'2026-08',name:'ARA TRIA UTOMO'},
+    {date:'2026-07-28',months:5,start:'2026-08',name:'ALVAN SHATA A'},
+    {date:'2026-08-01',months:10,start:'2026-08',name:'RADEYA PUTRI HARIANATA'},
+    {date:'2026-08-03',months:11,start:'2026-08',name:'KEANU ALTHAF SYABIL'},
+    {date:'2026-08-03',months:1,start:'2026-08',name:'ALFARUQ ZIKRI'},
+    {date:'2026-08-03',months:3,start:'2026-08',name:'ATHAR AL FATIH'},
+    {date:'2026-08-03',months:5,start:'2026-08',name:'AZRIL WAZZA P'},
+    {date:'2026-08-03',months:11,start:'2026-08',name:'FADIL AL PATIH'},
+    {date:'2026-08-03',months:1,start:'2026-08',name:'KEEANU ATHALLAH RIO'},
+    {date:'2026-08-03',months:1,start:'2026-08',name:'KEENAN ARSHAKA RIO'},
+    {date:'2026-08-03',months:2,start:'2026-08',name:'RAFFASYA FATIH AL FIRDAUS'},
+    {date:'2026-08-04',months:5,start:'2026-08',name:'SITI KHALISA NATHIFA'},
+    {date:'2026-08-05',months:3,start:'2026-08',name:'GALANG ARJITYA'},
+    {date:'2026-08-05',months:5,start:'2026-08',name:'HISYAM AL FARIZKI'},
+    {date:'2026-08-06',months:3,start:'2026-08',name:'HAIDAR SHAQIL F'},
+    {date:'2026-08-06',months:1,start:'2027-06',name:'RADEYA PUTRI HARIANATA'},
+    {date:'2026-08-07',months:5,start:'2026-08',name:'M RASYA RAMADHAN'},
+    {date:'2026-08-07',months:10,start:'2026-08',name:'FAHIR AFDAL'},
+    {date:'2026-08-11',months:2,start:'2026-08',name:'ALIKA NAYYA A'},
+    {date:'2026-08-20',months:11,start:'2026-08',name:'RAFFASYA BYANZA N'},
+  ];
+  let nextId=930000000;
+  imageIncomeRows.forEach((r,rowIndex)=>{
+    const student=(db.students.find(s=>s.name===r.name)||{});
+    const startDate=new Date(r.start+'-01T00:00:00');
+    for(let m=0;m<r.months;m++){
+      const d=new Date(startDate); d.setMonth(d.getMonth()+m);
+      db.income.push({id:nextId++,batchId:NEW_INCOME_BATCH,date:r.date,studentId:student.id||'',month:d.toISOString().slice(0,7),source:'Uang kas siswa',amount:10000,desc:''});
+    }
+  });
+  localStorage.setItem('IMAGE_AUG2026_KAS_V2_APPLIED','1');
+  localStorage.setItem(KEY,JSON.stringify(db));
+}
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(db));
+  refresh();
+}
+
+function saveTransactionAndReload(message){
+  localStorage.setItem(KEY,JSON.stringify(db));
+  const active=document.querySelector('.tabs button.active');
+  localStorage.setItem(LAST_PAGE_KEY,active ? active.dataset.page : 'students');
+  sessionStorage.setItem(PENDING_TOAST_KEY,message);
+  location.reload();
+}
+
+function sanitizeNumericInput(el){
+  if(!el) return;
+  const clean=el.value.replace(/[^0-9]/g,'');
+  if(el.value!==clean) el.value=clean;
+}
+
+$('iDate').value=today();
+$('eDate').value=today();
+$('iMonthStart').value=today().slice(0,7);
+
+document.querySelectorAll('.tabs button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const page=btn.dataset.page;
+    localStorage.setItem(LAST_PAGE_KEY,page);
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    $(page).classList.add('active');
+    if(page==='income') renderIncome();
+    if(page==='expense') renderExpense();
+    if(page==='report') renderReport();
+    if(page==='monthly') renderMonthly();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+$('btnAddStudent').addEventListener('click',addStudent);
+$('btnIncome').addEventListener('click',addIncome);
+$('btnExpense').addEventListener('click',addExpense);
+$('btnIncomeDetailPDF').addEventListener('click',downloadIncomeDetailPDF);
+$('btnExpenseDetailPDF').addEventListener('click',downloadExpenseDetailPDF);
+$('btnPDF').addEventListener('click',downloadPDF);
+$('btnWA').addEventListener('click',shareWhatsApp);
+$('btnStudentMonth').addEventListener('click',renderStudentMonth);
+$('btnStudentPDF').addEventListener('click',downloadStudentPDF);
+$('btnStudentWA').addEventListener('click',shareStudentWhatsApp);
+  $('btnMonthlyRefresh').addEventListener('click',renderMonthly);
+  $('btnMonthlyPDF').addEventListener('click',downloadMonthlyPDF);
+  $('btnMonthlyWA').addEventListener('click',shareMonthlyWhatsApp);
+  $('monthlyStart').addEventListener('change',renderMonthly);
+  $('monthlyEnd').addEventListener('change',renderMonthly);
+$('iAmount').addEventListener('input',updateIncomePreview);
+$('iMonths').addEventListener('input',updateIncomePreview);
+$('eAmount').addEventListener('input',()=>{});
+$('iMonthStart').addEventListener('change',updateIncomePreview);
+$('studentPickerButton').addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); const p=$('studentPicker'); if(p.classList.contains('open')) closeStudentPicker(); else openStudentPicker(); });
+document.addEventListener('click',function(e){ const p=$('studentPicker'); if(p && !p.contains(e.target)) closeStudentPicker(); });
+$('btnClear').addEventListener('click',clearAll);
+$('btnSaveClassName').addEventListener('click',saveClassName);
+$('sSearch').addEventListener('input',renderStudents);
+
+function saveClassName(){
+  const name=$('className').value.trim();
+  if(!name){ alert('Nama kelas tidak boleh kosong.'); $('className').focus(); return; }
+  db.appName=name;
+  localStorage.setItem(KEY,JSON.stringify(db));
+  updateBrand();
+  renderReport();
+  renderStudentMonth();
+  alert('Nama berhasil disimpan: '+name);
+}
+
+function addStudent(){
+  const n=$('sName').value.trim();
+  if(!n){alert('Nama siswa wajib diisi.'); $('sName').focus(); return;}
+  db.students.push({id:Date.now()+Math.random(),name:n,note:$('sNote').value.trim()});
+  $('sName').value=''; $('sNote').value='';
+  save(); $('sName').focus();
+  showToast('✅ Siswa berhasil ditambahkan.');
+}
+
+function delStudent(id){
+  if(confirm('Hapus siswa ini?')){
+    db.students=db.students.filter(x=>x.id!==id);
+    save();
+    showToast('🗑️ Siswa berhasil dihapus.');
+  }
+}
+
+function updateIncomePreview(){
+  const amount=Number($('iAmount').value)||0;
+  const months=Math.max(1,Math.min(24,Number($('iMonths').value)||1));
+  const start=$('iMonthStart').value||today().slice(0,7);
+  const selectedId=String($('iStudent').value||''); const student=db.students.find(s=>String(s.id)===selectedId)?.name||'kas umum';
+  const parts=[];
+  const d=new Date(start+'-01T00:00:00');
+  for(let i=0;i<months;i++){
+    const x=new Date(d);
+    x.setMonth(d.getMonth()+i);
+    parts.push(x.toLocaleDateString('id-ID',{month:'long',year:'numeric'}));
+  }
+  $('incomePreview').innerHTML=amount
+    ? `<b>${esc(student)}</b> akan dicatat untuk <b>${months} bulan</b>: ${parts.join(', ')}.<br>Total pembayaran: <b>${rupiah(amount*months)}</b>.`
+    : 'Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.';
+}
+
+function addIncome(){
+  const amount=Number($('iAmount').value);
+  const months=Math.max(1,Math.min(24,Number($('iMonths').value)||1));
+  const studentId=$('iStudent').value||'';
+  const startMonth=$('iMonthStart').value||today().slice(0,7);
+  const payDate=$('iDate').value||today();
+
+  if(!amount || amount<1){alert('Nominal per bulan wajib diisi.');$('iAmount').focus();return;}
+  if(!studentId && months>1){
+    if(!confirm('Pembayaran lebih dari 1 bulan tetapi siswa belum dipilih. Lanjutkan sebagai kas umum?')) return;
+  }
+
+  // One payment record per month, all tied to the same payment batch.
+  const batchId=Date.now()+Math.random();
+  for(let i=0;i<months;i++){
+    const d=new Date(startMonth+'-01T00:00:00');
+    d.setMonth(d.getMonth()+i);
+    const ym=d.toISOString().slice(0,7);
+    db.income.push({
+      id:Date.now()+Math.random(),
+      batchId,
+      date:payDate,
+      studentId,
+      month:ym,
+      source:$('iSource').value,
+      amount,
+      desc:$('iDesc').value.trim() || `Kas ${ym}`
+    });
+  }
+
+  $('iAmount').value='';
+  $('iMonths').value='1';
+  $('iDesc').value='';
+  saveTransactionAndReload(`✅ Pemasukan berhasil disimpan • ${months} bulan • Total ${rupiah(amount*months)}`);
+}
+
+function addExpense(){
+  const amount=Number($('eAmount').value);
+  if(!amount || amount<1){alert('Nominal pengeluaran wajib diisi.');$('eAmount').focus();return;}
+  db.expense.push({id:Date.now()+Math.random(),date:$('eDate').value||today(),cat:$('eCat').value,amount,desc:$('eDesc').value.trim()});
+  $('eAmount').value='';$('eDesc').value='';
+  saveTransactionAndReload('✅ Pengeluaran berhasil disimpan.');
+}
+
+function del(type,id){
+  if(confirm('Hapus transaksi ini?')){
+    db[type]=db[type].filter(x=>x.id!==id);
+    saveTransactionAndReload(type==='income' ? '🗑️ Pemasukan berhasil dihapus.' : '🗑️ Pengeluaran berhasil dihapus.');
+  }
+}
+
+window.delStudent=delStudent;
+window.del=del;
+
+function populateStudentSelects(){
+  const sorted=[...db.students].sort((a,b)=>a.name.localeCompare(b.name,'id'));
+  const current=String($('iStudent').value||'');
+  const menu=$('studentPickerMenu');
+  if(!menu) return;
+  menu.innerHTML='';
+  const addOpt=(value,text)=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='compact-option'+(String(value)===current?' selected':'');
+    b.textContent=text; b.setAttribute('role','option');
+    b.addEventListener('click',()=>{
+      $('iStudent').value=String(value);
+      $('studentPickerButton').querySelector('.picker-label').textContent=text;
+      menu.querySelectorAll('.compact-option').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected');
+      closeStudentPicker(); updateIncomePreview();
+    });
+    menu.appendChild(b);
+  };
+  addOpt('', '-- Kas umum / lainnya --');
+  sorted.forEach(st=>addOpt(st.id, st.name));
+  const selected=sorted.find(x=>String(x.id)===current);
+  $('studentPickerButton').querySelector('.picker-label').textContent=selected?selected.name:'-- Kas umum / lainnya --';
+}
+function syncStudentPicker(){ populateStudentSelects(); }
+function closeStudentPicker(){ const p=$('studentPicker'); if(p)p.classList.remove('open'); const b=$('studentPickerButton'); if(b)b.setAttribute('aria-expanded','false'); }
+function openStudentPicker(){ const p=$('studentPicker'); if(!p)return; populateStudentSelects(); p.classList.add('open'); const b=$('studentPickerButton'); if(b)b.setAttribute('aria-expanded','true'); }
+
+function renderStudents(){
+  const q=($('sSearch').value||'').toLowerCase();
+  const a=db.students.filter(x=>x.name.toLowerCase().includes(q));
+  $('sCount').textContent=db.students.length;
+  $('studentTable').innerHTML=a.length?
+  '<table><thead><tr><th>No</th><th>Nama</th><th>Keterangan</th><th>Aksi</th></tr></thead><tbody>'+
+  a.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.name)}</td><td>${esc(x.note)}</td><td><button type="button" class="danger" onclick="delStudent(${x.id})">Hapus</button></td></tr>`).join('')+
+  '</tbody></table>':'<div class="empty">Belum ada siswa.</div>';
+}
+
+function renderIncome(){
+  const a=[...db.income].sort((x,y)=>Number(y.id||0)-Number(x.id||0));
+  $('incomeTable').innerHTML=a.length?
+  '<table><thead><tr><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
+  a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td class="in">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('income',${x.id})">Hapus</button></td></tr>`).join('')+
+  '</tbody></table>':'<div class="empty">Belum ada pemasukan.</div>';
+}
+
+function renderExpense(){
+  const a=[...db.expense].sort((x,y)=>Number(y.id||0)-Number(x.id||0));
+  $('expenseTable').innerHTML=a.length?
+  '<table><thead><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
+  a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc)}</td><td class="out">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('expense',${x.id})">Hapus</button></td></tr>`).join('')+
+  '</tbody></table>':'<div class="empty">Belum ada pengeluaran.</div>';
+}
+
+function downloadIncomeDetailPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const a=[...db.income].sort((x,y)=>String(x.date).localeCompare(String(y.date))||Number(x.id||0)-Number(y.id||0));
+  if(!a.length){ alert('Belum ada data pemasukan untuk diunduh.'); return; }
+  const total=a.reduce((s,x)=>s+Number(x.amount||0),0);
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  doc.setFontSize(15);
+  doc.text('Rincian Pemasukan - '+getAppName(),14,16);
+  doc.setFontSize(9);
+  doc.text(`Dicetak ${today()} • ${a.length} transaksi • Total ${rupiah(total)}`,14,23);
+  doc.autoTable({
+    startY:28,
+    head:[['No','Tgl bayar','Bulan kas','Siswa','Sumber','Keterangan','Nominal']],
+    body:a.map((x,i)=>[
+      i+1,
+      x.date,
+      x.month||String(x.date).slice(0,7),
+      db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-',
+      x.source||'-',
+      x.desc||'-',
+      rupiah(x.amount)
+    ]).concat([['','','','','','TOTAL',rupiah(total)]]),
+    styles:{fontSize:8.3,cellPadding:2.2},
+    headStyles:{fillColor:[22,50,79]},
+    columnStyles:{0:{cellWidth:9},1:{cellWidth:20},2:{cellWidth:18},6:{halign:'right'}},
+    margin:{left:14,right:14},
+    didParseCell:function(d){
+      if(d.section==='body' && d.row.index===a.length){
+        d.cell.styles.fillColor=[232,239,247]; d.cell.styles.textColor=[22,50,79]; d.cell.styles.fontStyle='bold';
+      }
+    }
+  });
+  doc.save('Rincian-Pemasukan.pdf');
+  showToast('✅ PDF rincian pemasukan berhasil diunduh.');
+  showDownloadToast('✅ PDF rincian pemasukan berhasil diunduh.');
+}
+
+function downloadExpenseDetailPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const a=[...db.expense].sort((x,y)=>String(x.date).localeCompare(String(y.date))||Number(x.id||0)-Number(y.id||0));
+  if(!a.length){ alert('Belum ada data pengeluaran untuk diunduh.'); return; }
+  const total=a.reduce((s,x)=>s+Number(x.amount||0),0);
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  doc.setFontSize(15);
+  doc.text('Rincian Pengeluaran - '+getAppName(),14,16);
+  doc.setFontSize(9);
+  doc.text(`Dicetak ${today()} • ${a.length} transaksi • Total ${rupiah(total)}`,14,23);
+  doc.autoTable({
+    startY:28,
+    head:[['No','Tanggal','Kategori','Keterangan','Nominal']],
+    body:a.map((x,i)=>[
+      i+1,
+      x.date,
+      x.cat||x.category||'Pengeluaran kas',
+      x.desc||'-',
+      rupiah(x.amount)
+    ]).concat([['','','','TOTAL',rupiah(total)]]),
+    styles:{fontSize:8.6,cellPadding:2.4},
+    headStyles:{fillColor:[22,50,79]},
+    columnStyles:{0:{cellWidth:9},1:{cellWidth:22},4:{halign:'right'}},
+    margin:{left:14,right:14},
+    didParseCell:function(d){
+      if(d.section==='body' && d.row.index===a.length){
+        d.cell.styles.fillColor=[251,233,231]; d.cell.styles.textColor=[209,75,67]; d.cell.styles.fontStyle='bold';
+      }
+    }
+  });
+  doc.save('Rincian-Pengeluaran.pdf');
+  showToast('✅ PDF rincian pengeluaran berhasil diunduh.');
+  showDownloadToast('✅ PDF rincian pengeluaran berhasil diunduh.');
+}
+
+function filtered(){
+  const inc=[...db.income];
+  const exp=[...db.expense];
+  return {inc,exp,ti:inc.reduce((s,x)=>s+Number(x.amount||0),0),te:exp.reduce((s,x)=>s+Number(x.amount||0),0)};
+}
+
+function sourceSummary(inc){
+  const map={};
+  inc.forEach(x=>{
+    const source=(x.source||'Lainnya').trim()||'Lainnya';
+    if(!map[source]) map[source]={total:0,count:0};
+    map[source].total+=Number(x.amount||0);
+    map[source].count++;
+  });
+  return Object.entries(map).sort((a,b)=>b[1].total-a[1].total || a[0].localeCompare(b[0],'id'));
+}
+
+function renderReport(){
+  const {inc,exp,ti,te}=filtered();
+  const sources=sourceSummary(inc);
+  const sourceRows=sources.map(([source,v],i)=>`<tr><td>${i+1}</td><td><b>${esc(source)}</b></td><td>${v.count} transaksi</td><td class="in"><b>${rupiah(v.total)}</b></td></tr>`).join('');
+  $('reportBox').innerHTML=
+  `<div class="cards">
+    <div class="card"><div class="label">Total pemasukan</div><div class="amount in">${rupiah(ti)}</div></div>
+    <div class="card"><div class="label">Total pengeluaran</div><div class="amount out">${rupiah(te)}</div></div>
+    <div class="card"><div class="label">Saldo kas</div><div class="amount bal">${rupiah(ti-te)}</div></div>
+    <div class="card"><div class="label">Siswa terdaftar</div><div class="amount">${db.students.length}</div></div>
+  </div>
+  <div style="margin-top:14px"><h3 style="font-size:14px">Rekap sumber pemasukan</h3>
+  ${sources.length?`<div class="tablewrap"><table><tr><th>No</th><th>Sumber pemasukan</th><th>Transaksi</th><th>Total nominal</th></tr>${sourceRows}<tr><td colspan="3"><b>TOTAL PEMASUKAN</b></td><td class="in"><b>${rupiah(ti)}</b></td></tr></table></div>`:'<div class="empty">Tidak ada pemasukan.</div>'}
+  <h3 style="font-size:14px;margin-top:14px">Detail semua pengeluaran</h3>
+  ${exp.length?'<div class="tablewrap"><table><tr><th>No</th><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc||'-')}</td><td class="out">${rupiah(x.amount)}</td></tr>`).join('')+'</table></div>':'<div class="empty">Tidak ada pengeluaran.</div>'}</div>`;
+}
+
+function allStudentMonthData(){
+  return db.students.map(s=>{
+    const payments=db.income.filter(x=>String(x.studentId)===String(s.id));
+    const total=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
+    // Satu bulan hanya dihitung satu kali, walaupun ada lebih dari satu transaksi pada bulan yang sama.
+    const paidMonths=new Set(
+      payments
+        .map(x=>String(x.month||x.date||'').slice(0,7))
+        .filter(m=>/^\d{4}-\d{2}$/.test(m))
+    );
+    return {student:s,total,paidMonths:paidMonths.size};
+  }).sort((a,b)=>
+    b.paidMonths-a.paidMonths ||
+    b.total-a.total ||
+    a.student.name.localeCompare(b.student.name,'id')
+  );
+}
+
+function renderStudentMonth(){
+  const data=allStudentMonthData();
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const paid=data.filter(x=>x.paidMonths>0).length;
+
+  $('studentMonthBox').innerHTML=`
+    <div class="cards">
+      <div class="card"><div class="label">Total seluruh iuran</div><div class="amount in">${rupiah(grandTotal)}</div></div>
+      <div class="card"><div class="label">Jumlah siswa</div><div class="amount">${data.length}</div></div>
+      <div class="card"><div class="label">Siswa sudah bayar</div><div class="amount">${paid}</div></div>
+      <div class="card"><div class="label">Siswa belum bayar</div><div class="amount">${data.length-paid}</div></div>
+    </div>
+    <div class="tablewrap" style="margin-top:12px">
+      <table id="studentMonthTable" style="min-width:560px">
+        <thead><tr><th>No</th><th>Nama siswa</th><th>Sudah bayar</th><th>Total nominal</th></tr></thead>
+        <tbody>
+          ${data.length ? data.map((x,i)=>`<tr>
+            <td>${i+1}</td>
+            <td><b>${esc(x.student.name)}</b></td>
+            <td>${x.paidMonths} bulan</td>
+            <td class="in"><b>${rupiah(x.total)}</b></td>
+          </tr>`).join('') : '<tr><td colspan="4" class="empty">Belum ada siswa.</td></tr>'}
+          <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="small" style="margin-top:8px">Diurutkan dari siswa yang sudah membayar paling banyak. Jika jumlah bulan sama, diurutkan berdasarkan total nominal terbesar. Tidak ada rincian per bulan.</div>`;
+}
+
+function studentMonthText(){
+  const data=allStudentMonthData();
+  const lines=[
+    'REKAP UANG KAS SEMUA SISWA',
+    'Urutan: jumlah bulan dibayar terbanyak',
+    '',
+    'No | Nama siswa | Sudah bayar | Total nominal'
+  ];
+  data.forEach((x,i)=>{
+    lines.push(`${i+1}. ${x.student.name} | ${x.paidMonths} bulan | ${rupiah(x.total)}`);
+  });
+  lines.push('');
+  lines.push('TOTAL SEMUA SISWA: '+rupiah(data.reduce((s,x)=>s+x.total,0)));
+  return lines.join('\n');
+}
+
+
+function buildStudentPrint(){
+  const data=allStudentMonthData();
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const paid=data.filter(x=>x.paidMonths>0).length;
+  return `
+    <h1>Rekap Semua Siswa — ${esc(getAppName())}</h1>
+    <div class="print-meta">Diurutkan dari siswa yang sudah membayar paling banyak.</div>
+    <div class="print-cards">
+      <div class="print-card"><div class="print-label">Total seluruh iuran</div><div class="print-value in">${rupiah(grandTotal)}</div></div>
+      <div class="print-card"><div class="print-label">Jumlah siswa</div><div class="print-value">${data.length}</div></div>
+      <div class="print-card"><div class="print-label">Siswa sudah bayar</div><div class="print-value">${paid}</div></div>
+      <div class="print-card"><div class="print-label">Siswa belum bayar</div><div class="print-value">${data.length-paid}</div></div>
+    </div>
+    <h2>Rekap semua siswa</h2>
+    <table><thead><tr><th>No</th><th>Nama siswa</th><th>Sudah bayar</th><th>Total nominal</th></tr></thead><tbody>
+      ${data.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.student.name)}</td><td>${x.paidMonths} bulan</td><td class="in">${rupiah(x.total)}</td></tr>`).join('')}
+      <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td></tr>
+    </tbody></table>`;
+}
+
+function openPrintArea(html){
+  const area=$('printArea');
+  area.innerHTML=html;
+  area.style.display='block';
+  const cleanup=()=>{
+    area.style.display='none';
+    area.innerHTML='';
+    window.removeEventListener('afterprint',cleanup);
+  };
+  window.addEventListener('afterprint',cleanup);
+  setTimeout(()=>window.print(),100);
+}
+
+function downloadStudentPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  const data=allStudentMonthData();
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const paid=data.filter(x=>x.paidMonths>0).length;
+  doc.setFontSize(16); doc.text('Rekap Semua Siswa - '+getAppName(),14,16);
+  doc.setFontSize(9); doc.text('Diurutkan dari siswa yang sudah membayar paling banyak.',14,23);
+  doc.setFontSize(11);
+  doc.text('Total seluruh iuran: '+rupiah(grandTotal),14,32);
+  doc.text('Jumlah siswa: '+data.length,14,39);
+  doc.text('Siswa sudah bayar: '+paid,80,32);
+  doc.text('Siswa belum bayar: '+(data.length-paid),80,39);
+  doc.autoTable({startY:46,head:[['No','Nama siswa','Sudah bayar','Total nominal']],body:data.map((x,i)=>[i+1,x.student.name,x.paidMonths+' bulan',rupiah(x.total)]).concat([['','','TOTAL SEMUA SISWA',rupiah(grandTotal)]]),styles:{fontSize:9,cellPadding:2.5},headStyles:{fillColor:[23,105,170]},columnStyles:{0:{cellWidth:12},1:{cellWidth:90},2:{cellWidth:35},3:{cellWidth:45}},margin:{left:14,right:14}});
+  doc.save('Rekap-Kas-Semua-Siswa.pdf');
+  showToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
+}
+
+async function shareStudentWhatsApp(){
+  const text=studentMonthText();
+  if(navigator.share){
+    try{await navigator.share({title:'Rekap Semua Siswa - '+getAppName(),text});return;}catch(e){}
+  }
+  location.href='https://wa.me/?text='+encodeURIComponent(text);
+}
+
+
+function monthLabel(ym){
+  const d=new Date(ym+'-01T00:00:00');
+  return d.toLocaleDateString('id-ID',{month:'short'}).replace('.','').replace(/^./,c=>c.toUpperCase());
+}
+function monthLongLabel(ym){
+  const d=new Date(ym+'-01T00:00:00');
+  return d.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+}
+function buildMonthRange(start,end){
+  if(!start || !end) return [];
+  const a=new Date(start+'-01T00:00:00');
+  const b=new Date(end+'-01T00:00:00');
+  if(a>b) return [];
+  const out=[];
+  const d=new Date(a);
+  let guard=0;
+  while(d<=b && guard<60){
+    out.push(d.toISOString().slice(0,7));
+    d.setMonth(d.getMonth()+1);
+    guard++;
+  }
+  return out;
+}
+function kasCellAmount(n){
+  n=Number(n)||0;
+  if(!n) return '';
+  if(n%1000===0 && n<1000000) return `${n/1000} Rb`;
+  return rupiah(n).replace(/^Rp\s?/,'');
+}
+function monthlyMatrixData(months){
+  return db.students.map((student,index)=>{
+    const values=months.map(ym=>db.income
+      .filter(x=>String(x.studentId)===String(student.id) && String(x.month||x.date||'').slice(0,7)===ym)
+      .reduce((sum,x)=>sum+Number(x.amount||0),0));
+    const total=values.reduce((sum,n)=>sum+n,0);
+    return {student,index,values,total};
+  });
+}
+function monthlyHeaderGroups(months){
+  const groups=[];
+  months.forEach(ym=>{
+    const year=ym.slice(0,4);
+    const last=groups[groups.length-1];
+    if(last && last.year===year) last.count++;
+    else groups.push({year,count:1});
+  });
+  return groups;
+}
+function renderMonthly(){
+  const start=$('monthlyStart').value||'2026-08';
+  const end=$('monthlyEnd').value||'2027-06';
+  if(start>end){
+    $('monthlyBox').innerHTML='<div class="notice" style="background:#fff2f2;color:#a22">Bulan mulai tidak boleh lebih besar dari bulan akhir.</div>';
+    return;
+  }
+  const months=buildMonthRange(start,end);
+  const data=monthlyMatrixData(months);
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const groups=monthlyHeaderGroups(months);
+
+  const yearHeader=groups.map(g=>{
+    const cls=g.year==='2026'?'head-2026':'head-2027';
+    return `<th class="${cls}" colspan="${g.count}">${g.year}</th>`;
+  }).join('');
+  const monthHeader=months.map(ym=>{
+    const cls=ym.slice(0,4)==='2026'?'month-2026':'month-2027';
+    return `<th class="${cls}">${monthLabel(ym)}</th>`;
+  }).join('');
+
+  $('monthlyBox').innerHTML=`
+    <div class="small" style="margin-bottom:8px"><b>Periode:</b> ${monthLongLabel(start)} — ${monthLongLabel(end)} • ${months.length} bulan</div>
+    <div class="monthly-table-wrap">
+      <table class="monthly-table" id="monthlyTable">
+        <thead>
+          <tr>
+            <th class="head-blue sticky-no" rowspan="2">NO</th>
+            <th class="head-blue sticky-name" rowspan="2">NAMA SISWA</th>
+            <th class="head-blue" rowspan="2">TOTAL KAS</th>
+            ${yearHeader}
+          </tr>
+          <tr>${monthHeader}</tr>
+        </thead>
+        <tbody>
+          ${data.length ? data.map((x,i)=>`
+            <tr>
+              <td class="no-cell sticky-no">${i+1}</td>
+              <td class="student-name sticky-name">${esc(x.student.name)}</td>
+              <td class="total-cell">${x.total ? kasCellAmount(x.total) : ''}</td>
+              ${x.values.map((v,j)=>`<td class="${v?'paid-cell':'empty-cell'}">${v?esc(kasCellAmount(v)):''}</td>`).join('')}
+            </tr>`).join('') :
+            `<tr><td colspan="${3+months.length}" class="empty">Belum ada siswa.</td></tr>`}
+          <tr>
+            <td class="grand-total" colspan="2">TOTAL</td>
+            <td class="grand-total">${grandTotal?esc(kasCellAmount(grandTotal)):''}</td>
+            ${months.map((ym,j)=>{
+              const t=data.reduce((s,x)=>s+x.values[j],0);
+              return `<td class="grand-total">${t?esc(kasCellAmount(t)):''}</td>`;
+            }).join('')}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="small" style="margin-top:8px">Angka per bulan diambil dari transaksi pemasukan siswa pada bulan tersebut. Total kas adalah jumlah seluruh pembayaran dalam periode yang dipilih.</div>`;
+}
+
+function monthlyText(){
+  const start=$('monthlyStart').value||'2026-08';
+  const end=$('monthlyEnd').value||'2027-06';
+  const months=buildMonthRange(start,end);
+  const data=monthlyMatrixData(months);
+  const lines=[
+    `REKAP KAS PER SISWA PER BULAN - ${getAppName().toUpperCase()}`,
+    `Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)}`,
+    '',
+    ['No','Nama Siswa','Total Kas',...months.map(monthLabel)].join(' | ')
+  ];
+  data.forEach((x,i)=>lines.push([i+1,x.student.name,rupiah(x.total),...x.values.map(v=>v?rupiah(v):'-')].join(' | ')));
+  lines.push('');
+  lines.push(`TOTAL | | ${rupiah(data.reduce((s,x)=>s+x.total,0))}`);
+  return lines.join('\n');
+}
+
+async function shareMonthlyWhatsApp(){
+  renderMonthly();
+  const text=monthlyText();
+  if(navigator.share){
+    try{await navigator.share({title:'Rekap Kas Per Siswa Per Bulan - '+getAppName(),text});return;}catch(e){}
+  }
+  location.href='https://wa.me/?text='+encodeURIComponent(text);
+}
+
+function downloadMonthlyPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const start=$('monthlyStart').value||'2026-08';
+  const end=$('monthlyEnd').value||'2027-06';
+  const months=buildMonthRange(start,end);
+  if(!months.length || start>end){alert('Periode bulan tidak valid.');return;}
+  const data=monthlyMatrixData(months);
+  const groups=monthlyHeaderGroups(months);
+
+  const head1=[
+    {content:'NO', rowSpan:2},
+    {content:'NAMA SISWA', rowSpan:2},
+    {content:'TOTAL KAS', rowSpan:2},
+    ...groups.map(g=>({content:g.year, colSpan:g.count}))
+  ];
+  const head2=months.map(monthLabel);
+  const body=data.map((x,i)=>[
+    i+1,x.student.name,rupiah(x.total),...x.values.map(v=>v?kasCellAmount(v):'')
+  ]);
+  const totals=['','TOTAL',rupiah(data.reduce((s,x)=>s+x.total,0)),...months.map((ym,j)=>{
+    const t=data.reduce((s,x)=>s+x.values[j],0); return t?kasCellAmount(t):'';
+  })];
+
+  // Lebar kolom dihitung agar seluruh bulan tetap terbaca, apapun panjang periodenya.
+  const noW=9,nameW=52,totalW=22,monthW=13.5;
+  const widths=[noW,nameW,totalW,...months.map(()=>monthW)];
+  const marginLR=8;
+  // Lebar halaman menyesuaikan jumlah kolom (bulan) supaya seluruh tabel selalu muat ke samping.
+  const pageWidth=marginLR*2+widths.reduce((a,b)=>a+b,0);
+  const titleTop=22;
+
+  const tableOptions=(doc)=>({
+    startY:titleTop,
+    head:[head1,head2],
+    body:body.concat([totals]),
+    styles:{fontSize:7.3,cellPadding:1.5,halign:'center',valign:'middle',overflow:'linebreak'},
+    headStyles:{fillColor:[22,50,79],textColor:255,fontStyle:'bold',halign:'center',valign:'middle'},
+    columnStyles:Object.fromEntries(widths.map((w,i)=>[i,{cellWidth:w}])),
+    margin:{left:marginLR,right:marginLR},
+    tableWidth:'wrap',
+    theme:'grid',
+    didParseCell:function(d){
+      if(d.section==='head' && d.row.index===0 && (d.cell.raw==='2026'||d.cell.raw==='2027')){
+        d.cell.styles.fillColor=d.cell.raw==='2026'?[138,90,34]:[63,122,87];
+      }
+      if(d.section==='head' && d.row.index===1){
+        d.cell.styles.fillColor=[31,76,120];
+      }
+      if(d.section==='body' && d.row.index===data.length){
+        d.cell.styles.fillColor=[22,50,79]; d.cell.styles.textColor=255; d.cell.styles.fontStyle='bold';
+      }
+      if(d.section==='body' && d.row.index<data.length && d.column.index===1){
+        d.cell.styles.halign='left';
+      }
+      if(d.section==='body' && d.row.index<data.length && d.column.index>=3 && d.cell.raw!==''){
+        d.cell.styles.fillColor=[227,245,241];
+        d.cell.styles.textColor=[11,109,95];
+      }
+    }
+  });
+
+  // Tahap 1: render di kanvas sangat tinggi untuk mengukur tinggi total tabel.
+  const scratch=new JSPDF({unit:'mm',format:[pageWidth,2000]});
+  scratch.autoTable(tableOptions(scratch));
+  const contentHeight=scratch.lastAutoTable.finalY;
+  const pageHeight=Math.max(90,contentHeight+10);
+
+  // Tahap 2: buat halaman PDF berukuran pas dengan seluruh isi, sehingga selalu 1 halaman utuh.
+  const doc=new JSPDF({unit:'mm',format:[pageWidth,pageHeight]});
+  doc.setFontSize(15);
+  doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),marginLR,12);
+  doc.setFontSize(8.5);
+  doc.text(`Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)} • ${data.length} siswa`,marginLR,18);
+  doc.autoTable(tableOptions(doc));
+
+  doc.save('Rekap-Kas-Per-Siswa-Per-Bulan.pdf');
+  showToast('✅ PDF (1 halaman penuh) berhasil dibuat dan diunduh.');
+  showDownloadToast('✅ PDF (1 halaman penuh) berhasil dibuat dan diunduh.');
+}
+
+function refresh(){
+  populateStudentSelects();
+  renderStudents();renderIncome();renderExpense();renderReport();renderStudentMonth();renderMonthly();
+}
+
+function reportText(){
+  const {inc,exp,ti,te}=filtered();
+  const lines=[
+    'REKAP '+getAppName().toUpperCase(),
+    'SEMUA DATA',
+    '',
+    `Jumlah siswa: ${db.students.length}`,
+    `TOTAL PEMASUKAN: ${rupiah(ti)}`,
+    `TOTAL PENGELUARAN: ${rupiah(te)}`,
+    `SALDO KAS: ${rupiah(ti-te)}`,
+    '',
+    'REKAP SUMBER PEMASUKAN'
+  ];
+  sourceSummary(inc).forEach(([source,v],i)=>lines.push(`${i+1}. ${source} | ${v.count} transaksi | ${rupiah(v.total)}`));
+  lines.push(`TOTAL PEMASUKAN | ${rupiah(ti)}`,'','PENGELUARAN');
+  exp.forEach((x,i)=>lines.push(`${i+1}. ${x.date} | ${x.cat||x.category||'Pengeluaran kas'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
+  return lines.join('\n');
+}
+
+
+function buildReportPrint(){
+  const {inc,ti,te}=filtered();
+  const sources=sourceSummary(inc);
+  return `
+    <h1>Rekap Kas — ${esc(getAppName())}</h1>
+    <div class="print-meta">Semua data • tanpa rincian transaksi.</div>
+    <div class="print-cards">
+      <div class="print-card"><div class="print-label">Total pemasukan</div><div class="print-value in">${rupiah(ti)}</div></div>
+      <div class="print-card"><div class="print-label">Total pengeluaran</div><div class="print-value">${rupiah(filtered().te)}</div></div>
+      <div class="print-card"><div class="print-label">Saldo kas</div><div class="print-value">${rupiah(ti-te)}</div></div>
+      <div class="print-card"><div class="print-label">Siswa terdaftar</div><div class="print-value">${db.students.length}</div></div>
+    </div>
+    <h2>Rekap sumber pemasukan</h2>
+    ${sources.length ? `<table><thead><tr><th>No</th><th>Sumber pemasukan</th><th>Transaksi</th><th>Total nominal</th></tr></thead><tbody>${sources.map(([source,v],i)=>`<tr><td>${i+1}</td><td>${esc(source)}</td><td>${v.count} transaksi</td><td class="in">${rupiah(v.total)}</td></tr>`).join('')}<tr><td colspan="3"><b>TOTAL PEMASUKAN</b></td><td class="in"><b>${rupiah(ti)}</b></td></tr></tbody></table>` : '<div>Tidak ada pemasukan.</div>'}`;
+}
+
+function downloadPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  const {inc,exp,ti,te}=filtered();
+  const sources=sourceSummary(inc);
+  const students=allStudentMonthData();
+  const grandTotal=students.reduce((s,x)=>s+x.total,0);
+  const paid=students.filter(x=>x.paidMonths>0).length;
+
+  // =========================
+  // 1. REKAP KAS
+  // =========================
+  doc.setFontSize(17);
+  doc.text('REKAP KAS - '+getAppName(),14,16);
+  doc.setFontSize(9);
+  doc.text('Semua data • ringkas sesuai tampilan Rekap Kas',14,23);
+
+  doc.setFontSize(11);
+  doc.text('Ringkasan kas',14,32);
+  doc.autoTable({
+    startY:36,
+    head:[['Total pemasukan','Total pengeluaran','Saldo kas','Siswa terdaftar']],
+    body:[[rupiah(ti),rupiah(te),rupiah(ti-te),String(db.students.length)]],
+    styles:{fontSize:9,cellPadding:3},
+    headStyles:{fillColor:[23,105,170]},
+    margin:{left:14,right:14}
+  });
+
+  let y=doc.lastAutoTable.finalY+9;
+  doc.setFontSize(12);
+  doc.text('Rekap sumber pemasukan',14,y);
+  doc.autoTable({
+    startY:y+5,
+    head:[['No','Sumber pemasukan','Transaksi','Total nominal']],
+    body:(sources.length ? sources.map(([source,v],i)=>[i+1,source,v.count+' transaksi',rupiah(v.total)]) : [['-','Belum ada pemasukan','0 transaksi','Rp 0']])
+      .concat([['','','TOTAL PEMASUKAN',rupiah(ti)]]),
+    styles:{fontSize:8.5,cellPadding:2.3},
+    headStyles:{fillColor:[23,105,170]},
+    margin:{left:14,right:14}
+  });
+
+  y=doc.lastAutoTable.finalY+9;
+  if(y>245){doc.addPage();y=18;doc.setFontSize(12);doc.text('REKAP KAS (lanjutan)',14,y);y+=7;}
+  doc.setFontSize(12);
+  doc.text('Rekap semua pengeluaran',14,y);
+  doc.autoTable({
+    startY:y+5,
+    head:[['No','Tanggal','Kategori','Keterangan','Nominal']],
+    body:(exp.length ? exp.map((x,i)=>[i+1,x.date,x.cat||x.category||'Pengeluaran kas',x.desc||'-',rupiah(x.amount)]) : [['-','-','-','Belum ada pengeluaran','Rp 0']])
+      .concat([['','','','TOTAL PENGELUARAN',rupiah(te)]]),
+    styles:{fontSize:8.2,cellPadding:2.1},
+    headStyles:{fillColor:[23,105,170]},
+    margin:{left:14,right:14}
+  });
+
+  // =========================
+  // 2. REKAP SEMUA SISWA
+  // =========================
+  y=doc.lastAutoTable.finalY+12;
+  if(y>245){doc.addPage();y=18;}
+  doc.setFontSize(15);
+  doc.text('REKAP SEMUA SISWA',14,y);
+  doc.setFontSize(9);
+  doc.text(`Jumlah siswa: ${students.length} • Sudah bayar: ${paid} • Belum bayar: ${students.length-paid}`,14,y+7);
+  doc.autoTable({
+    startY:y+12,
+    head:[['No','Nama siswa','Sudah bayar','Total nominal']],
+    body:students.map((x,i)=>[i+1,x.student.name,x.paidMonths+' bulan',rupiah(x.total)])
+      .concat([['','','TOTAL SEMUA SISWA',rupiah(grandTotal)]]),
+    styles:{fontSize:8.5,cellPadding:2.2},
+    headStyles:{fillColor:[23,105,170]},
+    margin:{left:14,right:14}
+  });
+
+  doc.save('Rekap-Kas-dan-Semua-Siswa.pdf');
+  showToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
+}
+
+async function shareWhatsApp(){
+  const text=reportText();
+  if(navigator.share){
+    try{await navigator.share({title:'Rekap '+getAppName(),text});return;}catch(e){}
+  }
+  location.href='https://wa.me/?text='+encodeURIComponent(text);
+}
+
+function clearAll(){
+  if(confirm('Semua data siswa dan transaksi akan dihapus. Lanjutkan?')){
+    db={students:[],income:[],expense:[],appName:getAppName()};
+    save();
+  }
+}
+
+updateBrand();
+refresh();
+
+// Pertahankan halaman terakhir setelah reload.
+const savedPage=localStorage.getItem(LAST_PAGE_KEY)||'students';
+document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+const savedTab=document.querySelector(`.tabs button[data-page="${savedPage}"]`) || document.querySelector('.tabs button[data-page="students"]');
+const restoredPage=savedTab ? savedTab.dataset.page : 'students';
+if(savedTab) savedTab.classList.add('active');
+if($(restoredPage)) $(restoredPage).classList.add('active');
+if(restoredPage==='income') renderIncome();
+if(restoredPage==='expense') renderExpense();
+if(restoredPage==='report') renderReport();
+if(restoredPage==='monthly') renderMonthly();
+
+const pendingToast=sessionStorage.getItem(PENDING_TOAST_KEY);
+if(pendingToast){
+  sessionStorage.removeItem(PENDING_TOAST_KEY);
+  setTimeout(()=>showToast(pendingToast),150);
+}
+syncStudentPicker();
+syncStudentPicker();
+updateIncomePreview();
+})();
+</script>
+</body>
+</html>
