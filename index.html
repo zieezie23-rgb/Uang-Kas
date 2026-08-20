@@ -175,6 +175,58 @@ tbody tr:hover{background:#F8FAFD}
   .tabs button{min-height:38px;padding:8px 11px;font-size:12.5px;border-radius:9px;}
   .actions button{min-height:40px;padding:9px 12px;}
 }
+@media(max-width:699px){
+  input,select,textarea{min-height:40px;padding:8px 10px;font-size:16px;}
+  .field{min-width:0;}
+  .tabs button{min-height:38px;padding:8px 11px;font-size:12.5px;border-radius:9px;}
+  .actions button{min-height:40px;padding:9px 12px;}
+}
+
+/* Android/WebView: keep text inputs genuinely editable and prevent page layers from stealing taps. */
+input,textarea{
+  -webkit-user-modify:read-write-plaintext-only;
+  -webkit-user-select:text;
+  user-select:text;
+  touch-action:manipulation;
+  caret-color:var(--indigo);
+}
+input[type="date"],input[type="month"]{font-size:16px;}
+.native-student-select{display:none!important;}
+.compact-select{position:relative;width:100%;z-index:20;}
+.compact-select-button{
+  width:100%;min-height:40px;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;
+  background:#fbfcfe;color:var(--ink);font:inherit;font-size:16px;text-align:left;display:flex;
+  align-items:center;justify-content:space-between;gap:8px;cursor:pointer;touch-action:manipulation;
+}
+.compact-select-button span{font-size:13px;color:var(--muted);}
+.compact-select.open .compact-select-button{border-color:var(--indigo-2);box-shadow:0 0 0 3px rgba(31,76,120,.15);}
+.compact-select-menu{
+  display:none;position:absolute;left:0;right:0;top:calc(100% + 5px);max-height:240px;overflow-y:auto;
+  background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(20,35,60,.18);
+  padding:4px;z-index:1000;-webkit-overflow-scrolling:touch;
+}
+.compact-select.open .compact-select-menu{display:block;}
+.compact-option{display:block;width:100%;border:0;background:#fff;color:var(--ink);text-align:left;padding:9px 10px;
+  min-height:38px;border-radius:7px;font:inherit;font-size:14px;cursor:pointer;touch-action:manipulation;}
+.compact-option:active,.compact-option.selected{background:var(--indigo-soft);color:var(--indigo);font-weight:700;}
+@media(max-width:699px){
+  .compact-select-menu{max-height:220px;}
+  .compact-option{font-size:14px;padding:8px 10px;min-height:36px;}
+}
+</style>
+<style>
+/* v3 mobile input + compact student dropdown */
+input,textarea{ -webkit-user-modify:read-write-plaintext-only; -webkit-user-select:text; user-select:text; touch-action:manipulation; caret-color:var(--indigo); }
+.native-student-select{display:none!important;}
+.compact-select{position:relative;width:100%;z-index:20;}
+.compact-select-button{width:100%;min-height:40px;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:#fbfcfe;color:var(--ink);font:inherit;font-size:16px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;touch-action:manipulation;}
+.compact-select-button span{font-size:13px;color:var(--muted);}
+.compact-select.open .compact-select-button{border-color:var(--indigo-2);box-shadow:0 0 0 3px rgba(31,76,120,.15);}
+.compact-select-menu{display:none;position:absolute;left:0;right:0;top:calc(100% + 5px);max-height:220px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(20,35,60,.18);padding:4px;z-index:1000;-webkit-overflow-scrolling:touch;}
+.compact-select.open .compact-select-menu{display:block;}
+.compact-option{display:block;width:100%;border:0;background:#fff;color:var(--ink);text-align:left;padding:8px 10px;min-height:36px;border-radius:7px;font:inherit;font-size:14px;cursor:pointer;touch-action:manipulation;}
+.compact-option.selected,.compact-option:active{background:var(--indigo-soft);color:var(--indigo);font-weight:700;}
+@media(max-width:699px){input,select,textarea{font-size:16px;} .compact-select-menu{max-height:220px;} }
 </style>
 </head>
 <body><div id="appToast" role="status" aria-live="polite"></div><div id="downloadToast" role="status" aria-live="polite"></div>
@@ -216,12 +268,18 @@ tbody tr:hover{background:#F8FAFD}
       <h2>Catat pemasukan</h2>
       <div class="row3">
         <div class="field"><label for="iDate">Tanggal bayar</label><input id="iDate" type="date"></div>
-        <div class="field"><label for="iStudent">Siswa</label><select id="iStudent"><option value="">-- Kas umum / lainnya --</option></select></div>
-        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="5000"></div>
+        <div class="field"><label for="iStudent">Siswa</label>
+  <select id="iStudent" class="native-student-select"><option value="">-- Kas umum / lainnya --</option></select>
+  <div class="compact-select" id="studentPicker">
+    <button type="button" class="compact-select-button" id="studentPickerButton" aria-haspopup="listbox" aria-expanded="false">-- Kas umum / lainnya -- <span>▾</span></button>
+    <div class="compact-select-menu" id="studentPickerMenu" role="listbox"></div>
+  </div>
+</div>
+        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="number" inputmode="numeric" min="0" step="1" autocomplete="off" placeholder="5000"></div>
       </div>
       <div class="row" style="margin-top:10px">
         <div class="field"><label for="iMonthStart">Mulai bulan pembayaran</label><input id="iMonthStart" type="month"></div>
-        <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" value="1" placeholder="1"></div>
+        <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" autocomplete="off" value="1" placeholder="1"></div>
       </div>
       <div class="notice" id="incomePreview">Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.</div>
       <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Dana Kegiatan</option><option>Lainnya</option></select></div>
@@ -239,7 +297,7 @@ tbody tr:hover{background:#F8FAFD}
       <div class="row3">
         <div class="field"><label for="eDate">Tanggal</label><input id="eDate" type="date"></div>
         <div class="field"><label for="eCat">Kategori</label><select id="eCat"><option>ATK</option><option>Kegiatan</option><option>Konsumsi</option><option>Kebersihan</option><option>Lainnya</option></select></div>
-        <div class="field"><label for="eAmount">Nominal</label><input id="eAmount" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="25000"></div>
+        <div class="field"><label for="eAmount">Nominal</label><input id="eAmount" type="number" inputmode="numeric" min="0" step="1" autocomplete="off" placeholder="25000"></div>
       </div>
       <div style="margin-top:10px"><label for="eDesc">Keterangan</label><input id="eDesc" type="text" placeholder="Contoh: Beli spidol"></div>
       <div class="actions"><button type="button" id="btnExpense" class="primary">+ Simpan pengeluaran</button></div>
@@ -685,6 +743,16 @@ $('iMonths').addEventListener('input',updateIncomePreview);
 $('eAmount').addEventListener('input',()=>{});
 $('iMonthStart').addEventListener('change',updateIncomePreview);
 $('iStudent').addEventListener('change',updateIncomePreview);
+$('studentPickerButton').addEventListener('click',()=>{const p=$('studentPicker');if(p.classList.contains('open'))closeStudentPicker();else openStudentPicker();});
+document.addEventListener('click',e=>{const p=$('studentPicker');if(p&&!p.contains(e.target))closeStudentPicker();});
+$('studentPickerButton').addEventListener('click',()=>{
+  const p=$('studentPicker');
+  if(p.classList.contains('open')) closeStudentPicker(); else openStudentPicker();
+});
+document.addEventListener('click',(e)=>{
+  const p=$('studentPicker');
+  if(p && !p.contains(e.target)) closeStudentPicker();
+});
 $('btnClear').addEventListener('click',clearAll);
 $('btnSaveClassName').addEventListener('click',saveClassName);
 $('sSearch').addEventListener('input',renderStudents);
@@ -793,7 +861,50 @@ function populateStudentSelects(){
   const currentIncome=$('iStudent').value;
   $('iStudent').innerHTML='<option value="">-- Kas umum / lainnya --</option>'+sorted.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
   if(sorted.some(s=>String(s.id)===String(currentIncome))) $('iStudent').value=currentIncome;
+  syncStudentPicker();
 }
+
+function syncStudentPicker(){
+  const select=$('iStudent'), menu=$('studentPickerMenu'), button=$('studentPickerButton');
+  if(!select || !menu || !button) return;
+  menu.innerHTML='';
+  Array.from(select.options).forEach(opt=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='compact-option'+(opt.value===select.value?' selected':'');
+    b.textContent=opt.textContent; b.setAttribute('role','option');
+    b.setAttribute('aria-selected',opt.value===select.value?'true':'false');
+    b.addEventListener('click',()=>{
+      select.value=opt.value;
+      button.firstChild.textContent=opt.textContent+' ';
+      menu.querySelectorAll('.compact-option').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected');
+      closeStudentPicker();
+      updateIncomePreview();
+    });
+    menu.appendChild(b);
+  });
+  const selected=select.options[select.selectedIndex];
+  button.firstChild.textContent=(selected?selected.textContent:'-- Kas umum / lainnya --')+' ';
+}
+function closeStudentPicker(){
+  const p=$('studentPicker'), b=$('studentPickerButton');
+  if(p) p.classList.remove('open');
+  if(b) b.setAttribute('aria-expanded','false');
+}
+function openStudentPicker(){
+  const p=$('studentPicker'), b=$('studentPickerButton');
+  if(!p) return;
+  p.classList.add('open'); if(b) b.setAttribute('aria-expanded','true');
+}
+
+function syncStudentPicker(){
+  const select=$('iStudent'),menu=$('studentPickerMenu'),button=$('studentPickerButton'); if(!select||!menu||!button)return;
+  menu.innerHTML='';
+  Array.from(select.options).forEach(opt=>{const b=document.createElement('button'); b.type='button'; b.className='compact-option'+(opt.value===select.value?' selected':''); b.textContent=opt.textContent; b.setAttribute('role','option'); b.setAttribute('aria-selected',opt.value===select.value?'true':'false'); b.addEventListener('click',()=>{select.value=opt.value; button.childNodes[0].nodeValue=opt.textContent+' '; menu.querySelectorAll('.compact-option').forEach(x=>x.classList.remove('selected')); b.classList.add('selected'); closeStudentPicker(); updateIncomePreview();}); menu.appendChild(b);});
+  const selected=select.options[select.selectedIndex]; button.childNodes[0].nodeValue=(selected?selected.textContent:'-- Kas umum / lainnya --')+' ';
+}
+function closeStudentPicker(){const p=$('studentPicker'),b=$('studentPickerButton');if(p)p.classList.remove('open');if(b)b.setAttribute('aria-expanded','false');}
+function openStudentPicker(){const p=$('studentPicker'),b=$('studentPickerButton');if(p)p.classList.add('open');if(b)b.setAttribute('aria-expanded','true');}
 
 function renderStudents(){
   const q=($('sSearch').value||'').toLowerCase();
@@ -1423,6 +1534,8 @@ if(pendingToast){
   sessionStorage.removeItem(PENDING_TOAST_KEY);
   setTimeout(()=>showToast(pendingToast),150);
 }
+syncStudentPicker();
+syncStudentPicker();
 updateIncomePreview();
 })();
 </script>
