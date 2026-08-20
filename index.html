@@ -64,12 +64,13 @@ th{background:#f7f9fb}
 .monthly-table .head-2027{background:#4f7d2b}
 .monthly-table .month-2026{background:#5b1d15;color:#fff}
 .monthly-table .month-2027{background:#5b1d15;color:#fff}
-.monthly-table .paid-cell{background:#050505;color:#fff;font-weight:700}
-.monthly-table .empty-cell{background:#5b1d15;color:transparent}
-.monthly-table .total-cell{background:#050505;color:#fff;font-weight:800}
-.monthly-table .student-name{min-width:255px;text-align:left;background:#050505;color:#fff;font-weight:700}
-.monthly-table .no-cell{min-width:48px;background:#050505;color:#fff;font-weight:700}
-.monthly-table .grand-total{background:#1f4e78;color:#fff;font-weight:800}
+.monthly-table td{background:#fff;color:#111}
+.monthly-table .paid-cell{background:#fff9cc;color:#111;font-weight:700}
+.monthly-table .empty-cell{background:#fff;color:transparent}
+.monthly-table .total-cell{background:#fff;color:#111;font-weight:800}
+.monthly-table .student-name{min-width:255px;text-align:left;background:#fff;color:#111;font-weight:700}
+.monthly-table .no-cell{min-width:48px;background:#fff;color:#111;font-weight:700}
+.monthly-table .grand-total{background:#fff;color:#111;font-weight:800}
 .monthly-table .sticky-no{position:sticky;left:0;z-index:4}
 .monthly-table .sticky-name{position:sticky;left:48px;z-index:4}
 .monthly-table thead .sticky-no,.monthly-table thead .sticky-name{z-index:6}
@@ -124,27 +125,6 @@ th{background:#f7f9fb}
 #appToast.show{opacity:1;transform:translate(-50%,0);}
 </style>
 
-<style>
-table, table thead, table tbody, table tr, table td, table th{
-  background:#fff !important;
-}
-table td:not(:empty):not(:has(button)),
-table th:not(:empty){
-  background:#fff9cc !important;
-}
-table thead th{
-  background:#fff !important;
-}
-</style>
-
-<style>
-#studentMonthBox table td{
-  background:#fff !important;
-}
-#studentMonthBox table td.month-paid{
-  background:#fff9cc !important;
-}
-</style>
 </head>
 <body><div id="appToast" role="status" aria-live="polite"></div><div id="downloadToast" role="status" aria-live="polite"></div>
 <header>
