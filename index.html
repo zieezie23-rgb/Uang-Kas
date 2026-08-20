@@ -47,13 +47,16 @@ header{
   position:sticky;top:0;z-index:10;
   box-shadow:0 6px 18px rgba(15,30,50,.18);
 }
-.wrap{max-width:900px;margin:auto;padding:0 14px}
+.wrap{max-width:1180px;margin:auto;padding:0 14px}
 header .wrap{padding:0}
 h1{margin:0;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.2px}
 header p{margin:5px 0 0;opacity:.82;font-size:12.5px;font-weight:500;letter-spacing:.2px}
 h2{font-family:var(--font-display);font-weight:600}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:12px 0;margin:0;position:sticky;top:82px;background:var(--paper);z-index:8;border-bottom:1px solid var(--line)}
-.tabs button{border:0;border-radius:11px;padding:10px 14px;background:transparent;color:var(--muted);font-weight:700;font-size:13.5px;white-space:nowrap;min-height:44px;cursor:pointer;touch-action:manipulation;transition:background .15s ease,color .15s ease}
+.appShell{display:grid;grid-template-columns:270px 1fr;gap:14px;margin-top:14px;align-items:start}
+.sidebar{position:sticky;top:92px}
+.sidebar .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 1px 2px rgba(20,35,60,.04),0 8px 20px rgba(20,35,60,.05);overflow:hidden}
+.tabs{display:flex;flex-direction:column;gap:6px;padding:12px;margin:0;background:transparent;border-bottom:0}
+.tabs button{border:0;border-radius:11px;padding:10px 14px;background:transparent;color:var(--muted);font-weight:700;font-size:13.5px;white-space:nowrap;min-height:44px;cursor:pointer;touch-action:manipulation;transition:background .15s ease,color .15s ease;width:100%;text-align:left}
 .tabs button:hover{background:var(--indigo-soft);color:var(--indigo)}
 .tabs button.active{background:var(--indigo);color:#fff;box-shadow:0 4px 10px rgba(22,50,79,.25)}
 .page{display:none}.page.active{display:block;animation:fadeIn .25s ease}
@@ -91,10 +94,24 @@ tbody tr:hover{background:#F8FAFD}
 .search{margin-bottom:10px}
 @media(max-width:699px){
  .row,.row3{grid-template-columns:1fr}
- .tabs{top:80px}
  .cards{grid-template-columns:1fr 1fr}
 }
 @media(min-width:700px){.cards{grid-template-columns:repeat(4,1fr)}}
+.sideStats{display:grid;gap:10px;padding:12px;border-top:1px solid var(--line);background:linear-gradient(180deg,#fff, #fbfcfe)}
+.statBox{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.statBox .label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.statBox .val{font-family:var(--font-num);font-size:16.5px;font-weight:800;margin-top:6px}
+.statBox .val.in{color:var(--teal)}
+.statBox .val.out{color:var(--coral)}
+.statBox .val.bal{color:var(--indigo-2)}
+
+@media(max-width:900px){
+  .appShell{grid-template-columns:1fr}
+  .sidebar{position:static;top:auto}
+  .tabs{flex-direction:row;overflow-x:auto;padding:10px;background:var(--paper);border-bottom:1px solid var(--line)}
+  .tabs button{width:auto;text-align:center}
+  .sideStats{grid-template-columns:repeat(2,1fr)}
+}
 .monthly-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
 .monthly-controls .field{flex:1 1 180px}
 .monthly-table-wrap{overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:12px}
@@ -204,15 +221,39 @@ input[type="number"] { ime-mode: numeric; }
   </div>
 </header>
 
-<main class="wrap">
-  <nav class="tabs" aria-label="Menu aplikasi">
-    <button type="button" class="active" data-page="students">Siswa</button>
-    <button type="button" data-page="income">Pemasukan</button>
-    <button type="button" data-page="expense">Pengeluaran</button>
-    <button type="button" data-page="report">Rekap</button>
-     <button type="button" data-page="monthly">Rekap Bulanan</button>
-     <button type="button" data-page="tik">Rekap TIK</button>
-  </nav>
+<div class="wrap appShell">
+  <aside class="sidebar">
+    <div class="panel">
+      <nav class="tabs" aria-label="Menu aplikasi">
+        <button type="button" class="active" data-page="students">Siswa</button>
+        <button type="button" data-page="income">Pemasukan</button>
+        <button type="button" data-page="expense">Pengeluaran</button>
+        <button type="button" data-page="report">Rekap</button>
+        <button type="button" data-page="monthly">Rekap Bulanan</button>
+        <button type="button" data-page="tik">Rekap TIK</button>
+      </nav>
+      <div class="sideStats" aria-label="Ringkasan kas">
+        <div class="statBox">
+          <div class="label">Total saldo</div>
+          <div id="sideSaldo" class="val bal">-</div>
+        </div>
+        <div class="statBox">
+          <div class="label">Total pemasukan</div>
+          <div id="sideIn" class="val in">-</div>
+        </div>
+        <div class="statBox">
+          <div class="label">Total pengeluaran</div>
+          <div id="sideOut" class="val out">-</div>
+        </div>
+        <div class="statBox">
+          <div class="label">Jumlah siswa</div>
+          <div id="sideStudents" class="val">-</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
 
   <section id="students" class="page active">
     <div class="notice" style="margin-top:10px"><b>Data kas tersimpan:</b> data siswa dan transaksi disimpan lokal di HP. Versi ini mempertahankan penyimpanan data sebelumnya.</div>
@@ -362,6 +403,7 @@ input[type="number"] { ime-mode: numeric; }
     </div>
   </section>
 </main>
+</div>
 <div id="printArea" style="display:none"></div>
 
 <div id="appFooter" class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
@@ -928,6 +970,19 @@ function filtered(){
   return {inc,exp,ti:inc.reduce((s,x)=>s+Number(x.amount||0),0),te:exp.reduce((s,x)=>s+Number(x.amount||0),0)};
 }
 
+function renderSideStats(){
+  const saldoEl=$('sideSaldo');
+  const inEl=$('sideIn');
+  const outEl=$('sideOut');
+  const studentsEl=$('sideStudents');
+  if(!saldoEl && !inEl && !outEl && !studentsEl) return;
+  const {ti,te}=filtered();
+  if(saldoEl) saldoEl.textContent=rupiah(ti-te);
+  if(inEl) inEl.textContent=rupiah(ti);
+  if(outEl) outEl.textContent=rupiah(te);
+  if(studentsEl) studentsEl.textContent=(db.students?.length||0)+' siswa';
+}
+
 function sourceSummary(inc){
   const map={};
   inc.forEach(x=>{
@@ -1411,7 +1466,7 @@ function renderMonthlyTIK(){
 
 function refresh(){
   populateStudentSelects();
-  renderStudents();renderIncome();renderExpense();renderReport();renderStudentMonth();renderMonthly();renderTIK();renderMonthlyTIK();
+  renderStudents();renderIncome();renderExpense();renderReport();renderStudentMonth();renderMonthly();renderTIK();renderMonthlyTIK();renderSideStats();
 }
 
 function reportText(){
