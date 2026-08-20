@@ -612,8 +612,6 @@ function renderReport(){
   </div>
   <div style="margin-top:14px"><h3 style="font-size:14px">Rekap sumber pemasukan</h3>
   ${sources.length?`<div class="tablewrap"><table><tr><th>No</th><th>Sumber pemasukan</th><th>Transaksi</th><th>Total nominal</th></tr>${sourceRows}<tr><td colspan="3"><b>TOTAL PEMASUKAN</b></td><td class="in"><b>${rupiah(ti)}</b></td></tr></table></div>`:'<div class="empty">Tidak ada pemasukan.</div>'}
-  <h3 style="font-size:14px;margin-top:14px">Detail semua pemasukan</h3>
-  ${inc.length?'<div class="tablewrap"><table><tr><th>No</th><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th></tr>'+inc.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source||'-')}</td><td>${esc(x.desc||'-')}</td><td class="in">${rupiah(x.amount)}</td></tr>`).join('')+'</table></div>':'<div class="empty">Tidak ada pemasukan.</div>'}
   <h3 style="font-size:14px;margin-top:14px">Detail semua pengeluaran</h3>
   ${exp.length?'<div class="tablewrap"><table><tr><th>No</th><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr>'+exp.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc||'-')}</td><td class="out">${rupiah(x.amount)}</td></tr>`).join('')+'</table></div>':'<div class="empty">Tidak ada pengeluaran.</div>'}</div>`;
 }
@@ -803,9 +801,7 @@ function reportText(){
     'REKAP SUMBER PEMASUKAN'
   ];
   sourceSummary(inc).forEach(([source,v],i)=>lines.push(`${i+1}. ${source} | ${v.count} transaksi | ${rupiah(v.total)}`));
-  lines.push(`TOTAL PEMASUKAN | ${rupiah(ti)}`,'','PEMASUKAN');
-  inc.forEach((x,i)=>lines.push(`${i+1}. ${x.date} | Bulan ${x.month||String(x.date).slice(0,7)} | ${db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-'} | ${x.source||'-'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
-  lines.push('','PENGELUARAN');
+  lines.push(`TOTAL PEMASUKAN | ${rupiah(ti)}`,'','PENGELUARAN');
   exp.forEach((x,i)=>lines.push(`${i+1}. ${x.date} | ${x.cat||x.category||'Pengeluaran kas'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
   return lines.join('\n');
 }
