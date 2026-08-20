@@ -70,7 +70,7 @@ h2{font-family:var(--font-display);font-weight:600}
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .field{min-width:0}
 .field label{display:block;margin-bottom:6px}
-input,select,textarea{display:block;width:100%;min-height:46px;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:14.5px;background:#fbfcfe;color:var(--ink);outline:none;cursor:text;pointer-events:auto;touch-action:manipulation;-webkit-user-select:text;user-select:text;transition:border-color .15s ease,box-shadow .15s ease,background .15s ease}
+input,select,textarea{display:block;width:100%;min-height:40px;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;font:inherit;font-size:14px;background:#fbfcfe;color:var(--ink);outline:none;cursor:text;pointer-events:auto;position:relative;z-index:1;-webkit-user-select:text;user-select:text;transition:border-color .15s ease,box-shadow .15s ease,background .15s ease} select{cursor:pointer;min-height:40px}
 select{cursor:pointer}
 input:focus,select:focus,textarea:focus{border-color:var(--indigo-2);box-shadow:0 0 0 3px rgba(31,76,120,.15);background:#fff}
 button{font:inherit}
@@ -166,6 +166,16 @@ tbody tr:hover{background:#F8FAFD}
 }
 #appToast.show{opacity:1;transform:translate(-50%,0);}
 </style>
+
+<style>
+/* Mobile-friendly controls: compact but easy to tap/type */
+@media(max-width:699px){
+  input,select,textarea{min-height:40px;padding:8px 10px;font-size:14px;}
+  .field{min-width:0;}
+  .tabs button{min-height:38px;padding:8px 11px;font-size:12.5px;border-radius:9px;}
+  .actions button{min-height:40px;padding:9px 12px;}
+}
+</style>
 </head>
 <body><div id="appToast" role="status" aria-live="polite"></div><div id="downloadToast" role="status" aria-live="polite"></div>
 <header>
@@ -207,11 +217,11 @@ tbody tr:hover{background:#F8FAFD}
       <div class="row3">
         <div class="field"><label for="iDate">Tanggal bayar</label><input id="iDate" type="date"></div>
         <div class="field"><label for="iStudent">Siswa</label><select id="iStudent"><option value="">-- Kas umum / lainnya --</option></select></div>
-        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="number" inputmode="numeric" min="1" step="1" placeholder="5000"></div>
+        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="5000"></div>
       </div>
       <div class="row" style="margin-top:10px">
         <div class="field"><label for="iMonthStart">Mulai bulan pembayaran</label><input id="iMonthStart" type="month"></div>
-        <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" value="1" placeholder="1"></div>
+        <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" value="1" placeholder="1"></div>
       </div>
       <div class="notice" id="incomePreview">Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.</div>
       <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Dana Kegiatan</option><option>Lainnya</option></select></div>
@@ -229,7 +239,7 @@ tbody tr:hover{background:#F8FAFD}
       <div class="row3">
         <div class="field"><label for="eDate">Tanggal</label><input id="eDate" type="date"></div>
         <div class="field"><label for="eCat">Kategori</label><select id="eCat"><option>ATK</option><option>Kegiatan</option><option>Konsumsi</option><option>Kebersihan</option><option>Lainnya</option></select></div>
-        <div class="field"><label for="eAmount">Nominal</label><input id="eAmount" type="number" inputmode="numeric" min="1" step="1" placeholder="25000"></div>
+        <div class="field"><label for="eAmount">Nominal</label><input id="eAmount" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="25000"></div>
       </div>
       <div style="margin-top:10px"><label for="eDesc">Keterangan</label><input id="eDesc" type="text" placeholder="Contoh: Beli spidol"></div>
       <div class="actions"><button type="button" id="btnExpense" class="primary">+ Simpan pengeluaran</button></div>
@@ -613,9 +623,26 @@ if(!localStorage.getItem('CLEAR_INCOME_DESC_V1')){
   localStorage.setItem(KEY,JSON.stringify(db));
 }
 
+const LAST_PAGE_KEY='kasKelasLastPageV1';
+const PENDING_TOAST_KEY='kasKelasPendingToastV1';
+
 function save(){
   localStorage.setItem(KEY,JSON.stringify(db));
   refresh();
+}
+
+function saveTransactionAndReload(message){
+  localStorage.setItem(KEY,JSON.stringify(db));
+  const active=document.querySelector('.tabs button.active');
+  localStorage.setItem(LAST_PAGE_KEY,active ? active.dataset.page : 'students');
+  sessionStorage.setItem(PENDING_TOAST_KEY,message);
+  location.reload();
+}
+
+function sanitizeNumericInput(el){
+  if(!el) return;
+  const clean=el.value.replace(/[^0-9]/g,'');
+  if(el.value!==clean) el.value=clean;
 }
 
 $('iDate').value=today();
@@ -624,14 +651,16 @@ $('iMonthStart').value=today().slice(0,7);
 
 document.querySelectorAll('.tabs button').forEach(btn=>{
   btn.addEventListener('click',()=>{
+    const page=btn.dataset.page;
+    localStorage.setItem(LAST_PAGE_KEY,page);
     document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
     document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
     btn.classList.add('active');
-    $(btn.dataset.page).classList.add('active');
-    if(btn.dataset.page==='income') renderIncome();
-    if(btn.dataset.page==='expense') renderExpense();
-    if(btn.dataset.page==='report') renderReport();
-    if(btn.dataset.page==='monthly') renderMonthly();
+    $(page).classList.add('active');
+    if(page==='income') renderIncome();
+    if(page==='expense') renderExpense();
+    if(page==='report') renderReport();
+    if(page==='monthly') renderMonthly();
     window.scrollTo({top:0,behavior:'smooth'});
   });
 });
@@ -653,6 +682,7 @@ $('btnStudentWA').addEventListener('click',shareStudentWhatsApp);
   $('monthlyEnd').addEventListener('change',renderMonthly);
 $('iAmount').addEventListener('input',updateIncomePreview);
 $('iMonths').addEventListener('input',updateIncomePreview);
+$('eAmount').addEventListener('input',()=>{});
 $('iMonthStart').addEventListener('change',updateIncomePreview);
 $('iStudent').addEventListener('change',updateIncomePreview);
 $('btnClear').addEventListener('click',clearAll);
@@ -737,9 +767,7 @@ function addIncome(){
   $('iAmount').value='';
   $('iMonths').value='1';
   $('iDesc').value='';
-  save();
-  showToast(`✅ Pemasukan tersimpan • ${months} bulan • Total ${rupiah(amount*months)}`);
-  $('iAmount').focus();
+  saveTransactionAndReload(`✅ Pemasukan berhasil disimpan • ${months} bulan • Total ${rupiah(amount*months)}`);
 }
 
 function addExpense(){
@@ -747,15 +775,13 @@ function addExpense(){
   if(!amount || amount<1){alert('Nominal pengeluaran wajib diisi.');$('eAmount').focus();return;}
   db.expense.push({id:Date.now()+Math.random(),date:$('eDate').value||today(),cat:$('eCat').value,amount,desc:$('eDesc').value.trim()});
   $('eAmount').value='';$('eDesc').value='';
-  save();
-  showToast('✅ Pengeluaran berhasil disimpan.');$('eAmount').focus();
+  saveTransactionAndReload('✅ Pengeluaran berhasil disimpan.');
 }
 
 function del(type,id){
   if(confirm('Hapus transaksi ini?')){
     db[type]=db[type].filter(x=>x.id!==id);
-    save();
-    showToast(type==='income' ? '🗑️ Pemasukan berhasil dihapus.' : '🗑️ Pengeluaran berhasil dihapus.');
+    saveTransactionAndReload(type==='income' ? '🗑️ Pemasukan berhasil dihapus.' : '🗑️ Pengeluaran berhasil dihapus.');
   }
 }
 
@@ -1378,16 +1404,26 @@ function clearAll(){
 
 updateBrand();
 refresh();
-// Pastikan halaman awal selalu Daftar Siswa.
+
+// Pertahankan halaman terakhir setelah reload.
+const savedPage=localStorage.getItem(LAST_PAGE_KEY)||'students';
 document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
-const firstStudentsTab=document.querySelector('.tabs button[data-page=\"students\"]');
-if(firstStudentsTab) firstStudentsTab.classList.add('active');
 document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-if($('students')) $('students').classList.add('active');
+const savedTab=document.querySelector(`.tabs button[data-page="${savedPage}"]`) || document.querySelector('.tabs button[data-page="students"]');
+const restoredPage=savedTab ? savedTab.dataset.page : 'students';
+if(savedTab) savedTab.classList.add('active');
+if($(restoredPage)) $(restoredPage).classList.add('active');
+if(restoredPage==='income') renderIncome();
+if(restoredPage==='expense') renderExpense();
+if(restoredPage==='report') renderReport();
+if(restoredPage==='monthly') renderMonthly();
+
+const pendingToast=sessionStorage.getItem(PENDING_TOAST_KEY);
+if(pendingToast){
+  sessionStorage.removeItem(PENDING_TOAST_KEY);
+  setTimeout(()=>showToast(pendingToast),150);
+}
 updateIncomePreview();
-renderReport();
-renderStudentMonth();
-renderMonthly();
 })();
 </script>
 </body>
