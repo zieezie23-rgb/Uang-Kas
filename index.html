@@ -689,15 +689,41 @@ function studentMonthText(){
 }
 
 
+function buildStudentPrint(){
+  const data=allStudentMonthData();
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const paid=data.filter(x=>x.paidMonths>0).length;
+  return `
+    <h1>Rekap Uang Kas — Semua Siswa</h1>
+    <div class="print-meta">Diurutkan dari siswa yang sudah membayar paling banyak.</div>
+    <div class="print-cards">
+      <div class="print-card"><div class="print-label">Total seluruh iuran</div><div class="print-value in">${rupiah(grandTotal)}</div></div>
+      <div class="print-card"><div class="print-label">Jumlah siswa</div><div class="print-value">${data.length}</div></div>
+      <div class="print-card"><div class="print-label">Siswa sudah bayar</div><div class="print-value">${paid}</div></div>
+      <div class="print-card"><div class="print-label">Siswa belum bayar</div><div class="print-value">${data.length-paid}</div></div>
+    </div>
+    <h2>Rekap semua siswa</h2>
+    <table><thead><tr><th>No</th><th>Nama siswa</th><th>Sudah bayar</th><th>Total nominal</th></tr></thead><tbody>
+      ${data.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.student.name)}</td><td>${x.paidMonths} bulan</td><td class="in">${rupiah(x.total)}</td></tr>`).join('')}
+      <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td></tr>
+    </tbody></table>`;
+}
+
+function openPrintArea(html){
+  const area=$('printArea');
+  area.innerHTML=html;
+  area.style.display='block';
+  const cleanup=()=>{
+    area.style.display='none';
+    area.innerHTML='';
+    window.removeEventListener('afterprint',cleanup);
+  };
+  window.addEventListener('afterprint',cleanup);
+  setTimeout(()=>window.print(),100);
+}
+
 function downloadStudentPDF(){
-  renderStudentMonth();
-  const box=$('studentMonthBox');
-  const oldReport=$('reportBox').style.display;
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  $('report').classList.add('active');
-  box.style.display='block';
-  window.print();
-  box.style.display=oldReport;
+  openPrintArea(buildStudentPrint());
 }
 
 async function shareStudentWhatsApp(){
