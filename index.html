@@ -415,44 +415,78 @@ DAFTAR_SISWA_AWAL.forEach((name, i) => {
 });
 localStorage.setItem(KEY, JSON.stringify(db));
 
-// DATA PEMASUKAN AWAL — diambil dari tabel pengguna (20 transaksi, total Rp1.060.000).
-// Setiap baris diperluas menjadi pembayaran per bulan agar rekap bulanan tetap akurat.
-const NEW_INCOME_BATCH='IMAGE_AUG2026_KAS_V2';
-if(!localStorage.getItem('IMAGE_AUG2026_KAS_V2_APPLIED')){
-  // Hanya hapus batch pemasukan awal versi sebelumnya; data pemasukan manual pengguna tetap dipertahankan.
-  db.income = db.income.filter(x => x.batchId !== 'INITIAL_AUG2026_KAS' && x.batchId !== 'IMAGE_AUG2026_KAS_V1');
+// DATA PEMASUKAN (DISET SESUAI SCREENSHOT):
+// - Semua pemasukan akan DIGANTI sesuai tabel yang diberikan user
+// - Di-breakdown per bulan @Rp10.000
+// - Mulai dari Agustus 2026
+// Catatan: kita simpan backup pemasukan lama sekali saja, supaya bisa dipulihkan kalau perlu.
+const NEW_INCOME_BATCH='IMAGE_AUG2026_KAS_V3';
+const INCOME_BACKUP_KEY='INCOME_BACKUP_BEFORE_IMAGE_AUG2026_KAS_V3';
+if(!localStorage.getItem('IMAGE_AUG2026_KAS_V3_APPLIED')){
+  if(!localStorage.getItem(INCOME_BACKUP_KEY)){
+    try{ localStorage.setItem(INCOME_BACKUP_KEY, JSON.stringify(db.income||[])); }catch(e){}
+  }
+
+  // Sesuai permintaan: ubah SEMUA data pemasukan menjadi data dari screenshot.
+  db.income = [];
+
+  const PAY_DATE='2026-08-20';
+  const START_MONTH='2026-08';
   const imageIncomeRows=[
-    {date:'2026-07-16',months:11,start:'2026-08',name:'ARA TRIA UTOMO'},
-    {date:'2026-07-28',months:5,start:'2026-08',name:'ALVAN SHATA A'},
-    {date:'2026-08-01',months:10,start:'2026-08',name:'RADEYA PUTRI HARIANATA'},
-    {date:'2026-08-03',months:11,start:'2026-08',name:'KEANU ALTHAF SYABIL'},
-    {date:'2026-08-03',months:1,start:'2026-08',name:'ALFARUQ ZIKRI'},
-    {date:'2026-08-03',months:3,start:'2026-08',name:'ATHAR AL FATIH'},
-    {date:'2026-08-03',months:5,start:'2026-08',name:'AZRIL WAZZA P'},
-    {date:'2026-08-03',months:11,start:'2026-08',name:'FADIL AL PATIH'},
-    {date:'2026-08-03',months:1,start:'2026-08',name:'KEEANU ATHALLAH RIO'},
-    {date:'2026-08-03',months:1,start:'2026-08',name:'KEENAN ARSHAKA RIO'},
-    {date:'2026-08-03',months:2,start:'2026-08',name:'RAFFASYA FATIH AL FIRDAUS'},
-    {date:'2026-08-04',months:5,start:'2026-08',name:'SITI KHALISA NATHIFA'},
-    {date:'2026-08-05',months:3,start:'2026-08',name:'GALANG ARJITYA'},
-    {date:'2026-08-05',months:5,start:'2026-08',name:'HISYAM AL FARIZKI'},
-    {date:'2026-08-06',months:3,start:'2026-08',name:'HAIDAR SHAQIL F'},
-    {date:'2026-08-06',months:1,start:'2027-06',name:'RADEYA PUTRI HARIANATA'},
-    {date:'2026-08-07',months:5,start:'2026-08',name:'M RASYA RAMADHAN'},
-    {date:'2026-08-07',months:10,start:'2026-08',name:'FAHIR AFDAL'},
-    {date:'2026-08-11',months:2,start:'2026-08',name:'ALIKA NAYYA A'},
-    {date:'2026-08-20',months:11,start:'2026-08',name:'RAFFASYA BYANZA N'},
+    {name:'ALFARUQ ZIKRI', months:1},
+    {name:'ALIKA NAYYA A', months:2},
+    {name:'ALVAN SHATA A', months:5},
+    {name:'ARA TRIA UTOMO', months:11},
+    {name:'ATHAR AL FATIH', months:3},
+    {name:'AYNINDIRRA PUTRI M', months:0},
+    {name:'AZRIL WAZZA P', months:5},
+    {name:'CHERLY MARCELIN', months:0},
+    {name:'FADIL AL PATIH', months:11},
+    {name:'FAHIR AFDAL', months:10},
+    {name:'GALANG ARJITYA', months:3},
+    {name:'HAFIKA MAKAILA', months:0},
+    {name:'HISYAM AL FARIZKI', months:5},
+    {name:'HAIDAR SHAQIL F', months:3},
+    {name:'INARA SAKHI A', months:0},
+    {name:'KALA NAIRA ZAIDA', months:0},
+    {name:'KEANU ALTHAF SYABIL', months:11},
+    {name:'KIRANA MAHARANI F', months:0},
+    {name:'MUHAMMAD ALIF FAREZA', months:0},
+    {name:'M RASYA RAMADHAN', months:5},
+    {name:'M RIZKI RAMADHAN', months:0},
+    {name:'NUR AZIZAH AL WAISY', months:0},
+    {name:'PRIYA ABDI KURNIAWAN', months:0},
+    {name:'RADEYA PUTRI HARIANATA', months:11},
+    {name:'RAFFA FEBRIAN PRATAMA', months:0},
+    {name:'RAFFASYA BYANZA N', months:11},
+    {name:'RAFFASYA FATIH AL FIRDAUS', months:2},
+    {name:'SITI AYRA FARZANA', months:0},
+    {name:'SITI KHALISA NATHIFA', months:5},
+    {name:'YUMNA FARIHA', months:0},
+    {name:'KEEANU ATHALLAH RIO', months:1},
+    {name:'KEENAN ARSHAKA RIO', months:1},
   ];
-  let nextId=930000000;
-  imageIncomeRows.forEach((r,rowIndex)=>{
+
+  let nextId=940000000;
+  imageIncomeRows.forEach((r)=>{
     const student=(db.students.find(s=>s.name===r.name)||{});
-    const startDate=new Date(r.start+'-01T00:00:00');
-    for(let m=0;m<r.months;m++){
+    const startDate=new Date(START_MONTH+'-01T00:00:00');
+    for(let m=0;m<(Number(r.months)||0);m++){
       const d=new Date(startDate); d.setMonth(d.getMonth()+m);
-      db.income.push({id:nextId++,batchId:NEW_INCOME_BATCH,date:r.date,studentId:student.id||'',month:d.toISOString().slice(0,7),source:'Uang kas siswa',amount:10000,desc:''});
+      db.income.push({
+        id:nextId++,
+        batchId:NEW_INCOME_BATCH,
+        date:PAY_DATE,
+        studentId:student.id||'',
+        month:d.toISOString().slice(0,7),
+        source:'Uang kas siswa',
+        amount:10000,
+        desc:`Kas ${d.toISOString().slice(0,7)}`
+      });
     }
   });
-  localStorage.setItem('IMAGE_AUG2026_KAS_V2_APPLIED','1');
+
+  localStorage.setItem('IMAGE_AUG2026_KAS_V3_APPLIED','1');
   localStorage.setItem(KEY,JSON.stringify(db));
 }
 
