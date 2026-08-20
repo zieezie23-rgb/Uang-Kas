@@ -209,7 +209,7 @@ input[type="number"] { ime-mode: numeric; }
     <button type="button" class="active" data-page="students">Siswa</button>
     <button type="button" data-page="income">Pemasukan</button>
     <button type="button" data-page="expense">Pengeluaran</button>
-    <button type="button" data-page="report">Rekap</button>
+    <button type="button" data-page="report">Rekap Kas</button>
      <button type="button" data-page="monthly">Rekap Bulanan</button>
      <button type="button" data-page="tik">Rekap TIK</button>
   </nav>
@@ -340,6 +340,10 @@ input[type="number"] { ime-mode: numeric; }
     <div class="section">
       <h2>💻 Rekap Iuran TIK</h2>
       <div class="notice">Halaman ini khusus untuk <b>Iuran TIK</b> (pemasukan) dan <b>Setoran TIK</b> (pengeluaran).</div>
+      <div class="actions">
+        <button type="button" id="btnTikPDF" class="primary">📄 Simpan PDF</button>
+        <button type="button" id="btnTikWA" class="primary">💬 Share WhatsApp</button>
+      </div>
       <div id="tikBox" style="margin-top:14px"></div>
     </div>
     <div class="section">
@@ -676,6 +680,8 @@ $('btnMonthlyPDF').addEventListener('click',downloadMonthlyPDF);
 $('btnMonthlyWA').addEventListener('click',shareMonthlyWhatsApp);
 $('monthlyStart').addEventListener('change',renderMonthly);
 $('monthlyEnd').addEventListener('change',renderMonthly);
+$('btnTikPDF').addEventListener('click',downloadTikPDF);
+$('btnTikWA').addEventListener('click',shareTikWhatsApp);
 $('btnTikMonthlyRefresh').addEventListener('click',renderMonthlyTIK);
 $('tikMonthlyStart').addEventListener('change',renderMonthlyTIK);
 $('tikMonthlyEnd').addEventListener('change',renderMonthlyTIK);
@@ -1407,6 +1413,160 @@ function renderMonthlyTIK(){
       </table>
     </div>
     <div class="small" style="margin-top:8px">Angka per bulan diambil dari transaksi pemasukan dengan sumber <b>Iuran TIK</b> pada bulan tersebut.</div>`;
+}
+
+function tikReportText(){
+  const {inc,exp,ti,te}=tikFiltered();
+  const saldo=ti-te;
+  const expRows=[...exp].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||Number(b.id||0)-Number(a.id||0));
+  const start=$('tikMonthlyStart')?.value||'2026-08';
+  const end=$('tikMonthlyEnd')?.value||'2027-06';
+  const months=buildMonthRange(start,end);
+  const isTIKText=(s)=>/\bTIK\b/i.test(String(s||''));
+  const monthlyData=monthlyMatrixDataIncome(months, x=>String(x.source||'')==='Iuran TIK' || isTIKText(x.desc));
+  const grandTotal=monthlyData.reduce((s,x)=>s+x.total,0);
+
+  const lines=[
+    'REKAP IURAN TIK - '+getAppName().toUpperCase(),
+    '',
+    `Total iuran TIK: ${rupiah(ti)}`,
+    `Total setoran TIK: ${rupiah(te)}`,
+    `Saldo TIK: ${rupiah(saldo)}`,
+    `Siswa terdaftar: ${db.students.length}`,
+    '',
+    'DETAIL PENGELUARAN SETORAN TIK'
+  ];
+  if(expRows.length){
+    expRows.forEach((x,i)=>lines.push(`${i+1}. ${x.date||'-'} | ${x.desc||'-'} | ${rupiah(x.amount)}`));
+  } else {
+    lines.push('Belum ada pengeluaran Setoran TIK.');
+  }
+  lines.push(`TOTAL PENGELUARAN: ${rupiah(te)}`,'',`REKAP BULANAN TIK (${monthLongLabel(start)} - ${monthLongLabel(end)})`);
+  if(monthlyData.length){
+    monthlyData.forEach((x,i)=>lines.push(`${i+1}. ${x.student.name} | ${rupiah(x.total)}`));
+  } else {
+    lines.push('Belum ada siswa.');
+  }
+  lines.push(`TOTAL SEMUA SISWA: ${rupiah(grandTotal)}`);
+  return lines.join('\n');
+}
+
+async function shareTikWhatsApp(){
+  const text=tikReportText();
+  if(navigator.share){
+    try{await navigator.share({title:'Rekap Iuran TIK - '+getAppName(),text});return;}catch(e){}
+  }
+  location.href='https://wa.me/?text='+encodeURIComponent(text);
+}
+
+function downloadTikPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+
+  const {inc,exp,ti,te}=tikFiltered();
+  const saldo=ti-te;
+  const expRows=[...exp].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||Number(b.id||0)-Number(a.id||0));
+
+  const start=$('tikMonthlyStart')?.value||'2026-08';
+  const end=$('tikMonthlyEnd')?.value||'2027-06';
+  const months=buildMonthRange(start,end);
+  const isTIKText=(s)=>/\bTIK\b/i.test(String(s||''));
+  const monthlyData=monthlyMatrixDataIncome(months, x=>String(x.source||'')==='Iuran TIK' || isTIKText(x.desc));
+  const grandTotal=monthlyData.reduce((s,x)=>s+x.total,0);
+  const groups=monthlyHeaderGroups(months);
+
+  const noW=9,nameW=48,totalW=20,monthW=13;
+  const monthlyWidths=[noW,nameW,totalW,...months.map(()=>monthW)];
+  const marginLR=8;
+  const pageWidth=Math.max(190, marginLR*2+monthlyWidths.reduce((a,b)=>a+b,0));
+  const titleTop=22;
+
+  function drawContent(doc){
+    doc.setFontSize(15);
+    doc.text('Rekap Iuran TIK - '+getAppName(), marginLR, 12);
+    doc.setFontSize(8.5);
+    doc.text('Semua data pada halaman Rekap TIK', marginLR, 18);
+
+    doc.autoTable({
+      startY:titleTop,
+      head:[['Total iuran TIK','Total setoran TIK','Saldo TIK','Siswa terdaftar']],
+      body:[[rupiah(ti),rupiah(te),rupiah(saldo),String(db.students.length)]],
+      styles:{fontSize:9,cellPadding:3,halign:'center'},
+      headStyles:{fillColor:[23,105,170]},
+      margin:{left:marginLR,right:marginLR}
+    });
+
+    let y=doc.lastAutoTable.finalY+9;
+    doc.setFontSize(11);
+    doc.text('Detail pengeluaran Setoran TIK',marginLR,y);
+    doc.autoTable({
+      startY:y+4,
+      head:[['No','Tanggal','Keterangan','Nominal']],
+      body:(expRows.length ? expRows.map((x,i)=>[i+1,x.date||'-',x.desc||'-',rupiah(x.amount)]) : [['-','-','Belum ada pengeluaran Setoran TIK','Rp 0']])
+        .concat([['','','TOTAL',rupiah(te)]]),
+      styles:{fontSize:8,cellPadding:2},
+      headStyles:{fillColor:[23,105,170]},
+      margin:{left:marginLR,right:marginLR}
+    });
+
+    y=doc.lastAutoTable.finalY+9;
+    doc.setFontSize(11);
+    doc.text(`Rekap Bulanan TIK (${monthLongLabel(start)} - ${monthLongLabel(end)})`,marginLR,y);
+
+    const head1=[
+      {content:'NO', rowSpan:2},
+      {content:'NAMA SISWA', rowSpan:2},
+      {content:'TOTAL TIK', rowSpan:2},
+      ...groups.map(g=>({content:g.year, colSpan:g.count}))
+    ];
+    const head2=months.map(monthLabel);
+    const body=monthlyData.map((x,i)=>[i+1,x.student.name,rupiah(x.total),...x.values.map(v=>v?kasCellAmount(v):'')]);
+    const totals=['','TOTAL',rupiah(grandTotal),...months.map((ym,j)=>{
+      const t=monthlyData.reduce((s,x)=>s+x.values[j],0); return t?kasCellAmount(t):'';
+    })];
+
+    doc.autoTable({
+      startY:y+4,
+      head:[head1,head2],
+      body:(monthlyData.length ? body : [[ '-','Belum ada siswa','', ...months.map(()=>'')]]).concat([totals]),
+      styles:{fontSize:7,cellPadding:1.4,halign:'center',valign:'middle',overflow:'linebreak'},
+      headStyles:{fillColor:[22,50,79],textColor:255,fontStyle:'bold',halign:'center',valign:'middle'},
+      columnStyles:Object.fromEntries(monthlyWidths.map((w,i)=>[i,{cellWidth:w}])),
+      margin:{left:marginLR,right:marginLR},
+      tableWidth:'wrap',
+      theme:'grid',
+      didParseCell:function(d){
+        if(d.section==='head' && d.row.index===0 && (d.cell.raw==='2026'||d.cell.raw==='2027')){
+          d.cell.styles.fillColor=d.cell.raw==='2026'?[138,90,34]:[63,122,87];
+        }
+        if(d.section==='head' && d.row.index===1){
+          d.cell.styles.fillColor=[31,76,120];
+        }
+        if(d.section==='body' && d.row.index===monthlyData.length){
+          d.cell.styles.fillColor=[22,50,79]; d.cell.styles.textColor=255; d.cell.styles.fontStyle='bold';
+        }
+        if(d.section==='body' && d.row.index<monthlyData.length && d.column.index===1){
+          d.cell.styles.halign='left';
+        }
+        if(d.section==='body' && d.row.index<monthlyData.length && d.column.index>=3 && d.cell.raw!==''){
+          d.cell.styles.fillColor=[227,245,241];
+          d.cell.styles.textColor=[11,109,95];
+        }
+      }
+    });
+  }
+
+  const scratch=new JSPDF({unit:'mm',format:[pageWidth,3000]});
+  drawContent(scratch);
+  const contentHeight=scratch.lastAutoTable.finalY;
+  const pageHeight=Math.max(120,contentHeight+10);
+
+  const doc=new JSPDF({unit:'mm',format:[pageWidth,pageHeight]});
+  drawContent(doc);
+
+  doc.save('Rekap-Iuran-TIK.pdf');
+  showToast('✅ PDF Rekap TIK (1 halaman) berhasil dibuat dan diunduh.');
+  showDownloadToast('✅ PDF Rekap TIK (1 halaman) berhasil dibuat dan diunduh.');
 }
 
 function refresh(){
