@@ -368,6 +368,9 @@ const LAST_PAGE_KEY='kasKelasLastPageV1';
 const PENDING_TOAST_KEY='kasKelasPendingToastV1';
 const $=id=>document.getElementById(id);
 const today=()=>new Date().toISOString().slice(0,10);
+// Biar aman di timezone Indonesia: jangan ambil bulan dari toISOString() (bisa mundur jadi bulan sebelumnya).
+// Kita bentuk YYYY-MM dari tanggal lokal.
+const ymLocal=(d)=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 const rupiah=n=>{
   const v=Number(n)||0;
   if(v===0) return '-';
@@ -463,10 +466,10 @@ if(!localStorage.getItem('IMAGE_AUG2026_KAS_V3_APPLIED')){
         batchId:NEW_INCOME_BATCH,
         date:PAY_DATE,
         studentId:student.id||'',
-        month:d.toISOString().slice(0,7),
+        month:ymLocal(d),
         source:'Uang kas siswa',
         amount:10000,
-        desc:`Kas ${d.toISOString().slice(0,7)}`
+        desc:`Kas ${ymLocal(d)}`
       });
     }
   });
@@ -600,7 +603,7 @@ function addIncome(){
   for(let i=0;i<months;i++){
     const d=new Date(startMonth+'-01T00:00:00');
     d.setMonth(d.getMonth()+i);
-    const ym=d.toISOString().slice(0,7);
+    const ym=ymLocal(d);
     db.income.push({
       id:Date.now()+Math.random(),
       batchId,
@@ -938,7 +941,7 @@ function buildMonthRange(start,end){
   const d=new Date(a);
   let guard=0;
   while(d<=b && guard<60){
-    out.push(d.toISOString().slice(0,7));
+    out.push(ymLocal(d));
     d.setMonth(d.getMonth()+1);
     guard++;
   }
