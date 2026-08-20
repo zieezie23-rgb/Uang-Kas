@@ -478,6 +478,38 @@ if(!localStorage.getItem('IMAGE_AUG2026_KAS_V3_APPLIED')){
   localStorage.setItem(KEY,JSON.stringify(db));
 }
 
+// Isi data pengeluaran dari screenshot (sekali saja).
+// Catatan: data yang sudah ada tidak dihapus; hanya menambahkan yang belum ada.
+const EXPENSE_BATCH_FROM_SCREENSHOT='IMAGE_JUL_AUG2026_EXPENSE_V3';
+const EXPENSE_SCREENSHOT_APPLIED_KEY='IMAGE_JUL_AUG2026_EXPENSE_V3_APPLIED';
+if(!localStorage.getItem(EXPENSE_SCREENSHOT_APPLIED_KEY)){
+  const rows=[
+    {date:'2026-07-27', cat:'Kegiatan', amount:120000, desc:'Kenang-kenangan Faeyza Al Ghifari'},
+    {date:'2026-07-31', cat:'ATK', amount:50000, desc:'Membeli Gantungan Map'},
+    {date:'2026-08-03', cat:'Kegiatan', amount:100000, desc:'Menjenguk Khitan Hisyam Al Farizki'},
+    {date:'2026-08-03', cat:'Kegiatan', amount:100000, desc:'Menjenguk Khitan Fahir Afdal'},
+  ];
+  rows.forEach(r=>{
+    const exists=(db.expense||[]).some(x=>
+      String(x.date||'')===r.date &&
+      Number(x.amount||0)===Number(r.amount||0) &&
+      String(x.desc||'')===r.desc
+    );
+    if(!exists){
+      db.expense.push({
+        id:Date.now()+Math.random(),
+        batchId:EXPENSE_BATCH_FROM_SCREENSHOT,
+        date:r.date,
+        cat:r.cat,
+        amount:r.amount,
+        desc:r.desc
+      });
+    }
+  });
+  localStorage.setItem(EXPENSE_SCREENSHOT_APPLIED_KEY,'1');
+  localStorage.setItem(KEY,JSON.stringify(db));
+}
+
 function save(){
   localStorage.setItem(KEY,JSON.stringify(db));
   refresh();
@@ -612,7 +644,8 @@ function addIncome(){
       month:ym,
       source:$('iSource').value,
       amount,
-      desc:$('iDesc').value.trim() || `Kas ${ym}`
+      // Keterangan pemasukan boleh dikosongkan
+      desc:$('iDesc').value.trim()
     });
   }
 
