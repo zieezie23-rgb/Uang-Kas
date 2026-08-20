@@ -95,8 +95,11 @@ th{background:#f7f9fb}
  @page{size:auto;margin:12mm}
 }
 </style>
-</head>
-<body>
+<style>
+#downloadToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1f2937;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:99999;max-width:90%;text-align:center}
+#downloadToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style></head>
+<body><div id="downloadToast" role="status" aria-live="polite"></div>
 <header>
   <div class="wrap">
     <h1 id="appTitle">💰 Uang Kas Kelas</h1>
@@ -234,6 +237,15 @@ th{background:#f7f9fb}
 <script>
 (function(){
 'use strict';
+function showDownloadToast(message){
+  const toast=document.getElementById('downloadToast');
+  if(!toast)return;
+  toast.textContent=message;
+  toast.classList.add('show');
+  clearTimeout(window.__downloadToastTimer);
+  window.__downloadToastTimer=setTimeout(()=>toast.classList.remove('show'),2600);
+}
+
 
 const KEY='kasKelasV3';
 const $=id=>document.getElementById(id);
@@ -1006,32 +1018,34 @@ function downloadMonthlyPDF(){
 
   const head2=months.map(ym=>({content:monthLabel(ym)}));
 
-  const widths=[9,54,21,...months.map(()=>16)];
+  const widths=[8,54,18,...months.map(()=>15.2)];
   const pageWidth=doc.internal.pageSize.getWidth();
   const usableWidth=pageWidth-16;
   const rawTotal=widths.reduce((a,b)=>a+b,0);
   const scale=Math.min(1,usableWidth/rawTotal);
   const scaledWidths=widths.map(w=>w*scale);
 
-  doc.setFontSize(15);
-  doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),8,10);
-  doc.setFontSize(8.5);
-  doc.text(`Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)} | ${months.length} bulan | ${data.length} siswa`,8,16);
+  // Dipadatkan agar seluruh 32 siswa + header + total muat dalam 1 halaman A4 landscape.
+  doc.setFontSize(10);
+  doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),4,6.5);
+  doc.setFontSize(5.5);
+  doc.text(`Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)} | ${months.length} bulan | ${data.length} siswa`,4,10);
 
   doc.autoTable({
-    startY:20,
+    startY:12,
     head:[head1,head2],
     body:body.concat([totals]),
-    margin:{left:8,right:8,top:20,bottom:10},
-    tableWidth:usableWidth,
+    margin:{left:4,right:4,top:12,bottom:4},
+    tableWidth:pageWidth-8,
     theme:'grid',
     styles:{
-      fontSize:7.1,
-      cellPadding:{top:1.5,right:1.2,bottom:1.5,left:1.2},
+      fontSize:5.5,
+      cellPadding:{top:0.45,right:0.45,bottom:0.45,left:0.45},
       halign:'center',
       valign:'middle',
-      lineWidth:0.25,
-      overflow:'hidden'
+      lineWidth:0.18,
+      overflow:'hidden',
+      minCellHeight:4.55
     },
     headStyles:{
       fillColor:[31,78,120],
@@ -1050,7 +1064,7 @@ function downloadMonthlyPDF(){
         } else if(d.row.index===1 && d.column.index>=3){
           const ym=months[d.column.index-3]||'';
           d.cell.styles.fillColor=ym.startsWith('2026')?[91,29,21]:[61,103,32];
-          d.cell.styles.fontSize=7;
+          d.cell.styles.fontSize=5.3;
         }
       }
       if(d.section==='body'){
@@ -1061,17 +1075,25 @@ function downloadMonthlyPDF(){
           d.cell.styles.fontStyle='bold';
         } else if(d.column.index===1){
           d.cell.styles.halign='left';
+        } else if(d.column.index>=3){
+          // Nominal yang sudah dibayar diberi kuning tipis agar mudah dibaca.
+          const raw=d.cell.raw;
+          if(raw!=='' && raw!==null && raw!==undefined){
+            d.cell.styles.fillColor=[255,248,190];
+            d.cell.styles.textColor=[25,25,25];
+          }
         }
       }
     },
     didDrawPage:function(d){
-      doc.setFontSize(7);
-      doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),8,doc.internal.pageSize.getHeight()-5);
-      doc.text('Halaman '+doc.internal.getNumberOfPages(),pageWidth-28,doc.internal.pageSize.getHeight()-5);
+      doc.setFontSize(4.5);
+      doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),4,doc.internal.pageSize.getHeight()-2.5);
+      doc.text('Halaman '+doc.internal.getNumberOfPages(),pageWidth-18,doc.internal.pageSize.getHeight()-2.5);
     }
   });
 
   doc.save('Rekap-Kas-Per-Siswa-Per-Bulan.pdf');
+  showDownloadToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
 }
 
 function refresh(){
