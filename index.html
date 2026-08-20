@@ -195,24 +195,35 @@ input[type="number"] { ime-mode: numeric; }
 .compact-option.selected { background:var(--indigo-soft); color:var(--indigo); font-weight:700; }
 .field, .row, .row3, .section { position:relative; }
 @media(max-width:699px){ input,textarea,select{font-size:16px!important; min-height:40px;} .compact-select-menu{max-height:180px;} }
-</style>
+\n/* ===== Modern dashboard layout ===== */\nbody{background:#f4f7fb;padding-bottom:30px}\nheader{height:76px;padding:0 18px;position:sticky;top:0;z-index:30;background:linear-gradient(110deg,#0d3b67,#124d80);box-shadow:0 3px 12px rgba(9,42,72,.18)}\n.topbar{height:76px;max-width:none;margin:0;display:flex;align-items:center;gap:18px}.hamburger{border:0;background:transparent;color:#fff;font-size:27px;cursor:pointer}.brand{display:flex;align-items:center;gap:12px;flex:1}.brand-icon{font-size:34px}.brand h1{font-family:var(--font-body);font-size:22px;margin:0;font-weight:800}.brand p{font-size:12px;margin:2px 0 0;color:#dceafb}.settings-btn{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.06);color:#fff;border-radius:9px;padding:8px 12px;font-weight:700}.wrap{max-width:none;margin:0;padding:0 12px}\nmain.wrap{display:block;padding:10px 12px 30px 214px;max-width:none}\n.tabs{position:fixed;left:9px;top:86px;width:194px;height:calc(100vh - 96px);display:flex;flex-direction:column;gap:0;padding:0;margin:0;background:#fff;border:1px solid #e0e6ed;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(18,48,78,.07);z-index:20}\n.tabs button{width:100%;text-align:left;border:0;border-bottom:1px solid #e7ebf0;border-radius:0;background:#fff;color:#17395e;padding:13px 18px;min-height:50px;font-size:14px}.tabs button:hover{background:#f3f8fc}.tabs button.active{background:#e4f5ee;color:#087a45;box-shadow:none}.tabs button.dashboard-link{color:#17395e}.tabs button:nth-child(3){color:#0a7d48}.tabs button:nth-child(4){color:#183d67}.tabs button:nth-child(5){color:#183d67}.tabs button:nth-child(6){color:#7c3aa6}.tabs button:nth-child(7){color:#d88912}\n.tabs:after{content:'?  Panduan';margin-top:auto;background:#0f4a7b;color:#fff;padding:12px 18px;margin:12px 10px;border-radius:8px;text-align:center;font-weight:700}\n.page{display:none}.page.active{display:block}.content-head{background:#fff;border:1px solid #e1e7ef;border-radius:10px;padding:17px 18px 12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(18,48,78,.05)}.page-title{display:flex;align-items:center;gap:10px}.page-title h2{margin:0;font-family:var(--font-body);font-size:20px;color:#17395e;font-weight:800}.title-icon{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:20px}.income-icon{background:#19a15f}.toolbar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}.toolbar button{min-height:40px}.soft-btn{border:0;background:#edf8f3;color:#13824d;border-radius:9px;padding:10px 15px;font-weight:700}.content-head+.form-card{margin-top:0}.form-card{display:none}.form-card.open{display:block}.section{border-radius:10px;border:1px solid #e1e7ef;box-shadow:0 2px 8px rgba(18,48,78,.05);background:#fff}.filterbar{display:grid;grid-template-columns:1.4fr 1fr auto;gap:10px;margin:10px 0}.filterbar .search{margin:0}.filterbar input,.filterbar select,.filter-btn{height:40px;min-height:40px;border:1px solid #d7dee7;border-radius:7px;background:#fff}.filter-btn{padding:0 13px;color:#34485e;font-weight:700}.table-section{padding:0;overflow:hidden}.tablewrap{border:0;border-radius:10px;overflow:auto}.income-modern{border-collapse:separate;border-spacing:0;width:100%;font-size:12px}.income-modern th{background:#0f4775;color:#fff;text-transform:none;font-size:11px;padding:9px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.35)}.income-modern td{padding:8px 8px;border-right:1px solid #e2e8ef;border-bottom:1px solid #e2e8ef;background:#fff;white-space:nowrap;text-align:center}.income-modern td.name-cell{text-align:left;min-width:210px}.income-modern .total-money{font-weight:800}.icon-btn{width:30px;height:30px;border-radius:5px;background:#fff;margin:0 2px;cursor:pointer;font-weight:800}.icon-btn.edit{border:1px solid #a9c3df;color:#0e4c82}.icon-btn.del{border:1px solid #efb8b3;color:#df4a42}.table-footer{display:flex;justify-content:space-between;padding:12px;font-size:12px;color:#5d6d80}.table-footer b{color:#0d8a4c}.info-box{margin:0 10px 12px;padding:12px 14px;background:#eefaf4;border:1px solid #c9ead9;border-radius:7px;color:#185c3e;font-size:11.5px}.info-box ul{margin:6px 0 0;padding-left:18px}.cards{gap:10px}.card{border-left:0;border-radius:8px}.studentPicker,.compact-select-menu{position:relative}.compact-select-menu{max-height:180px;overflow:auto}.compact-select-button{height:40px;min-height:40px;border:1.5px solid var(--line);border-radius:9px;background:#fff;width:100%;padding:0 10px;display:flex;justify-content:space-between;align-items:center;color:var(--ink)}\n@media(max-width:899px){main.wrap{padding-left:12px}.tabs{position:sticky;top:76px;width:100%;height:auto;flex-direction:row;overflow-x:auto;border-radius:0;margin:-1px 0 10px;z-index:15}.tabs button{width:auto;min-width:max-content;border-bottom:0}.tabs:after{display:none}.dashboard-link{display:none}.filterbar{grid-template-columns:1fr}.toolbar{gap:7px}.toolbar button{flex:1}.income-modern{min-width:920px}.content-head{padding:14px}.settings-btn span{display:none}.brand p{display:none}}\n\n.sidebar-stats{margin-top:8px;padding:0 10px 10px;display:grid;gap:9px}.side-stat{background:#f8fafc;border:1px solid #e1e7ef;border-radius:7px;padding:11px 8px;text-align:center}.side-stat span{display:block;font-size:10px;color:#52657b;font-weight:800;margin-bottom:5px}.side-stat b{display:block;font-size:16px;color:#0e4776}.side-stat.green{background:#eefaf4}.side-stat.green span,.side-stat.green b{color:#108047}.side-stat.red{background:#fff5f4}.side-stat.red span,.side-stat.red b{color:#df3f38}.side-stat.blue{background:#f2f7fd}.side-stat.blue span,.side-stat.blue b{color:#1859ad}\n@media(max-width:899px){.sidebar-stats{display:none}}\n</style>
 
 </head>
 <body><div id="appToast" role="status" aria-live="polite"></div><div id="downloadToast" role="status" aria-live="polite"></div>
 <header>
-  <div class="wrap">
-    <h1 id="appTitle">💰 Uang Kas Kelas</h1>
-    <p>Daftar siswa • Pemasukan • Pengeluaran • Rekap • PDF • WhatsApp</p>
+  <div class="topbar">
+    <button type="button" class="hamburger" aria-label="Menu">☰</button>
+    <div class="brand">
+      <div class="brand-icon">💰</div>
+      <div><h1 id="appTitle">Uang Kas Kelas</h1><p>Kelola pemasukan, pengeluaran, dan rekap kas kelas dengan mudah</p></div>
+    </div>
+    <button type="button" class="settings-btn">⚙️ <span>Pengaturan</span></button>
   </div>
 </header>
 
 <main class="wrap">
   <nav class="tabs" aria-label="Menu aplikasi">
-    <button type="button" class="active" data-page="students">Siswa</button>
+    <button type="button" data-page="students" class="dashboard-link">⌂ &nbsp; Dashboard</button>
+    <button type="button" class="active" data-page="students">♟ &nbsp; Siswa</button>
     <button type="button" data-page="income">Pemasukan</button>
     <button type="button" data-page="expense">Pengeluaran</button>
     <button type="button" data-page="report">Rekap</button>
-     <button type="button" data-page="monthly">Rekap Bulanan</button>
+     <button type="button" data-page="monthly">▣ &nbsp; Rekap Per Bulan</button>
+    <div class="sidebar-stats">
+      <div class="side-stat green"><span>TOTAL SALDO</span><b id="sideBalance">Rp0</b></div>
+      <div class="side-stat"><span>TOTAL PEMASUKAN</span><b id="sideIncome">Rp0</b></div>
+      <div class="side-stat red"><span>TOTAL PENGELUARAN</span><b id="sideExpense">Rp0</b></div>
+      <div class="side-stat blue"><span>JUMLAH SISWA</span><b id="sideStudents">0 Siswa</b></div>
+    </div>
   </nav>
 
   <section id="students" class="page active">
@@ -233,32 +244,26 @@ input[type="number"] { ime-mode: numeric; }
   </section>
 
   <section id="income" class="page">
-    <div class="section">
+  <div class="content-head">
+    <div class="page-title"><span class="title-icon income-icon">↓</span><h2>Pemasukan / Pembayaran Kas</h2></div>
+    <div class="toolbar"><button type="button" id="openIncomeForm" class="primary">＋ Tambah Pemasukan</button><button type="button" id="btnIncomeDetailPDF" class="soft-btn">▧ &nbsp; Unduh PDF</button><button type="button" id="btnIncomeWA" class="soft-btn">◉ &nbsp; Share WA</button></div>
+  </div>
+  <div id="incomeFormCard" class="section form-card">
       <h2>Catat pemasukan</h2>
       <div class="row3">
         <div class="field"><label for="iDate">Tanggal bayar</label><input id="iDate" type="date"></div>
-        <div class="field"><label for="iStudent">Siswa</label>
-  <input id="iStudent" type="hidden" value="">
-  <div class="compact-select" id="studentPicker">
-    <button type="button" class="compact-select-button" id="studentPickerButton" aria-haspopup="listbox" aria-expanded="false"><span class="picker-label">-- Kas umum / lainnya --</span><span>▾</span></button>
-    <div class="compact-select-menu" id="studentPickerMenu" role="listbox"></div>
-  </div>
-</div>
-        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="number" inputmode="numeric" min="0" step="1" autocomplete="off" placeholder="5000"></div>
+        <div class="field"><label for="iStudent">Siswa</label><input id="iStudent" type="hidden" value=""><div class="compact-select" id="studentPicker"><button type="button" class="compact-select-button" id="studentPickerButton" aria-haspopup="listbox" aria-expanded="false"><span class="picker-label">-- Kas umum / lainnya --</span><span>▾</span></button><div class="compact-select-menu" id="studentPickerMenu" role="listbox"></div></div></div>
+        <div class="field"><label for="iAmount">Nominal per bulan</label><input id="iAmount" type="number" inputmode="numeric" min="0" step="1" autocomplete="off" placeholder="10000"></div>
       </div>
-      <div class="row" style="margin-top:10px">
-        <div class="field"><label for="iMonthStart">Mulai bulan pembayaran</label><input id="iMonthStart" type="month"></div>
-        <div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" autocomplete="off" value="1" placeholder="1"></div>
-      </div>
+      <div class="row" style="margin-top:10px"><div class="field"><label for="iMonthStart">Mulai bulan pembayaran</label><input id="iMonthStart" type="month"></div><div class="field"><label for="iMonths">Jumlah bulan dibayar</label><input id="iMonths" type="number" inputmode="numeric" min="1" max="24" step="1" autocomplete="off" value="1" placeholder="1"></div></div>
       <div class="notice" id="incomePreview">Pilih siswa dan jumlah bulan. Total pembayaran akan dihitung otomatis.</div>
       <div style="margin-top:10px"><label for="iSource">Sumber</label><select id="iSource"><option>Uang kas siswa</option><option>Sumbangan</option><option>Dana Kegiatan</option><option>Lainnya</option></select></div>
       <div style="margin-top:10px"><label for="iDesc">Keterangan</label><input id="iDesc" type="text" placeholder="Contoh: Kas minggu ke-1"></div>
-      <div class="actions"><button type="button" id="btnIncome" class="primary">+ Simpan pemasukan</button></div>
-    </div>
-    <div class="section"><h2>Riwayat pemasukan</h2>
-      <div class="actions" style="margin-top:0;margin-bottom:12px"><button type="button" id="btnIncomeDetailPDF" class="primary">📄 Unduh rincian</button></div>
-      <div id="incomeTable" class="tablewrap"></div></div>
-  </section>
+      <div class="actions"><button type="button" id="btnIncome" class="primary">＋ Simpan pemasukan</button><button type="button" id="closeIncomeForm" class="danger">Tutup</button></div>
+  </div>
+  <div class="filterbar"><input id="incomeSearch" class="search" type="search" placeholder="Cari nama siswa..."><select id="incomeMonthFilter"><option value="">Semua Bulan</option></select><button type="button" class="filter-btn">▣ &nbsp; Semua</button></div>
+  <div class="section table-section"><div id="incomeTable" class="tablewrap"></div><div class="table-footer"><span id="incomeCount">Total 0 data</span><span>Total Pemasukan: <b id="incomeGrandTotal">Rp0</b></span></div><div class="info-box"><b>Keterangan:</b><ul><li>Nominal kas per bulan: <b>Rp10.000</b></li><li>Semua pembayaran dimulai dari bulan Agustus 2026</li><li>Total pemasukan: <b id="incomeInfoTotal">Rp0</b></li></ul></div></div>
+</section>
 
   <section id="expense" class="page">
     <div class="section">
@@ -339,7 +344,7 @@ input[type="number"] { ime-mode: numeric; }
 </main>
 <div id="printArea" style="display:none"></div>
 
-<div id="appFooter" class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
+<div id="appFooter" class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v7</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -415,12 +420,12 @@ DAFTAR_SISWA_AWAL.forEach((name, i) => {
 });
 localStorage.setItem(KEY, JSON.stringify(db));
 
-// DATA PEMASUKAN AWAL — diambil dari tabel pengguna (20 transaksi, total Rp1.060.000).
+// DATA PEMASUKAN AWAL — 20 transaksi dari tabel pengguna, Rp10.000 per bulan, mulai Agustus 2026.
 // Setiap baris diperluas menjadi pembayaran per bulan agar rekap bulanan tetap akurat.
-const NEW_INCOME_BATCH='IMAGE_AUG2026_KAS_V2';
-if(!localStorage.getItem('IMAGE_AUG2026_KAS_V2_APPLIED')){
-  // Hanya hapus batch pemasukan awal versi sebelumnya; data pemasukan manual pengguna tetap dipertahankan.
-  db.income = db.income.filter(x => x.batchId !== 'INITIAL_AUG2026_KAS' && x.batchId !== 'IMAGE_AUG2026_KAS_V1');
+const NEW_INCOME_BATCH='IMAGE_AUG2026_KAS_V3';
+if(!localStorage.getItem('IMAGE_AUG2026_KAS_V3_APPLIED')){
+  // Ganti seluruh batch pemasukan awal dari gambar sebelumnya. Data pemasukan manual pengguna tetap dipertahankan.
+  db.income = db.income.filter(x => !['INITIAL_AUG2026_KAS','IMAGE_AUG2026_KAS_V1','IMAGE_AUG2026_KAS_V2','IMAGE_AUG2026_KAS_V3'].includes(x.batchId));
   const imageIncomeRows=[
     {date:'2026-07-16',months:11,start:'2026-08',name:'ARA TRIA UTOMO'},
     {date:'2026-07-28',months:5,start:'2026-08',name:'ALVAN SHATA A'},
@@ -437,7 +442,7 @@ if(!localStorage.getItem('IMAGE_AUG2026_KAS_V2_APPLIED')){
     {date:'2026-08-05',months:3,start:'2026-08',name:'GALANG ARJITYA'},
     {date:'2026-08-05',months:5,start:'2026-08',name:'HISYAM AL FARIZKI'},
     {date:'2026-08-06',months:3,start:'2026-08',name:'HAIDAR SHAQIL F'},
-    {date:'2026-08-06',months:1,start:'2027-06',name:'RADEYA PUTRI HARIANATA'},
+    {date:'2026-08-06',months:1,start:'2026-08',name:'RADEYA PUTRI HARIANATA'},
     {date:'2026-08-07',months:5,start:'2026-08',name:'M RASYA RAMADHAN'},
     {date:'2026-08-07',months:10,start:'2026-08',name:'FAHIR AFDAL'},
     {date:'2026-08-11',months:2,start:'2026-08',name:'ALIKA NAYYA A'},
@@ -452,7 +457,7 @@ if(!localStorage.getItem('IMAGE_AUG2026_KAS_V2_APPLIED')){
       db.income.push({id:nextId++,batchId:NEW_INCOME_BATCH,date:r.date,studentId:student.id||'',month:d.toISOString().slice(0,7),source:'Uang kas siswa',amount:10000,desc:''});
     }
   });
-  localStorage.setItem('IMAGE_AUG2026_KAS_V2_APPLIED','1');
+  localStorage.setItem('IMAGE_AUG2026_KAS_V3_APPLIED','1');
   localStorage.setItem(KEY,JSON.stringify(db));
 }
 
@@ -495,6 +500,11 @@ document.querySelectorAll('.tabs button').forEach(btn=>{
   });
 });
 
+$('openIncomeForm').addEventListener('click',()=>{$('incomeFormCard').classList.add('open');});
+$('btnIncomeWA').addEventListener('click',shareWhatsApp);
+$('closeIncomeForm').addEventListener('click',()=>{$('incomeFormCard').classList.remove('open');});
+$('incomeSearch').addEventListener('input',renderIncome);
+$('incomeMonthFilter').addEventListener('change',renderIncome);
 $('btnAddStudent').addEventListener('click',addStudent);
 $('btnIncome').addEventListener('click',addIncome);
 $('btnExpense').addEventListener('click',addExpense);
@@ -658,12 +668,28 @@ function renderStudents(){
 }
 
 function renderIncome(){
-  const a=[...db.income].sort((x,y)=>Number(y.id||0)-Number(x.id||0));
-  $('incomeTable').innerHTML=a.length?
-  '<table><thead><tr><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
-  a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td class="in">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('income',${x.id})">Hapus</button></td></tr>`).join('')+
-  '</tbody></table>':'<div class="empty">Belum ada pemasukan.</div>';
+  const search=(($('incomeSearch')?.value)||'').toLowerCase().trim();
+  const filter=(($('incomeMonthFilter')?.value)||'');
+  const students=[...db.students];
+  const rows=students.map(st=>{
+    const items=db.income.filter(x=>String(x.studentId)===String(st.id));
+    const months=new Set(items.map(x=>x.month||String(x.date||'').slice(0,7)));
+    const filteredMonths=filter?items.filter(x=>(x.month||String(x.date||'').slice(0,7))===filter):items;
+    const total=items.reduce((a,x)=>a+Number(x.amount||0),0);
+    const date=items.length?items.map(x=>x.date).sort()[0]:'-';
+    const monthCount=months.size;
+    return {st,items,filteredMonths,total,date,monthCount};
+  }).filter(r=>!search || r.st.name.toLowerCase().includes(search)).filter(r=>!filter || r.filteredMonths.length);
+  rows.sort((a,b)=>students.indexOf(a.st)-students.indexOf(b.st));
+  const total=db.income.reduce((a,x)=>a+Number(x.amount||0),0);
+  $('incomeTable').innerHTML='<table class="income-modern"><thead><tr><th>No</th><th>Tanggal Bayar</th><th>Nama Siswa</th><th>Bulan Mulai</th><th>Jumlah Bulan</th><th>Nominal / Bulan</th><th>Total Nominal</th><th>Aksi</th></tr></thead><tbody>'+rows.map((r,i)=>{const n=r.monthCount; const total=r.total; return `<tr><td>${i+1}</td><td>${r.date==='-'?'-':formatDateID(r.date)}</td><td class="name-cell">${esc(r.st.name)}</td><td>${n?'Agu 26':'Agu 26'}</td><td>${n}</td><td>Rp10.000</td><td class="total-money">${rupiah(total)}</td><td><button type="button" class="icon-btn edit" onclick="editStudentIncome(${r.st.id})">✎</button><button type="button" class="icon-btn del" onclick="delStudentIncome(${r.st.id})">♧</button></td></tr>`}).join('')+'</tbody></table>';
+  $('incomeCount').textContent=`Total ${rows.length} data`; $('incomeGrandTotal').textContent=rupiah(total); $('incomeInfoTotal').textContent=rupiah(total);
+  if($('incomeMonthFilter') && $('incomeMonthFilter').options.length===1){const ms=[...new Set(db.income.map(x=>x.month).filter(Boolean))].sort(); ms.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=formatMonthID(m);$('incomeMonthFilter').appendChild(o);});}
 }
+function formatDateID(v){const [y,m,d]=String(v).split('-'); if(!y||!m||!d)return v; const mons=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return `${d} ${mons[Number(m)-1]} ${String(y).slice(-2)}`;}
+function formatMonthID(v){const [y,m]=String(v).split('-');const mons=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];return `${mons[Number(m)-1]} ${String(y).slice(-2)}`;}
+function editStudentIncome(id){const st=db.students.find(s=>String(s.id)===String(id)); if(!st)return; $('iStudent').value=st.id; syncStudentPicker(); const first=db.income.find(x=>String(x.studentId)===String(id)); if(first){$('iDate').value=first.date||today();$('iMonthStart').value='2026-08';$('iAmount').value=10000;$('iMonths').value=db.income.filter(x=>String(x.studentId)===String(id)).length;} $('incomeFormCard').classList.add('open'); window.scrollTo({top:0,behavior:'smooth'});}
+function delStudentIncome(id){if(confirm('Hapus seluruh pemasukan siswa ini?')){db.income=db.income.filter(x=>String(x.studentId)!==String(id));saveTransactionAndReload('✅ Pemasukan berhasil dihapus.');}}
 
 function renderExpense(){
   const a=[...db.expense].sort((x,y)=>Number(y.id||0)-Number(x.id||0));
@@ -1121,6 +1147,12 @@ function downloadMonthlyPDF(){
 function refresh(){
   populateStudentSelects();
   renderStudents();renderIncome();renderExpense();renderReport();renderStudentMonth();renderMonthly();
+  const ti=db.income.reduce((a,x)=>a+Number(x.amount||0),0);
+  const te=db.expense.reduce((a,x)=>a+Number(x.amount||0),0);
+  if($('sideBalance')) $('sideBalance').textContent=rupiah(ti-te);
+  if($('sideIncome')) $('sideIncome').textContent=rupiah(ti);
+  if($('sideExpense')) $('sideExpense').textContent=rupiah(te);
+  if($('sideStudents')) $('sideStudents').textContent=db.students.length+' Siswa';
 }
 
 function reportText(){
