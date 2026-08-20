@@ -1150,8 +1150,13 @@ function downloadMonthlyPDF(){
   const data=monthlyMatrixData(months);
   const groups=monthlyHeaderGroups(months);
 
-  const head1=['NO','NAMA SISWA','TOTAL KAS',...groups.map(g=>g.year)];
-  const head2=['','','',...months.map(monthLabel)];
+  const head1=[
+    {content:'NO', rowSpan:2},
+    {content:'NAMA SISWA', rowSpan:2},
+    {content:'TOTAL KAS', rowSpan:2},
+    ...groups.map(g=>({content:g.year, colSpan:g.count}))
+  ];
+  const head2=months.map(monthLabel);
   const body=data.map((x,i)=>[
     i+1,x.student.name,rupiah(x.total),...x.values.map(v=>v?kasCellAmount(v):'')
   ]);
@@ -1172,16 +1177,16 @@ function downloadMonthlyPDF(){
     head:[head1,head2],
     body:body.concat([totals]),
     styles:{fontSize:7.3,cellPadding:1.5,halign:'center',valign:'middle',overflow:'linebreak'},
-    headStyles:{fillColor:[22,50,79],textColor:255,fontStyle:'bold',halign:'center'},
+    headStyles:{fillColor:[22,50,79],textColor:255,fontStyle:'bold',halign:'center',valign:'middle'},
     columnStyles:Object.fromEntries(widths.map((w,i)=>[i,{cellWidth:w}])),
     margin:{left:marginLR,right:marginLR},
     tableWidth:'wrap',
     theme:'grid',
     didParseCell:function(d){
-      if(d.section==='head' && d.row.index===0 && d.column.index>=3){
+      if(d.section==='head' && d.row.index===0 && (d.cell.raw==='2026'||d.cell.raw==='2027')){
         d.cell.styles.fillColor=d.cell.raw==='2026'?[138,90,34]:[63,122,87];
       }
-      if(d.section==='head' && d.row.index===1 && d.column.index>=3){
+      if(d.section==='head' && d.row.index===1){
         d.cell.styles.fillColor=[31,76,120];
       }
       if(d.section==='body' && d.row.index===data.length){
