@@ -676,10 +676,15 @@ function addStudent(){
   db.students.push({id:Date.now()+Math.random(),name:n,note:$('sNote').value.trim()});
   $('sName').value=''; $('sNote').value='';
   save(); $('sName').focus();
+  showToast('✅ Siswa berhasil ditambahkan.');
 }
 
 function delStudent(id){
-  if(confirm('Hapus siswa ini?')){db.students=db.students.filter(x=>x.id!==id);save();}
+  if(confirm('Hapus siswa ini?')){
+    db.students=db.students.filter(x=>x.id!==id);
+    save();
+    showToast('🗑️ Siswa berhasil dihapus.');
+  }
 }
 
 function updateIncomePreview(){
@@ -733,9 +738,8 @@ function addIncome(){
   $('iMonths').value='1';
   $('iDesc').value='';
   save();
-  showToast('✅ Pemasukan berhasil disimpan.');
+  showToast(`✅ Pemasukan tersimpan • ${months} bulan • Total ${rupiah(amount*months)}`);
   $('iAmount').focus();
-  alert(`Berhasil menyimpan pembayaran ${months} bulan. Total: ${rupiah(amount*months)}`);
 }
 
 function addExpense(){
@@ -748,7 +752,11 @@ function addExpense(){
 }
 
 function del(type,id){
-  if(confirm('Hapus transaksi ini?')){db[type]=db[type].filter(x=>x.id!==id);save();}
+  if(confirm('Hapus transaksi ini?')){
+    db[type]=db[type].filter(x=>x.id!==id);
+    save();
+    showToast(type==='income' ? '🗑️ Pemasukan berhasil dihapus.' : '🗑️ Pengeluaran berhasil dihapus.');
+  }
 }
 
 window.delStudent=delStudent;
@@ -1234,14 +1242,7 @@ function downloadMonthlyPDF(){
 
 function refresh(){
   populateStudentSelects();
-  const ti=db.income.reduce((s,x)=>s+x.amount,0);
-  const te=db.expense.reduce((s,x)=>s+x.amount,0);
-  $('dIn').textContent=rupiah(ti);
-  $('dOut').textContent=rupiah(te);
-  $('dBal').textContent=rupiah(ti-te);
-  $('dStudents').textContent=db.students.length;
-  $('dashText').textContent=`Ada ${db.income.length} transaksi pemasukan dan ${db.expense.length} transaksi pengeluaran. Saldo saat ini ${rupiah(ti-te)}.`;
-  renderStudents();renderIncome();renderExpense();renderReport();
+  renderStudents();renderIncome();renderExpense();renderReport();renderStudentMonth();renderMonthly();
 }
 
 function reportText(){
