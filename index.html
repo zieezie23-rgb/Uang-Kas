@@ -218,7 +218,9 @@ tbody tr:hover{background:#F8FAFD}
       <div style="margin-top:10px"><label for="iDesc">Keterangan</label><input id="iDesc" type="text" placeholder="Contoh: Kas minggu ke-1"></div>
       <div class="actions"><button type="button" id="btnIncome" class="primary">+ Simpan pemasukan</button></div>
     </div>
-    <div class="section"><h2>Riwayat pemasukan</h2><div id="incomeTable" class="tablewrap"></div></div>
+    <div class="section"><h2>Riwayat pemasukan</h2>
+      <div class="actions" style="margin-top:0;margin-bottom:12px"><button type="button" id="btnIncomeDetailPDF" class="primary">📄 Unduh rincian</button></div>
+      <div id="incomeTable" class="tablewrap"></div></div>
   </section>
 
   <section id="expense" class="page">
@@ -232,7 +234,9 @@ tbody tr:hover{background:#F8FAFD}
       <div style="margin-top:10px"><label for="eDesc">Keterangan</label><input id="eDesc" type="text" placeholder="Contoh: Beli spidol"></div>
       <div class="actions"><button type="button" id="btnExpense" class="primary">+ Simpan pengeluaran</button></div>
     </div>
-    <div class="section"><h2>Riwayat pengeluaran</h2><div id="expenseTable" class="tablewrap"></div></div>
+    <div class="section"><h2>Riwayat pengeluaran</h2>
+      <div class="actions" style="margin-top:0;margin-bottom:12px"><button type="button" id="btnExpenseDetailPDF" class="primary">📄 Unduh rincian</button></div>
+      <div id="expenseTable" class="tablewrap"></div></div>
   </section>
 
   <section id="report" class="page">
@@ -624,6 +628,8 @@ document.querySelectorAll('.tabs button').forEach(btn=>{
 $('btnAddStudent').addEventListener('click',addStudent);
 $('btnIncome').addEventListener('click',addIncome);
 $('btnExpense').addEventListener('click',addExpense);
+$('btnIncomeDetailPDF').addEventListener('click',downloadIncomeDetailPDF);
+$('btnExpenseDetailPDF').addEventListener('click',downloadExpenseDetailPDF);
 $('btnPDF').addEventListener('click',downloadPDF);
 $('btnWA').addEventListener('click',shareWhatsApp);
 $('btnStudentMonth').addEventListener('click',renderStudentMonth);
@@ -768,6 +774,80 @@ function renderExpense(){
   '<table><thead><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
   a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc)}</td><td class="out">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('expense',${x.id})">Hapus</button></td></tr>`).join('')+
   '</tbody></table>':'<div class="empty">Belum ada pengeluaran.</div>';
+}
+
+function downloadIncomeDetailPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const a=[...db.income].sort((x,y)=>String(x.date).localeCompare(String(y.date))||Number(x.id||0)-Number(y.id||0));
+  if(!a.length){ alert('Belum ada data pemasukan untuk diunduh.'); return; }
+  const total=a.reduce((s,x)=>s+Number(x.amount||0),0);
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  doc.setFontSize(15);
+  doc.text('Rincian Pemasukan - '+getAppName(),14,16);
+  doc.setFontSize(9);
+  doc.text(`Dicetak ${today()} • ${a.length} transaksi • Total ${rupiah(total)}`,14,23);
+  doc.autoTable({
+    startY:28,
+    head:[['No','Tgl bayar','Bulan kas','Siswa','Sumber','Keterangan','Nominal']],
+    body:a.map((x,i)=>[
+      i+1,
+      x.date,
+      x.month||String(x.date).slice(0,7),
+      db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-',
+      x.source||'-',
+      x.desc||'-',
+      rupiah(x.amount)
+    ]).concat([['','','','','','TOTAL',rupiah(total)]]),
+    styles:{fontSize:8.3,cellPadding:2.2},
+    headStyles:{fillColor:[22,50,79]},
+    columnStyles:{0:{cellWidth:9},1:{cellWidth:20},2:{cellWidth:18},6:{halign:'right'}},
+    margin:{left:14,right:14},
+    didParseCell:function(d){
+      if(d.section==='body' && d.row.index===a.length){
+        d.cell.styles.fillColor=[232,239,247]; d.cell.styles.textColor=[22,50,79]; d.cell.styles.fontStyle='bold';
+      }
+    }
+  });
+  doc.save('Rincian-Pemasukan.pdf');
+  showToast('✅ PDF rincian pemasukan berhasil diunduh.');
+  showDownloadToast('✅ PDF rincian pemasukan berhasil diunduh.');
+}
+
+function downloadExpenseDetailPDF(){
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const a=[...db.expense].sort((x,y)=>String(x.date).localeCompare(String(y.date))||Number(x.id||0)-Number(y.id||0));
+  if(!a.length){ alert('Belum ada data pengeluaran untuk diunduh.'); return; }
+  const total=a.reduce((s,x)=>s+Number(x.amount||0),0);
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  doc.setFontSize(15);
+  doc.text('Rincian Pengeluaran - '+getAppName(),14,16);
+  doc.setFontSize(9);
+  doc.text(`Dicetak ${today()} • ${a.length} transaksi • Total ${rupiah(total)}`,14,23);
+  doc.autoTable({
+    startY:28,
+    head:[['No','Tanggal','Kategori','Keterangan','Nominal']],
+    body:a.map((x,i)=>[
+      i+1,
+      x.date,
+      x.cat||x.category||'Pengeluaran kas',
+      x.desc||'-',
+      rupiah(x.amount)
+    ]).concat([['','','','TOTAL',rupiah(total)]]),
+    styles:{fontSize:8.6,cellPadding:2.4},
+    headStyles:{fillColor:[22,50,79]},
+    columnStyles:{0:{cellWidth:9},1:{cellWidth:22},4:{halign:'right'}},
+    margin:{left:14,right:14},
+    didParseCell:function(d){
+      if(d.section==='body' && d.row.index===a.length){
+        d.cell.styles.fillColor=[251,233,231]; d.cell.styles.textColor=[209,75,67]; d.cell.styles.fontStyle='bold';
+      }
+    }
+  });
+  doc.save('Rincian-Pengeluaran.pdf');
+  showToast('✅ PDF rincian pengeluaran berhasil diunduh.');
+  showDownloadToast('✅ PDF rincian pengeluaran berhasil diunduh.');
 }
 
 function filtered(){
@@ -1069,12 +1149,6 @@ function downloadMonthlyPDF(){
   if(!months.length || start>end){alert('Periode bulan tidak valid.');return;}
   const data=monthlyMatrixData(months);
   const groups=monthlyHeaderGroups(months);
-  const doc=new JSPDF({unit:'mm',format:'a4',orientation:'landscape'});
-  const pageWidth=doc.internal.pageSize.getWidth();
-  doc.setFontSize(15);
-  doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),10,12);
-  doc.setFontSize(8.5);
-  doc.text(`Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)}`,10,18);
 
   const head1=['NO','NAMA SISWA','TOTAL KAS',...groups.map(g=>g.year)];
   const head2=['','','',...months.map(monthLabel)];
@@ -1085,37 +1159,61 @@ function downloadMonthlyPDF(){
     const t=data.reduce((s,x)=>s+x.values[j],0); return t?kasCellAmount(t):'';
   })];
 
-  const widths=[10,55,22,...months.map(()=>16)];
-  doc.autoTable({
-    startY:22,
+  // Lebar kolom dihitung agar seluruh bulan tetap terbaca, apapun panjang periodenya.
+  const noW=9,nameW=52,totalW=22,monthW=13.5;
+  const widths=[noW,nameW,totalW,...months.map(()=>monthW)];
+  const marginLR=8;
+  // Lebar halaman menyesuaikan jumlah kolom (bulan) supaya seluruh tabel selalu muat ke samping.
+  const pageWidth=marginLR*2+widths.reduce((a,b)=>a+b,0);
+  const titleTop=22;
+
+  const tableOptions=(doc)=>({
+    startY:titleTop,
     head:[head1,head2],
     body:body.concat([totals]),
-    styles:{fontSize:7.2,cellPadding:1.5,halign:'center',valign:'middle'},
-    headStyles:{fillColor:[31,78,120],textColor:255,fontStyle:'bold',halign:'center'},
+    styles:{fontSize:7.3,cellPadding:1.5,halign:'center',valign:'middle',overflow:'linebreak'},
+    headStyles:{fillColor:[22,50,79],textColor:255,fontStyle:'bold',halign:'center'},
     columnStyles:Object.fromEntries(widths.map((w,i)=>[i,{cellWidth:w}])),
-    margin:{left:8,right:8},
+    margin:{left:marginLR,right:marginLR},
+    tableWidth:'wrap',
+    theme:'grid',
     didParseCell:function(d){
       if(d.section==='head' && d.row.index===0 && d.column.index>=3){
-        d.cell.styles.fillColor=d.cell.raw==='2026'?[107,47,8]:[79,125,43];
+        d.cell.styles.fillColor=d.cell.raw==='2026'?[138,90,34]:[63,122,87];
       }
       if(d.section==='head' && d.row.index===1 && d.column.index>=3){
-        d.cell.styles.fillColor=[91,29,21];
+        d.cell.styles.fillColor=[31,76,120];
       }
       if(d.section==='body' && d.row.index===data.length){
-        d.cell.styles.fillColor=[31,78,120]; d.cell.styles.textColor=255; d.cell.styles.fontStyle='bold';
+        d.cell.styles.fillColor=[22,50,79]; d.cell.styles.textColor=255; d.cell.styles.fontStyle='bold';
       }
       if(d.section==='body' && d.row.index<data.length && d.column.index===1){
         d.cell.styles.halign='left';
       }
       if(d.section==='body' && d.row.index<data.length && d.column.index>=3 && d.cell.raw!==''){
-        d.cell.styles.fillColor=[255,248,210];
-        d.cell.styles.textColor=[40,40,40];
+        d.cell.styles.fillColor=[227,245,241];
+        d.cell.styles.textColor=[11,109,95];
       }
     }
   });
+
+  // Tahap 1: render di kanvas sangat tinggi untuk mengukur tinggi total tabel.
+  const scratch=new JSPDF({unit:'mm',format:[pageWidth,2000]});
+  scratch.autoTable(tableOptions(scratch));
+  const contentHeight=scratch.lastAutoTable.finalY;
+  const pageHeight=Math.max(90,contentHeight+10);
+
+  // Tahap 2: buat halaman PDF berukuran pas dengan seluruh isi, sehingga selalu 1 halaman utuh.
+  const doc=new JSPDF({unit:'mm',format:[pageWidth,pageHeight]});
+  doc.setFontSize(15);
+  doc.text('Rekap Kas Per Siswa Per Bulan - '+getAppName(),marginLR,12);
+  doc.setFontSize(8.5);
+  doc.text(`Periode: ${monthLongLabel(start)} - ${monthLongLabel(end)} • ${data.length} siswa`,marginLR,18);
+  doc.autoTable(tableOptions(doc));
+
   doc.save('Rekap-Kas-Per-Siswa-Per-Bulan.pdf');
-  showToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
-  showDownloadToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
+  showToast('✅ PDF (1 halaman penuh) berhasil dibuat dan diunduh.');
+  showDownloadToast('✅ PDF (1 halaman penuh) berhasil dibuat dan diunduh.');
 }
 
 function refresh(){
