@@ -184,6 +184,8 @@ th{background:#f7f9fb}
 
 <div class="footer">Uang Kas Kelas • Data tersimpan lokal di HP • v3</div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
 (function(){
 'use strict';
@@ -723,7 +725,21 @@ function openPrintArea(html){
 }
 
 function downloadStudentPDF(){
-  openPrintArea(buildStudentPrint());
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  const data=allStudentMonthData();
+  const grandTotal=data.reduce((s,x)=>s+x.total,0);
+  const paid=data.filter(x=>x.paidMonths>0).length;
+  doc.setFontSize(16); doc.text('Rekap Uang Kas - Semua Siswa',14,16);
+  doc.setFontSize(9); doc.text('Diurutkan dari siswa yang sudah membayar paling banyak.',14,23);
+  doc.setFontSize(11);
+  doc.text('Total seluruh iuran: '+rupiah(grandTotal),14,32);
+  doc.text('Jumlah siswa: '+data.length,14,39);
+  doc.text('Siswa sudah bayar: '+paid,80,32);
+  doc.text('Siswa belum bayar: '+(data.length-paid),80,39);
+  doc.autoTable({startY:46,head:[['No','Nama siswa','Sudah bayar','Total nominal']],body:data.map((x,i)=>[i+1,x.student.name,x.paidMonths+' bulan',rupiah(x.total)]).concat([['','','TOTAL SEMUA SISWA',rupiah(grandTotal)]]),styles:{fontSize:9,cellPadding:2.5},headStyles:{fillColor:[23,105,170]},columnStyles:{0:{cellWidth:12},1:{cellWidth:90},2:{cellWidth:35},3:{cellWidth:45}},margin:{left:14,right:14}});
+  doc.save('Rekap-Kas-Semua-Siswa.pdf');
 }
 
 async function shareStudentWhatsApp(){
@@ -783,7 +799,20 @@ function buildReportPrint(){
 }
 
 function downloadPDF(){
-  openPrintArea(buildReportPrint());
+  const JSPDF=window.jspdf&&window.jspdf.jsPDF;
+  if(!JSPDF){ alert('Modul PDF belum siap. Pastikan internet aktif lalu coba lagi.'); return; }
+  const doc=new JSPDF({unit:'mm',format:'a4'});
+  const {inc,ti,te}=filtered();
+  const sources=sourceSummary(inc);
+  doc.setFontSize(16); doc.text('Rekap Uang Kas Kelas',14,16);
+  doc.setFontSize(9); doc.text('Semua data - tanpa rincian transaksi.',14,23);
+  doc.setFontSize(11);
+  doc.text('Total pemasukan: '+rupiah(ti),14,32);
+  doc.text('Total pengeluaran: '+rupiah(te),14,39);
+  doc.text('Saldo kas: '+rupiah(ti-te),80,32);
+  doc.text('Siswa terdaftar: '+db.students.length,80,39);
+  doc.autoTable({startY:46,head:[['No','Sumber pemasukan','Transaksi','Total nominal']],body:sources.map(([source,v],i)=>[i+1,source,v.count+' transaksi',rupiah(v.total)]).concat([['','','TOTAL PEMASUKAN',rupiah(ti)]]),styles:{fontSize:9,cellPadding:2.5},headStyles:{fillColor:[23,105,170]},columnStyles:{0:{cellWidth:12},1:{cellWidth:85},2:{cellWidth:38},3:{cellWidth:47}},margin:{left:14,right:14}});
+  doc.save('Rekap-Uang-Kas-Kelas.pdf');
 }
 
 async function shareWhatsApp(){
