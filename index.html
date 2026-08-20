@@ -100,8 +100,53 @@ th{background:#f7f9fb}
 #downloadToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1f2937;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:99999;max-width:90%;text-align:center}
 #downloadToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
+
+<style>
+#appToast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translate(-50%,20px);
+  background:#1f2937;
+  color:#fff;
+  padding:11px 18px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:600;
+  box-shadow:0 7px 24px rgba(0,0,0,.18);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .22s ease, transform .22s ease;
+  z-index:999999;
+  max-width:90%;
+  text-align:center;
+}
+#appToast.show{opacity:1;transform:translate(-50%,0);}
+</style>
+
+<style>
+table, table thead, table tbody, table tr, table td, table th{
+  background:#fff !important;
+}
+table td:not(:empty):not(:has(button)),
+table th:not(:empty){
+  background:#fff9cc !important;
+}
+table thead th{
+  background:#fff !important;
+}
+</style>
+
+<style>
+#studentMonthBox table td{
+  background:#fff !important;
+}
+#studentMonthBox table td.month-paid{
+  background:#fff9cc !important;
+}
+</style>
 </head>
-<body><div id="downloadToast" role="status" aria-live="polite"></div>
+<body><div id="appToast" role="status" aria-live="polite"></div><div id="downloadToast" role="status" aria-live="polite"></div>
 <header>
   <div class="wrap">
     <h1 id="appTitle">💰 Uang Kas Kelas</h1>
@@ -237,6 +282,16 @@ th{background:#f7f9fb}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
+
+function showToast(message){
+  const el=document.getElementById('appToast');
+  if(!el) return;
+  el.textContent=message;
+  el.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
 (function(){
 'use strict';
 
@@ -640,6 +695,7 @@ function addIncome(){
   $('iMonths').value='1';
   $('iDesc').value='';
   save();
+  showToast('✅ Pemasukan berhasil disimpan.');
   $('iAmount').focus();
   alert(`Berhasil menyimpan pembayaran ${months} bulan. Total: ${rupiah(amount*months)}`);
 }
@@ -649,7 +705,8 @@ function addExpense(){
   if(!amount || amount<1){alert('Nominal pengeluaran wajib diisi.');$('eAmount').focus();return;}
   db.expense.push({id:Date.now()+Math.random(),date:$('eDate').value||today(),cat:$('eCat').value,amount,desc:$('eDesc').value.trim()});
   $('eAmount').value='';$('eDesc').value='';
-  save();$('eAmount').focus();
+  save();
+  showToast('✅ Pengeluaran berhasil disimpan.');$('eAmount').focus();
 }
 
 function del(type,id){
@@ -677,7 +734,7 @@ function renderStudents(){
 }
 
 function renderIncome(){
-  const a=[...db.income].sort((x,y)=>y.date.localeCompare(x.date));
+  const a=[...db.income].sort((x,y)=>Number(y.id||0)-Number(x.id||0));
   $('incomeTable').innerHTML=a.length?
   '<table><thead><tr><th>Tgl bayar</th><th>Bulan kas</th><th>Siswa</th><th>Sumber</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
   a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.month||String(x.date).slice(0,7))}</td><td>${esc(db.students.find(s=>String(s.id)===String(x.studentId))?.name||'-')}</td><td>${esc(x.source)}</td><td>${esc(x.desc)}</td><td class="in">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('income',${x.id})">Hapus</button></td></tr>`).join('')+
@@ -685,7 +742,7 @@ function renderIncome(){
 }
 
 function renderExpense(){
-  const a=[...db.expense].sort((x,y)=>y.date.localeCompare(x.date));
+  const a=[...db.expense].sort((x,y)=>Number(y.id||0)-Number(x.id||0));
   $('expenseTable').innerHTML=a.length?
   '<table><thead><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody>'+
   a.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cat||x.category||'Pengeluaran kas')}</td><td>${esc(x.desc)}</td><td class="out">${rupiah(x.amount)}</td><td><button type="button" class="danger" onclick="del('expense',${x.id})">Hapus</button></td></tr>`).join('')+
@@ -839,6 +896,7 @@ function downloadStudentPDF(){
   doc.text('Siswa belum bayar: '+(data.length-paid),80,39);
   doc.autoTable({startY:46,head:[['No','Nama siswa','Sudah bayar','Total nominal']],body:data.map((x,i)=>[i+1,x.student.name,x.paidMonths+' bulan',rupiah(x.total)]).concat([['','','TOTAL SEMUA SISWA',rupiah(grandTotal)]]),styles:{fontSize:9,cellPadding:2.5},headStyles:{fillColor:[23,105,170]},columnStyles:{0:{cellWidth:12},1:{cellWidth:90},2:{cellWidth:35},3:{cellWidth:45}},margin:{left:14,right:14}});
   doc.save('Rekap-Kas-Semua-Siswa.pdf');
+  showToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
 }
 
 async function shareStudentWhatsApp(){
@@ -1035,6 +1093,7 @@ function downloadMonthlyPDF(){
     }
   });
   doc.save('Rekap-Kas-Per-Siswa-Per-Bulan.pdf');
+  showToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
   showDownloadToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
 }
 
@@ -1163,6 +1222,7 @@ function downloadPDF(){
   });
 
   doc.save('Rekap-Kas-dan-Semua-Siswa.pdf');
+  showToast('✅ PDF berhasil dibuat dan proses download telah dimulai.');
 }
 
 async function shareWhatsApp(){
