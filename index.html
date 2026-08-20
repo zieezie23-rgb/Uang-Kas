@@ -1493,7 +1493,8 @@ function downloadTikPDF(){
       body:[[rupiah(ti),rupiah(te),rupiah(saldo),String(db.students.length)]],
       styles:{fontSize:9,cellPadding:3,halign:'center'},
       headStyles:{fillColor:[23,105,170]},
-      margin:{left:marginLR,right:marginLR}
+      margin:{left:marginLR,right:marginLR,bottom:2},
+      pageBreak:'avoid'
     });
 
     let y=doc.lastAutoTable.finalY+9;
@@ -1506,7 +1507,8 @@ function downloadTikPDF(){
         .concat([['','','TOTAL',rupiah(te)]]),
       styles:{fontSize:8,cellPadding:2},
       headStyles:{fillColor:[23,105,170]},
-      margin:{left:marginLR,right:marginLR}
+      margin:{left:marginLR,right:marginLR,bottom:2},
+      pageBreak:'avoid'
     });
 
     y=doc.lastAutoTable.finalY+9;
@@ -1532,9 +1534,10 @@ function downloadTikPDF(){
       styles:{fontSize:7,cellPadding:1.4,halign:'center',valign:'middle',overflow:'linebreak'},
       headStyles:{fillColor:[22,50,79],textColor:255,fontStyle:'bold',halign:'center',valign:'middle'},
       columnStyles:Object.fromEntries(monthlyWidths.map((w,i)=>[i,{cellWidth:w}])),
-      margin:{left:marginLR,right:marginLR},
+      margin:{left:marginLR,right:marginLR,bottom:2},
       tableWidth:'wrap',
       theme:'grid',
+      pageBreak:'avoid',
       didParseCell:function(d){
         if(d.section==='head' && d.row.index===0 && (d.cell.raw==='2026'||d.cell.raw==='2027')){
           d.cell.styles.fillColor=d.cell.raw==='2026'?[138,90,34]:[63,122,87];
@@ -1559,10 +1562,15 @@ function downloadTikPDF(){
   const scratch=new JSPDF({unit:'mm',format:[pageWidth,3000]});
   drawContent(scratch);
   const contentHeight=scratch.lastAutoTable.finalY;
-  const pageHeight=Math.max(120,contentHeight+10);
+  const pageHeight=Math.max(120,contentHeight+20);
 
   const doc=new JSPDF({unit:'mm',format:[pageWidth,pageHeight]});
   drawContent(doc);
+
+  const totalPages=doc.internal.getNumberOfPages();
+  if(totalPages>1){
+    for(let p=totalPages;p>1;p--){ doc.deletePage(p); }
+  }
 
   doc.save('Rekap-Iuran-TIK.pdf');
   showToast('✅ PDF Rekap TIK (1 halaman) berhasil dibuat dan diunduh.');
