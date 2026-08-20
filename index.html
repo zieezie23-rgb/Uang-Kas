@@ -679,92 +679,66 @@ async function shareStudentWhatsApp(){
 }
 
 
-function getRekapMonths(){
-  const start='2026-08';
-  const months=new Set([start]);
-  db.income.forEach(x=>{
-    const m=String(x.month||x.date||'').slice(0,7);
-    if(/^\d{4}-\d{2}$/.test(m) && m>=start) months.add(m);
-  });
-  // Include current month so an empty current month is visible too.
-  const now=today().slice(0,7);
-  if(now>=start) months.add(now);
-  return Array.from(months).sort();
-}
-
-function monthLabel(ym){
-  const [y,m]=ym.split('-').map(Number);
-  return new Date(y,m-1,1).toLocaleDateString('id-ID',{month:'short',year:'numeric'});
-}
-
 function allStudentMonthData(){
-  const months=getRekapMonths();
   return db.students.map(s=>{
-    const monthly={};
-    months.forEach(m=>{
-      monthly[m]=db.income
-        .filter(x=>String(x.studentId)===String(s.id) && String(x.month||x.date).slice(0,7)===m)
-        .reduce((sum,x)=>sum+Number(x.amount||0),0);
-    });
-    const total=months.reduce((sum,m)=>sum+monthly[m],0);
-    return {student:s,monthly,total};
-  });
+    const payments=db.income.filter(x=>String(x.studentId)===String(s.id));
+    const total=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
+    // Satu bulan hanya dihitung satu kali, walaupun ada lebih dari satu transaksi pada bulan yang sama.
+    const paidMonths=new Set(
+      payments
+        .map(x=>String(x.month||x.date||'').slice(0,7))
+        .filter(m=>/^\d{4}-\d{2}$/.test(m))
+    );
+    return {student:s,total,paidMonths:paidMonths.size};
+  }).sort((a,b)=>
+    b.paidMonths-a.paidMonths ||
+    b.total-a.total ||
+    a.student.name.localeCompare(b.student.name,'id')
+  );
 }
 
 function renderStudentMonth(){
-  const months=getRekapMonths();
   const data=allStudentMonthData();
   const grandTotal=data.reduce((s,x)=>s+x.total,0);
-  const monthlyTotals=Object.fromEntries(months.map(m=>[m,data.reduce((s,x)=>s+x.monthly[m],0)]));
-  const paidThisMonth=months.length ? data.filter(x=>x.monthly[months[months.length-1]]>0).length : 0;
-
-  const headerMonths=months.map(m=>`<th>${esc(monthLabel(m))}</th>`).join('');
-  const totalRow=months.map(m=>`<td class="in"><b>${rupiah(monthlyTotals[m])}</b></td>`).join('');
+  const paid=data.filter(x=>x.paidMonths>0).length;
 
   $('studentMonthBox').innerHTML=`
     <div class="cards">
       <div class="card"><div class="label">Total seluruh iuran</div><div class="amount in">${rupiah(grandTotal)}</div></div>
       <div class="card"><div class="label">Jumlah siswa</div><div class="amount">${data.length}</div></div>
-      <div class="card"><div class="label">Bulan direkap</div><div class="amount">${months.length}</div></div>
-      <div class="card"><div class="label">Setor bulan terakhir</div><div class="amount">${paidThisMonth} siswa</div></div>
+      <div class="card"><div class="label">Siswa sudah bayar</div><div class="amount">${paid}</div></div>
+      <div class="card"><div class="label">Siswa belum bayar</div><div class="amount">${data.length-paid}</div></div>
     </div>
     <div class="tablewrap" style="margin-top:12px">
-      <table id="studentMonthTable" style="min-width:${Math.max(720, 180+months.length*110)}px">
-        <thead>
-          <tr><th>No</th><th>Nama siswa</th>${headerMonths}<th>Total</th></tr>
-        </thead>
+      <table id="studentMonthTable" style="min-width:560px">
+        <thead><tr><th>No</th><th>Nama siswa</th><th>Sudah bayar</th><th>Total nominal</th></tr></thead>
         <tbody>
           ${data.length ? data.map((x,i)=>`<tr>
             <td>${i+1}</td>
             <td><b>${esc(x.student.name)}</b></td>
-            ${months.map(m=>`<td class="${x.monthly[m]>0?'in':''}">${x.monthly[m]>0?rupiah(x.monthly[m]):'—'}</td>`).join('')}
+            <td>${x.paidMonths} bulan</td>
             <td class="in"><b>${rupiah(x.total)}</b></td>
-          </tr>`).join('') : '<tr><td colspan="'+(months.length+3)+'" class="empty">Belum ada siswa.</td></tr>'}
-          <tr>
-            <td colspan="2"><b>TOTAL PER BULAN</b></td>
-            ${totalRow}
-            <td class="in"><b>${rupiah(grandTotal)}</b></td>
-          </tr>
+          </tr>`).join('') : '<tr><td colspan="4" class="empty">Belum ada siswa.</td></tr>'}
+          <tr><td colspan="3"><b>TOTAL SEMUA SISWA</b></td><td class="in"><b>${rupiah(grandTotal)}</b></td></tr>
         </tbody>
       </table>
     </div>
-    <div class="small" style="margin-top:8px">Rekap dimulai Agustus 2026. Setiap pembayaran siswa ditempatkan pada bulan kas yang dibayar, bukan hanya pada tanggal uang diterima.</div>`;
+    <div class="small" style="margin-top:8px">Diurutkan dari siswa yang sudah membayar paling banyak. Jika jumlah bulan sama, diurutkan berdasarkan total nominal terbesar. Tidak ada rincian per bulan.</div>`;
 }
 
 function studentMonthText(){
-  const months=getRekapMonths();
   const data=allStudentMonthData();
   const lines=[
     'REKAP UANG KAS SEMUA SISWA',
-    'Mulai: Agustus 2026',
+    'Urutan: jumlah bulan dibayar terbanyak',
     '',
-    'Nama siswa | '+months.map(monthLabel).join(' | ')+' | TOTAL'
+    'No | Nama siswa | Sudah bayar | Total nominal'
   ];
   data.forEach((x,i)=>{
-    lines.push(`${i+1}. ${x.student.name} | ${months.map(m=>x.monthly[m] ? rupiah(x.monthly[m]) : '-').join(' | ')} | ${rupiah(x.total)}`);
+    lines.push(`${i+1}. ${x.student.name} | ${x.paidMonths} bulan | ${rupiah(x.total)}`);
   });
   lines.push('');
-  lines.push('TOTAL PER BULAN | '+months.map(m=>rupiah(data.reduce((s,x)=>s+x.monthly[m],0))).join(' | ')+' | '+rupiah(data.reduce((s,x)=>s+x.total,0)));
+  lines.push('TOTAL SEMUA SISWA: '+rupiah(data.reduce((s,x)=>s+x.total,0)));
   return lines.join('\n');
 }
 
