@@ -192,6 +192,15 @@ const today=()=>new Date().toISOString().slice(0,10);
 const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n)||0);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 
+const DAFTAR_SISWA_AWAL=["ALFARUQ ZIKRI", "ALIKA NAYYA A", "ALVAN SHATA A", "ARA TRIA UTOMO", "ATHAR AL FATIH", "AYNINDIRRA PUTRI M", "AZRIL WAZZA P", "CHERLY MARCELIN", "FADIL AL PATIH", "FAHIR AFDAL", "GALANG ARJITYA", "HAFIKA MAKAILA", "HISYAM AL FARIZKI", "HAIDAR SHAQIL F", "INARA SAKHI A", "KALA NAIRA ZAIDA", "KEANU ALTHAF SYABIL", "KIRANA MAHARANI F", "MUHAMMAD ALIF FAREZA", "M RASYA RAMADHAN", "M RIZKI RAMADHAN", "NUR AZIZAH AL WAISY", "PRIYA ABDI KURNIAWAN", "RADEYA PUTRI HARIANATA", "RAFFA FEBRIAN PRATAMA", "RAFFASYA BYANZA N", "RAFFASYA FATIH AL FIRDAUS", "SITI AYRA FARZANA", "SITI KHALISA NATHIFA", "YUMNA FARIHA", "KEEANU ATHALLAH RIO", "KEENAN ARSHAKA RIO"];
+let db;
+try{
+  db=JSON.parse(localStorage.getItem(KEY)||'{"students":[],"income":[],"expense":[]}');
+  if(!db || !Array.isArray(db.students) || !Array.isArray(db.income) || !Array.isArray(db.expense)) throw new Error();
+}catch(e){
+  db={students:[],income:[],expense:[]};
+}
+
 if(typeof db.appName!=='string' || !db.appName.trim()) db.appName='Uang Kas Kelas';
 function getAppName(){ return (db.appName||'Uang Kas Kelas').trim() || 'Uang Kas Kelas'; }
 function updateBrand(){
@@ -200,15 +209,6 @@ function updateBrand(){
   $('docTitle').textContent=name;
   $('appFooter').textContent=name+' • Data tersimpan lokal di HP • v3';
   if($('className')) $('className').value=name;
-}
-
-const DAFTAR_SISWA_AWAL=["ALFARUQ ZIKRI", "ALIKA NAYYA A", "ALVAN SHATA A", "ARA TRIA UTOMO", "ATHAR AL FATIH", "AYNINDIRRA PUTRI M", "AZRIL WAZZA P", "CHERLY MARCELIN", "FADIL AL PATIH", "FAHIR AFDAL", "GALANG ARJITYA", "HAFIKA MAKAILA", "HISYAM AL FARIZKI", "HAIDAR SHAQIL F", "INARA SAKHI A", "KALA NAIRA ZAIDA", "KEANU ALTHAF SYABIL", "KIRANA MAHARANI F", "MUHAMMAD ALIF FAREZA", "M RASYA RAMADHAN", "M RIZKI RAMADHAN", "NUR AZIZAH AL WAISY", "PRIYA ABDI KURNIAWAN", "RADEYA PUTRI HARIANATA", "RAFFA FEBRIAN PRATAMA", "RAFFASYA BYANZA N", "RAFFASYA FATIH AL FIRDAUS", "SITI AYRA FARZANA", "SITI KHALISA NATHIFA", "YUMNA FARIHA", "KEEANU ATHALLAH RIO", "KEENAN ARSHAKA RIO"];
-let db;
-try{
-  db=JSON.parse(localStorage.getItem(KEY)||'{"students":[],"income":[],"expense":[]}');
-  if(!db || !Array.isArray(db.students) || !Array.isArray(db.income) || !Array.isArray(db.expense)) throw new Error();
-}catch(e){
-  db={students:[],income:[],expense:[]};
 }
 
 // PEMULIHAN DATA: bila versi sebelumnya terlanjur menyimpan database kosong,
