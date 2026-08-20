@@ -917,8 +917,14 @@ function downloadExpenseDetailPDF(){
 }
 
 function filtered(){
-  const inc=[...db.income];
-  const exp=[...db.expense];
+  const isTIKText=(s)=>/\bTIK\b/i.test(String(s||''));
+  const isTIKIncome=(x)=>String(x?.source||'')==='Iuran TIK' || isTIKText(x?.desc);
+  const isTIKExpense=(x)=>{
+    const cat=String(x?.cat||x?.category||'');
+    return cat==='Setoran TIK' || isTIKText(x?.desc);
+  };
+  const inc=[...db.income].filter(x=>!isTIKIncome(x));
+  const exp=[...db.expense].filter(x=>!isTIKExpense(x));
   return {inc,exp,ti:inc.reduce((s,x)=>s+Number(x.amount||0),0),te:exp.reduce((s,x)=>s+Number(x.amount||0),0)};
 }
 
@@ -952,7 +958,9 @@ function renderReport(){
 
 function allStudentMonthData(){
   return db.students.map(s=>{
-    const payments=db.income.filter(x=>String(x.studentId)===String(s.id));
+    const isTIKText=(t)=>/\bTIK\b/i.test(String(t||''));
+    const isTIKIncome=(x)=>String(x?.source||'')==='Iuran TIK' || isTIKText(x?.desc);
+    const payments=db.income.filter(x=>String(x.studentId)===String(s.id) && !isTIKIncome(x));
     const total=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
     const paidMonths=new Set(
       payments
@@ -1102,9 +1110,15 @@ function kasCellAmount(n){
   return rupiah(n).replace(/^Rp\s?/,'');
 }
 function monthlyMatrixData(months){
+  const isTIKText=(t)=>/\bTIK\b/i.test(String(t||''));
+  const isTIKIncome=(x)=>String(x?.source||'')==='Iuran TIK' || isTIKText(x?.desc);
   return db.students.map((student,index)=>{
     const values=months.map(ym=>db.income
-      .filter(x=>String(x.studentId)===String(student.id) && String(x.month||x.date||'').slice(0,7)===ym)
+      .filter(x=>
+        String(x.studentId)===String(student.id) &&
+        String(x.month||x.date||'').slice(0,7)===ym &&
+        !isTIKIncome(x)
+      )
       .reduce((sum,x)=>sum+Number(x.amount||0),0));
     const total=values.reduce((sum,n)=>sum+n,0);
     return {student,index,values,total};
@@ -1284,8 +1298,9 @@ function downloadMonthlyPDF(){
 // Rekap khusus Iuran TIK
 // =========================
 function tikFiltered(){
-  const inc=(db.income||[]).filter(x=>String(x.source||'')==='Iuran TIK');
-  const exp=(db.expense||[]).filter(x=>String(x.cat||x.category||'')==='Setoran TIK');
+  const isTIKText=(s)=>/\bTIK\b/i.test(String(s||''));
+  const inc=(db.income||[]).filter(x=>String(x.source||'')==='Iuran TIK' || isTIKText(x.desc));
+  const exp=(db.expense||[]).filter(x=>String(x.cat||x.category||'')==='Setoran TIK' || isTIKText(x.desc));
   const ti=inc.reduce((s,x)=>s+Number(x.amount||0),0);
   const te=exp.reduce((s,x)=>s+Number(x.amount||0),0);
   return {inc,exp,ti,te};
@@ -1315,7 +1330,7 @@ function renderTIK(){
           </tbody></table></div>`
         : '<div class="empty">Belum ada pengeluaran Setoran TIK.</div>'
       }
-      <div class="small" style="margin-top:8px">Pemasukan TIK diambil dari transaksi pemasukan dengan sumber <b>Iuran TIK</b>. Pengeluaran TIK diambil dari kategori <b>Setoran TIK</b>.</div>
+      <div class="small" style="margin-top:8px">Pemasukan TIK diambil dari sumber <b>Iuran TIK</b> atau keterangan yang memuat kata <b>TIK</b>. Pengeluaran TIK diambil dari kategori <b>Setoran TIK</b> atau keterangan yang memuat kata <b>TIK</b>.</div>
     </div>`;
 }
 
@@ -1344,7 +1359,8 @@ function renderMonthlyTIK(){
     return;
   }
   const months=buildMonthRange(start,end);
-  const data=monthlyMatrixDataIncome(months, x=>String(x.source||'')==='Iuran TIK');
+  const isTIKText=(s)=>/\bTIK\b/i.test(String(s||''));
+  const data=monthlyMatrixDataIncome(months, x=>String(x.source||'')==='Iuran TIK' || isTIKText(x.desc));
   const grandTotal=data.reduce((s,x)=>s+x.total,0);
   const groups=monthlyHeaderGroups(months);
 
