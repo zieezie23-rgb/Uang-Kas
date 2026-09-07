@@ -11,14 +11,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @font-face { font-family: 'system'; }
-:root{--paper:#F6F3EC;--paper-2:#EFEADC;--ink:#2B2A28;--ink-soft:#615C50;--teal:#1F5D50;--teal-dark:#153F37;--teal-tint:#E4EEE9;--amber:#D9A441;--amber-tint:#FBF0DA;--coral:#C1544A;--coral-tint:#F7E7E4;--line:#DAD3C0;--white:#FFFFFF;--shadow:0 2px 10px rgba(31,93,80,0.08);--radius:12px}
+:root{--paper:#0A0908;--paper-2:#1C1710;--ink:#F0E6C8;--ink-soft:#A8987A;--teal:#1F1B10;--teal-dark:#000000;--teal-tint:#211B10;--amber:#D4AF37;--amber-tint:#2A2210;--coral:#8B2E2E;--coral-tint:#2A1414;--line:#3A3220;--white:#151109;--shadow:0 4px 22px rgba(0,0,0,0.5);--radius:12px;--row-bg:#F3E7C2;--row-bg-hover:#EAD9A4;--row-text:#2A2210;--row-text-soft:#6B5A3A}
 *{box-sizing:border-box}
 html{margin:0;padding:0}
 body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;-webkit-font-smoothing:antialiased}
 input, select, button, textarea{font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
 h1, h2, h3, .display{font-family:'Fraunces', 'Iowan Old Style', Georgia, serif}
 .app{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
-header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 24px;background:linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);border-radius:var(--radius);color:var(--white);box-shadow:var(--shadow);margin-bottom:18px;position:relative;overflow:hidden}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 24px;background:linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);border-radius:var(--radius);color:#FFFFFF;box-shadow:var(--shadow);margin-bottom:18px;position:relative;overflow:hidden;border-bottom:2px solid var(--amber)}
 header.top::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(217,164,65,0.18)}
 header.top::before{content:"";position:absolute;left:30%;bottom:-70px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.05)}
 .top-title{position:relative;z-index:1}
@@ -30,40 +30,40 @@ header.top::before{content:"";position:absolute;left:30%;bottom:-70px;width:140p
 .top-stat .num{font-family:'Fraunces', Georgia, serif;font-size:21px;font-weight:600;color:#fff;letter-spacing:-0.01em}
 .top-stat .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.65);margin-top:2px}
 nav.tabs button{flex:1 1 auto;min-width:120px;border:none;background:transparent;cursor:pointer;padding:10px 14px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink-soft);transition:all .15s ease;display:flex;align-items:center;justify-content:center;gap:6px}
-nav.tabs button:hover{background:rgba(31,93,80,0.08);color:var(--teal-dark)}
+nav.tabs button:hover{background:rgba(212,175,55,0.12);color:var(--amber)}
 nav.tabs button.active{background:var(--teal);color:#fff;box-shadow:var(--shadow)}
 section.panel{display:none}
 section.panel.active{display:block;animation:fadeIn .25s ease}
 @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
-.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
-.card h2{margin:0 0 4px;font-size:18px;color:var(--teal-dark);font-weight:600}
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--line);border-top:3px solid var(--amber);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
+.card h2{margin:0 0 4px;font-size:18px;color:var(--amber);font-weight:600;letter-spacing:.01em}
 .card .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:14px}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(160px,1fr));gap:12px;align-items:end}
 .field label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
 .field input, .field select{width:100%;padding:9px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink)}
-.field input:focus, .field select:focus{outline:none;border-color:var(--teal);background:#fff}
-.field select:disabled{background:#e8e5dc;color:#999;cursor:not-allowed;opacity:.8}
+.field input:focus, .field select:focus{outline:none;border-color:var(--amber);background:var(--white)}
+.field select:disabled{background:var(--paper-2);color:var(--ink-soft);cursor:not-allowed;opacity:.7}
 .csel{position:relative}
 .csel select.csel-native{display:none}
 .csel-trigger{width:100%;text-align:left;padding:9px 30px 9px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);cursor:pointer;position:relative;font-family:inherit;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .csel-trigger::after{content:"";position:absolute;right:12px;top:44%;width:7px;height:7px;border-right:2px solid var(--ink-soft);border-bottom:2px solid var(--ink-soft);transform:translateY(-50%) rotate(45deg);transition:transform .15s ease}
 .csel-trigger.open::after{transform:translateY(-15%) rotate(-135deg)}
-.csel-trigger.placeholder{color:#9a9382}
-.csel-trigger:focus{outline:none;border-color:var(--teal)}
-.csel-trigger.disabled{background:#e8e5dc;color:#999;cursor:not-allowed;opacity:.8}
-.csel-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:30;background:#fff;border:1.5px solid var(--teal);border-radius:8px;box-shadow:var(--shadow);max-height:230px;overflow-y:auto;padding:4px}
+.csel-trigger.placeholder{color:var(--ink-soft)}
+.csel-trigger:focus{outline:none;border-color:var(--amber)}
+.csel-trigger.disabled{background:var(--paper-2);color:var(--ink-soft);cursor:not-allowed;opacity:.7}
+.csel-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:30;background:var(--white);border:1.5px solid var(--amber);border-radius:8px;box-shadow:var(--shadow);max-height:230px;overflow-y:auto;padding:4px}
 .csel-menu.show{display:block}
 .csel-opt{padding:8px 10px;border-radius:6px;font-size:13.5px;cursor:pointer;color:var(--ink)}
 .csel-opt:hover{background:var(--teal-tint)}
 .csel-opt.sel{background:var(--teal);color:#fff;font-weight:600}
-.csel-opt.disabled{color:#bbb;cursor:not-allowed}
+.csel-opt.disabled{color:#5A5240;cursor:not-allowed}
 .cetak-break-before{page-break-before:always!important;break-before:page!important}
 #mNama option{font-size:13px}
 .field.readout input{background:var(--amber-tint);border-color:var(--amber);font-weight:600}
 .btn{border:none;cursor:pointer;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;transition:all .15s ease;display:inline-flex;align-items:center;gap:6px}
 .btn-primary{background:var(--teal);color:#fff}
 .btn-primary:hover{background:var(--teal-dark)}
-.btn-ghost{background:var(--teal-tint);color:var(--teal-dark)}
+.btn-ghost{background:var(--teal-tint);color:var(--amber)}
 .btn-ghost:hover{background:#d8e8e2}
 .btn-danger{background:var(--coral-tint);color:var(--coral);padding:6px 10px;font-size:12px}
 .btn-danger:hover{background:#f0d3ce}
@@ -72,22 +72,27 @@ section.panel.active{display:block;animation:fadeIn .25s ease}
 .btn-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
 .btn-row-right{justify-content:flex-end}
 table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{background:var(--teal-tint);color:var(--teal-dark);text-align:left;padding:8px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;font-weight:700;border-bottom:2px solid var(--teal);position:sticky;top:0}
+thead th{background:var(--teal-tint);color:var(--amber);text-align:left;padding:8px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;font-weight:700;border-bottom:2px solid var(--amber);position:sticky;top:0}
 thead th.sortable{cursor:pointer;user-select:none;white-space:nowrap}
-thead th.sortable:hover{background:var(--teal,#d8efe9)}
+thead th.sortable:hover{background:var(--teal-tint,#211B10)}
 thead th.sortable::after{content:'⇅';margin-left:5px;font-size:10px;opacity:.45}
 thead th.sortable.sort-asc::after{content:'▲';opacity:1}
 thead th.sortable.sort-desc::after{content:'▼';opacity:1}
 tbody td{padding:7px 9px;border-bottom:1px solid var(--line)}
-tbody tr:hover{background:var(--paper)}
+tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) td:not(.paid-cell){background:var(--row-bg);color:var(--row-text)}
+tbody tr:not(.total-row):not(.row-header-like):not(.grand-total):hover td:not(.paid-cell){background:var(--row-bg-hover)}
+tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) td .unpaid{color:var(--row-text-soft)}
+tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) td .row-no{color:var(--row-text-soft)}
+tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) .rp-cell .rp-label{color:var(--row-text-soft)}
+tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) .rp-cell.rp-zero{color:var(--row-text-soft)}
 .tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--line);max-height:520px;overflow-y:auto}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .center{text-align:center}
-.paid{color:var(--teal);font-weight:700}
-.siswa-table td.paid-cell{background:#e8f4ee}
-.unpaid{color:#c8c1af}
+.paid{color:var(--amber);font-weight:700}
+.siswa-table td.paid-cell{background:var(--teal-tint)}
+.unpaid{color:var(--ink-soft)}
 .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
-.pill-total{background:var(--amber-tint);color:#8a6416}
+.pill-total{background:var(--amber-tint);color:var(--amber)}
 .name-cell{font-weight:600}
 .row-no{color:var(--ink-soft);font-size:12px}
 .rp-cell{display:flex;align-items:center;justify-content:space-between;gap:6px;font-variant-numeric:tabular-nums}
@@ -101,16 +106,16 @@ tr.row-lunas, tr.row-lunas:hover{background:transparent}
 .siswa-table thead th, .siswa-table tbody tr.total-row td{background:var(--teal-dark);color:#fff}
 .siswa-table tbody tr.total-row .rp-label, .siswa-table tbody tr.total-row .rp-value{color:#fff}
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
-.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);border-left:4px solid var(--teal)}
+.kpi{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);border-left:4px solid var(--amber)}
 .kpi.amber{border-left-color:var(--amber)}
 .kpi.amber .lbl{font-weight:800;color:var(--ink)}
 .kpi.amber .val{font-weight:800}
 .kpi.coral{border-left-color:var(--coral)}
 .kpi .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600}
-.kpi .val{font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:600;color:var(--teal-dark);margin-top:4px}
+.kpi .val{font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:600;color:var(--amber);margin-top:4px}
 .month-block{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden}
 .month-head{background:var(--paper-2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.month-head .mname{font-weight:700;color:var(--teal-dark);font-family:'Fraunces',serif;font-size:15px}
+.month-head .mname{font-weight:700;color:var(--amber);font-family:'Fraunces',serif;font-size:15px}
 .month-figs{display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap}
 .month-figs b{font-variant-numeric:tabular-nums}
 .month-body{padding:6px 14px 10px}
@@ -121,12 +126,12 @@ tr.row-lunas, tr.row-lunas:hover{background:transparent}
 .tx-date{flex:0 0 auto;color:var(--ink-soft);font-size:11px;width:44px}
 .tx-desc{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tx-amount{flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:700;font-size:12px}
-.tx-amount.plus{color:var(--teal)}
+.tx-amount.plus{color:var(--amber)}
 .tx-amount.minus{color:var(--coral)}
 .list-wrap{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px}
 .list-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12.5px;white-space:nowrap;width:max-content;min-width:100%}
 .list-row:last-child{border-bottom:none}
-.list-row:nth-child(even){background:var(--paper)}
+.list-row:nth-child(even){background:var(--paper-2)}
 .list-date{flex:0 0 auto;width:50px;color:var(--ink-soft);font-size:11px;line-height:1.3}
 .list-main{flex:0 0 auto}
 .list-title{white-space:nowrap;font-weight:600;color:var(--ink)}
@@ -141,26 +146,36 @@ tr.row-lunas, tr.row-lunas:hover{background:transparent}
 .siswa-table .no-print .icon-btn{font-size:14px;padding:4px 6px}
 .siswa-table td, .siswa-table th{white-space:nowrap}
 th.sortable-th{cursor:pointer;user-select:none;white-space:nowrap}
-th.sortable-th:hover{background:#d3e6de}
+th.sortable-th:hover{background:var(--teal-tint)}
 th.sortable-th .sort-arrow{font-size:9px;margin-left:3px;opacity:.85}
 .mini-row{display:flex;justify-content:space-between;padding:3px 0;font-size:12.5px;border-bottom:1px dashed var(--line)}
 .mini-row:last-child{border-bottom:none}
-.saldo-akhir{font-weight:700;color:var(--teal)}
+.saldo-akhir{font-weight:700;color:var(--amber)}
 .saldo-akhir.minus{color:var(--coral)}
-.badge-edit{cursor:pointer;color:var(--teal);font-weight:600;font-size:12px;margin-right:8px}
+.badge-edit{cursor:pointer;color:var(--amber);font-weight:600;font-size:12px;margin-right:8px}
 footer.app-footer{text-align:center;color:var(--ink-soft);font-size:11.5px;margin-top:24px;padding-top:14px;border-top:1px solid var(--line)}
 .kpi-grid .kpi{text-align:center}
 .kpi-link{cursor:pointer;transition:transform .12s ease}
 .kpi-link:active{transform:scale(.98)}
-#rkKeluar{color:#c0392b!important}
+#rkKeluar{color:var(--coral)!important}
 #panel-rekap table th:first-child, #panel-rekap table td:first-child{text-align:center}
-#panel-rekap table td:nth-child(3){color:#c0392b;font-weight:600}
+#panel-rekap table td:nth-child(3){color:var(--coral);font-weight:600}
 .btn-row.rekap-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn-export-outline{background:#fff!important;color:var(--teal-dark)!important;border:1.5px solid var(--teal-dark)!important}
-.btn-print-outline{background:var(--teal-tint)!important;color:var(--teal-dark)!important;border:1.5px solid var(--teal-dark)!important}
-.btn-share-outline{background:#fff!important;color:#8a6416!important;border:1.5px solid #8a6416!important}
+.btn-export-outline{background:var(--white)!important;color:var(--amber)!important;border:1.5px solid var(--amber)!important}
+.btn-print-outline{background:var(--teal-tint)!important;color:var(--amber)!important;border:1.5px solid var(--amber)!important}
+.btn-share-outline{background:var(--white)!important;color:var(--amber)!important;border:1.5px solid var(--amber)!important}
 body.capturing-share .no-print{display:none!important}
 body.capturing-share .card{box-shadow:none!important}
+/* Rekap semua periode: hasil gambar/PDF hanya mempertahankan warna asli tabel dan teks */
+body.capturing-share #allPeriodsPage .all-periods-inner{background:#fff!important;color:var(--ink)!important;box-shadow:none!important;border-radius:0!important}
+body.capturing-share #allPeriodsPage .ap-page-head h1,
+body.capturing-share #allPeriodsPage h3{color:var(--amber)!important}
+body.capturing-share #allPeriodsPage table{background:transparent!important;color:var(--row-text)!important}
+body.capturing-share #allPeriodsPage th{background:var(--teal-tint)!important;color:var(--amber)!important}
+body.capturing-share #allPeriodsPage td{color:var(--row-text)!important;background:var(--row-bg)!important;border-bottom:1px solid var(--line)!important}
+body.capturing-share #allPeriodsPage tr.grand-total td{background:var(--paper-2)!important;color:var(--ink)!important}
+body.capturing-share #allPeriodsPage tr.current-period td:first-child{color:var(--amber)!important}
+
 @media print {@page{ size: A4 portrait; margin: 8mm; }}
 @media (max-width: 640px){
 .top-stats{display:none}
@@ -197,16 +212,55 @@ nav.tabs button[data-tab="rekap"]{order:0}
 .rekap-actions>.btn, .rekap-actions>.print-menu-wrap{width:auto!important;min-width:145px!important;flex:1 1 0!important}
 .rekap-actions .print-menu-wrap>.btn{width:100%!important;min-width:0!important}
 #kasLegacyNav{display:none!important}
+.period-switch{display:flex;gap:8px;padding:2px 2px 10px;width:100%}
+.period-switch button{flex:1 1 0;min-width:0;border:1.5px solid var(--line);background:var(--white);color:var(--ink-soft);font-weight:700;font-size:12.5px;padding:8px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;text-align:center;font-family:inherit}
+.period-switch button.active{background:var(--teal);border-color:var(--amber);color:var(--amber)}
+.period-switch button:hover{border-color:var(--amber)}
+.btn-all-periods{width:100%;justify-content:center;margin-bottom:12px}
+.ap-modal{display:none;position:fixed;inset:0;background:rgba(43,42,40,0.55);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
+.ap-modal.show{display:flex}
+.ap-modal-inner{background:var(--white);border-radius:var(--radius);max-width:760px;width:100%;padding:18px 18px 22px;margin-top:20px}
+.ap-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ap-modal-head h2{margin:0;font-size:18px;color:var(--amber)}
+.ap-modal-head button{border:none;background:var(--teal-tint);color:var(--amber);width:30px;height:30px;border-radius:8px;font-size:15px;cursor:pointer}
+.ap-modal h3{font-size:13.5px;color:var(--amber);margin:16px 0 6px;font-family:'Fraunces',serif}
+.ap-modal table{width:100%;border-collapse:collapse;font-size:12.5px}
+.ap-modal th{background:var(--teal-tint);color:var(--amber);text-align:right;padding:6px 8px;font-size:11px;text-transform:uppercase}
+.ap-modal th:first-child, .ap-modal td:first-child{text-align:left}
+.ap-modal td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.ap-modal tr.grand-total td{font-weight:800;background:var(--paper-2)}
+.ap-modal tr.current-period td:first-child{color:var(--amber);font-weight:700}
+.ap-modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}.ap-modal-actions .btn{flex:1;min-width:150px;justify-content:center}
 .mode-switch{display:flex;gap:10px;padding:6px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;margin:0 0 12px}
+/* ===================== LANDING PAGE (BERANDA) ===================== */
+.landing-page{min-height:100dvh;min-height:100vh;display:flex;flex-direction:column;padding:22px 16px calc(16px + env(safe-area-inset-bottom));max-width:900px;margin:0 auto;box-sizing:border-box}
+.landing-header{position:relative;text-align:center;padding:22px 16px;border-radius:var(--radius);background:linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);border-bottom:2px solid var(--amber);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;flex:0 0 auto}
+.landing-header::after{content:"";position:absolute;right:-40px;top:-40px;width:170px;height:170px;border-radius:50%;background:rgba(217,164,65,0.18)}
+.landing-header::before{content:"";position:absolute;left:20%;bottom:-70px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.05)}
+.landing-header .eyebrow{position:relative;z-index:1;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:6px}
+.landing-header h1{position:relative;z-index:1;margin:0;font-size:clamp(19px,5vw,27px);font-weight:600;line-height:1.2;color:#fff}
+.landing-grid{flex:1 1 auto;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);gap:12px;margin-bottom:16px;min-height:0}
+.landing-card{appearance:none;border:1px solid var(--line);border-top:3px solid var(--amber);background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 6px;font-family:inherit;color:var(--ink);transition:transform .15s ease, background .15s ease;min-height:0}
+.landing-card:hover, .landing-card:active{transform:translateY(-2px);background:var(--teal-tint)}
+.landing-card .lc-label{font-family:'Fraunces',Georgia,serif;font-size:clamp(20px,6vw,30px);font-weight:700;color:var(--amber);line-height:1.15;text-align:center}
+.landing-card .lc-sub{font-size:clamp(10px,2.4vw,12.5px);color:var(--ink-soft);letter-spacing:.03em;text-align:center}
+.landing-footer{flex:0 0 auto;display:flex;justify-content:stretch}
+.landing-footer{flex-direction:column;gap:0}
+.landing-footer .btn{width:100%;justify-content:center;padding:13px 18px;font-size:14px}
+@media (max-width:420px){
+  .landing-page{padding:16px 10px calc(14px + env(safe-area-inset-bottom))}
+  .landing-grid{gap:8px}
+  .landing-card{padding:6px 4px;border-radius:10px}
+}
 .mode-btn{flex:1;border:0;background:var(--white);color:var(--ink-soft);font-weight:700;padding:12px;border-radius:10px;cursor:pointer}
 .mode-btn.active{background:var(--teal);color:#fff}
 .book-app{margin-top:0}
 .tik-top{margin-bottom:18px}
 .tik-actions{display:flex!important;justify-content:space-between;align-items:center;gap:10px}
 .print-menu-wrap{position:relative}
-.print-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);z-index:20;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);min-width:170px;padding:5px}
+.print-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);z-index:20;background:var(--white);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);min-width:170px;padding:5px}
 .print-menu.show{display:block}
-.print-menu button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:9px 11px;border-radius:7px;cursor:pointer}
+.print-menu button{display:block;width:100%;border:0;background:var(--white);text-align:left;padding:9px 11px;border-radius:7px;cursor:pointer}
 .print-menu button:hover{background:var(--paper-2)}
 #tikApp .panel{display:none}
 #tikApp .panel.active{display:block}
@@ -248,7 +302,7 @@ body.printing-rekap-only #panel-rekap .btn-row, body.printing-bulanan #panel-bul
 #tblSiswa thead th{position:static;background:var(--teal-dark)!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa tbody tr.total-row{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa tbody tr.total-row td{background:var(--teal-dark)!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-#tblSiswa .paid{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color:var(--teal)!important}
+#tblSiswa .paid{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color:#8a6416!important}
 #tblSiswa tbody td:nth-child(1), #tblSiswa tbody td:nth-child(2), #tblSiswa tbody td:nth-child(3){color:var(--teal-dark)!important}
 #tblSiswa td.paid-cell{background:#e8f4ee!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa th:nth-child(3), #tblSiswa td:nth-child(3){width:9.4%!important;min-width:0!important;max-width:none!important;white-space:normal!important;overflow:hidden}
@@ -261,7 +315,7 @@ body.printing-rekap-only #panel-rekap .btn-row, body.printing-bulanan #panel-bul
 body.printing-gabungan #panel-rekap.print-active{display:block!important;order:1!important}
 body.printing-gabungan #panel-siswa.print-active{display:block!important;order:2!important}
 #panel-siswa.print-active .btn-row, #panel-rekap.print-active .btn-row{display:none!important}
-header.top{background:#1F5D50!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:5px 16px;margin-bottom:4px}
+header.top{background:#000000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:5px 16px;margin-bottom:4px}
 #panel-siswa .card{padding:8px 12px;margin-bottom:6px}
 #panel-siswa .card h2{font-size:14px;margin-bottom:2px}
 #panel-siswa .card .sub{font-size:9px;margin-bottom:5px}
@@ -295,15 +349,15 @@ thead{display:table-header-group!important}
 tfoot{display:table-footer-group!important}
 tr{break-inside:avoid!important;page-break-inside:avoid!important}
 td{border:1px solid #888!important;padding:2.5px 3.5px!important;font-size:7pt!important;line-height:1.15!important;vertical-align:middle!important}
-th{border:1px solid #888!important;padding:2.5px 3.5px!important;font-size:7pt!important;line-height:1.15!important;vertical-align:middle!important;font-weight:800!important;background:#dfe9e5!important;color:#111!important}
+th{border:1px solid #888!important;padding:2.5px 3.5px!important;font-size:7pt!important;line-height:1.15!important;vertical-align:middle!important;font-weight:800!important;background:#F1E8CE!important;color:#111!important}
 body.printing-rekap-only #rekapKpiGrid{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;margin:0!important;padding:0!important}
 body.printing-rekap-only #panel-rekap{display:block!important;visibility:visible!important;position:relative!important;width:100%!important;max-width:none!important}
 body.printing-rekap-only #panel-rekap .rekap-actions, body.printing-rekap-only #panel-rekap .no-print{display:none!important}
 body.printing-rekap-only #panel-rekap .card{display:block!important;margin-top:0!important;margin-bottom:2.5mm!important}
 body.printing-rekap-only #panel-siswa{display:block!important;visibility:visible!important;position:relative!important;width:100%!important;max-width:none!important;break-before:avoid!important;page-break-before:avoid!important;margin-top:0!important}
 body.printing-rekap-only #panel-siswa .card{margin-top:0!important}
-body.printing-rekap-only #panel-siswa thead th{background:#2f6f5e!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-body.printing-rekap-only #panel-siswa td.paid-cell, body.printing-rekap-only #panel-siswa .total-row{background:#e4f1eb!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+body.printing-rekap-only #panel-siswa thead th{background:#000000!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+body.printing-rekap-only #panel-siswa td.paid-cell, body.printing-rekap-only #panel-siswa .total-row{background:#F1E8CE!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 body.printing-rekap-only #panel-siswa th, body.printing-rekap-only #panel-siswa td{padding:2.2px 3px!important;font-size:6.7pt!important}
 body.printing-rincian #panel-rekap, body.printing-rincian #panel-siswa, body.printing-rincian #panel-bulanan{display:none!important}
 body.printing-rincian #panel-masuk, body.printing-rincian #panel-keluar{display:block!important;visibility:visible!important;width:100%!important;max-width:none!important}
@@ -320,23 +374,227 @@ body.printing-tik-all #tikApp .panel{width:100%!important;max-width:none!importa
 }
 .bottom-actions button, .rekap-actions button, .action-grid button{text-align:center!important;justify-content:center!important}
 button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[onclick*="siswa"] span, button[onclick*="bulanan"] span, button[onclick*="rekap"] span, nav.tabs.no-print{display:none!important}
+
+/* ===== PENYEMPURNAAN BERANDA ===== */
+.landing-grid{gap:14px}
+.landing-card{position:relative;overflow:hidden;padding:18px 14px 16px;min-height:150px;border:1px solid rgba(212,175,55,.28);border-top:3px solid var(--amber);background:linear-gradient(145deg,#17130d 0%,#0f0c08 58%,#21190c 100%);box-shadow:0 7px 24px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.05);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.landing-card::before{content:"";position:absolute;width:105px;height:105px;right:-38px;top:-42px;border-radius:50%;background:rgba(212,175,55,.09);border:1px solid rgba(212,175,55,.12)}
+.landing-card::after{content:"";position:absolute;left:-30px;bottom:-55px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.025)}
+.landing-card:hover,.landing-card:active{transform:translateY(-4px) scale(1.01);background:linear-gradient(145deg,#211b10 0%,#11100c 60%,#2a2110 100%);border-color:rgba(212,175,55,.65);box-shadow:0 10px 28px rgba(0,0,0,.55),0 0 0 1px rgba(212,175,55,.08) inset}
+.landing-card .lc-icon{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:16px;background:linear-gradient(145deg,#2b2413,#17130b);border:1px solid rgba(212,175,55,.45);box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);font-family:Georgia,serif;font-size:25px;font-weight:700;color:var(--amber);margin-bottom:2px}
+.landing-card .lc-label{position:relative;z-index:1;font-size:clamp(28px,8vw,38px);font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.55)}
+.landing-card .lc-sub{position:relative;z-index:1}
+.landing-card .lc-arrow{position:absolute;z-index:2;right:12px;bottom:9px;color:var(--amber);font-size:22px;line-height:1;opacity:.7}
+.home-action-row{width:100%;margin:0 0 12px!important}
+.home-full-btn{width:100%!important;justify-content:center!important}
+.rekap-ringkasan-table{table-layout:fixed}.rekap-ringkasan-table th,.rekap-ringkasan-table td{width:25%}
+@media (max-width:420px){.landing-card{min-height:135px;padding:14px 10px}.landing-card .lc-icon{width:44px;height:44px;font-size:22px;border-radius:14px}}
+
+/* ===== REKAP SEMUA PERIODE: SHARE & CETAK ===== */
+.all-periods-page{min-height:100dvh;background:var(--paper);padding:16px;overflow-y:auto}
+.all-periods-inner{max-width:900px;width:100%;margin:0 auto;background:var(--white);border:1px solid var(--line);border-top:3px solid var(--amber);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px 22px}
+.ap-page-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.ap-page-head h1{margin:0;color:var(--amber);font-family:'Fraunces',serif;font-size:21px;font-weight:700}
+.ap-page-head .btn{flex:0 0 auto}
+.ap-page-actions{display:flex;gap:8px;flex-wrap:nowrap;margin:16px 0 0}.ap-page-actions>.btn,.ap-page-actions>.print-menu-wrap{flex:1 1 0;min-width:0}.ap-page-actions>.btn{justify-content:center;box-sizing:border-box}.ap-page-actions>.print-menu-wrap{display:flex}.ap-page-actions>.print-menu-wrap>.btn{width:100%;flex:1;justify-content:center;box-sizing:border-box}.ap-page-actions .btn{min-width:0}
+.all-periods-page h3{font-size:14px;color:var(--amber);margin:18px 0 7px;font-family:'Fraunces',serif}
+.all-periods-page table{width:100%;border-collapse:collapse;font-size:12.5px}
+.all-periods-page th{background:var(--teal-tint);color:var(--amber);text-align:right;padding:7px 8px;font-size:11px;text-transform:uppercase;border-bottom:2px solid var(--amber)}
+.all-periods-page th:first-child,.all-periods-page td:first-child{text-align:left}
+.all-periods-page td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.all-periods-page tr.grand-total td{font-weight:800;background:var(--paper-2)}
+.all-periods-page tr.current-period td:first-child{color:var(--amber);font-weight:700}
+@media(max-width:640px){.all-periods-page{padding:10px}.all-periods-inner{padding:14px 12px 18px}.ap-page-head{align-items:flex-start}.ap-page-head h1{font-size:18px}.all-periods-page table{font-size:11.5px}.all-periods-page th,.all-periods-page td{padding:6px 5px}.ap-page-actions .btn{min-width:0;padding:9px 10px}}
+
+.all-periods-share-wrap{position:relative}
+.all-periods-share-wrap .print-menu{right:0;left:auto;bottom:calc(100% + 6px);top:auto;min-width:150px;z-index:10000}
+@media print{
+  body.printing-all-periods{
+    background:#fff!important;
+    color:var(--ink)!important;
+  }
+  body.printing-all-periods #landingPage,
+  body.printing-all-periods #mainApp{display:none!important}
+  body.printing-all-periods #allPeriodsPage{
+    display:block!important;
+    min-height:0!important;
+    width:100%!important;
+    padding:0!important;
+    margin:0!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+  body.printing-all-periods #allPeriodsPage .home-action-row,
+  body.printing-all-periods #allPeriodsPage .ap-page-actions{display:none!important}
+  body.printing-all-periods #allPeriodsPage .all-periods-inner{
+    max-width:none!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-top:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+    color:var(--ink)!important;
+  }
+  body.printing-all-periods #allPeriodsPage .ap-page-head{
+    margin:0 0 12px!important;
+  }
+  body.printing-all-periods #allPeriodsPage .ap-page-head h1{
+    margin:0!important;
+    font-size:21px!important;
+    color:var(--amber)!important;
+  }
+  body.printing-all-periods #allPeriodsPage h3{
+    margin:18px 0 7px!important;
+    font-size:14px!important;
+    color:var(--amber)!important;
+  }
+  body.printing-all-periods #allPeriodsPage table{
+    width:100%!important;
+    border-collapse:collapse!important;
+    table-layout:auto!important;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif!important;
+    font-size:12.5px!important;
+    line-height:1.25!important;
+    color:var(--ink)!important;
+    background:transparent!important;
+    margin-bottom:18px!important;
+  }
+  body.printing-all-periods #allPeriodsPage th{
+    background:var(--teal-tint)!important;
+    color:var(--amber)!important;
+    text-align:right!important;
+    padding:7px 8px!important;
+    font-size:11px!important;
+    line-height:1.15!important;
+    text-transform:uppercase!important;
+    white-space:nowrap!important;
+    border-bottom:2px solid var(--amber)!important;
+  }
+  body.printing-all-periods #allPeriodsPage th:first-child,
+  body.printing-all-periods #allPeriodsPage td:first-child{text-align:left!important}
+  body.printing-all-periods #allPeriodsPage td{
+    padding:7px 8px!important;
+    border-bottom:1px solid var(--line)!important;
+    text-align:right!important;
+    font-variant-numeric:tabular-nums!important;
+    white-space:nowrap!important;
+    color:var(--row-text)!important;
+    background:var(--row-bg)!important;
+  }
+  body.printing-all-periods #allPeriodsPage td:first-child{
+    text-align:left!important;
+    white-space:nowrap!important;
+  }
+  body.printing-all-periods #allPeriodsPage td:first-child span{
+    color:var(--ink-soft)!important;
+    font-weight:400!important;
+  }
+  body.printing-all-periods #allPeriodsPage tr.grand-total td{
+    font-weight:800!important;
+    background:var(--paper-2)!important;
+  }
+  body.printing-all-periods #allPeriodsPage td:nth-child(n+2),
+  body.printing-all-periods #allPeriodsPage th:nth-child(n+2){
+    text-align:right!important;
+    font-variant-numeric:tabular-nums!important;
+    white-space:nowrap!important;
+  }
+  body.printing-all-periods #allPeriodsPage tr.current-period td:first-child{
+    color:var(--amber)!important;
+    font-weight:700!important;
+  }
+}
+@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></head>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;0,900;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></head>
 <body>
-<div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#F6F3EC;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
-  <div style="width:38px;height:38px;border-radius:50%;border:3px solid #DAD3C0;border-top-color:#1F5D50;animation:cloudspin 0.8s linear infinite;"></div>
-  <div style="font-family:'Inter',-apple-system,sans-serif;color:#615C50;font-size:13.5px;font-weight:600;">Memuat data terbaru...</div>
+<div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
+  <div style="width:38px;height:38px;border-radius:50%;border:3px solid #3A3220;border-top-color:#D4AF37;animation:cloudspin 0.8s linear infinite;"></div>
+  <div style="font-family:'Inter',-apple-system,sans-serif;color:#A8987A;font-size:13.5px;font-weight:600;">Memuat data terbaru...</div>
 </div>
-<style>@keyframes cloudspin{to{transform:rotate(360deg)}}</style>
-<div class="app">
+<style>@keyframes cloudspin{to{transform:rotate(360deg)}}
+/* ===== AKSI EXPORT / CETAK / SHARE TERPUSAT ===== */
+.landing-export-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;margin-top:10px}
+.landing-export-actions .btn{width:100%;justify-content:center;min-height:44px}
+.landing-recap-btn{width:100%;justify-content:center;display:flex}
+.central-action-modal{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px}
+.central-action-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}
+.central-action-box{position:relative;z-index:1;width:min(430px,100%);max-height:90vh;overflow:auto;background:var(--paper);border:1px solid rgba(212,175,55,.35);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:16px}
+.central-action-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.central-action-head h2{margin:0;font-size:20px}
+.central-action-close{border:0;background:var(--paper-2);color:var(--ink);width:36px;height:36px;border-radius:12px;font-size:24px;cursor:pointer}
+.central-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.central-action-grid.destination-grid .central-action-choice:last-child{grid-column:1 / -1}
+.central-action-choice,.central-action-choice .choice-main,.central-action-choice .choice-sub{text-align:center}
+.central-action-grid.one{grid-template-columns:1fr}
+.central-action-choice{width:100%;min-height:48px;border:1px solid var(--line);background:var(--white);color:var(--ink);border-radius:12px;padding:10px 12px;font:600 14px Inter, sans-serif;cursor:pointer;text-align:left}
+.central-action-choice:hover{border-color:var(--amber);background:var(--paper-2)}
+.central-action-choice .choice-main{display:block!important;font-weight:700!important}.central-action-choice .choice-sub{display:block!important;font-size:11px;color:var(--ink-soft);font-weight:500;margin-top:2px}
+.central-action-back{margin-top:12px;width:100%;justify-content:center}
+@media(max-width:420px){.landing-export-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.landing-export-actions .btn{padding-left:6px;padding-right:6px;font-size:12px}.central-action-grid{grid-template-columns:1fr}}
+</style>
+<!-- ===================== HALAMAN UTAMA (BERANDA) ===================== -->
+<div class="landing-page" id="landingPage">
+  <header class="landing-header">
+    <div class="eyebrow">Sistem Pembukuan Kelas</div>
+    <h1>Buku Kas dan TIK &bull; Kelas 1-6</h1>
+  </header>
+  <div class="landing-grid">
+    <button class="landing-card" onclick="enterClass(0)"><div class="lc-label">Kelas 1</div><div class="lc-sub">Agu 24 – Jun 25</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" onclick="enterClass(1)"><div class="lc-label">Kelas 2</div><div class="lc-sub">Agu 25 – Jun 26</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" onclick="enterClass(2)"><div class="lc-label">Kelas 3</div><div class="lc-sub">Agu 26 – Jun 27</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" onclick="enterClass(3)"><div class="lc-label">Kelas 4</div><div class="lc-sub">Agu 27 – Jun 28</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" onclick="enterClass(4)"><div class="lc-label">Kelas 5</div><div class="lc-sub">Agu 28 – Jun 29</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" onclick="enterClass(5)"><div class="lc-label">Kelas 6</div><div class="lc-sub">Agu 29 – Jun 30</div><span class="lc-arrow">›</span></button>
+  </div>
+  <footer class="landing-footer">
+    <button class="btn btn-amber landing-recap-btn" onclick="openAllPeriodsRecap()">📊 Rekap Semua Periode</button>
+    <div class="landing-export-actions no-print">
+      <button class="btn btn-ghost" onclick="openCentralAction('export')">📥 Export Excel</button>
+      <button class="btn btn-ghost" onclick="openCentralAction('print')">🖨️ Cetak</button>
+      <button class="btn btn-ghost" onclick="openCentralAction('share')">🔗 Share</button>
+    </div>
+  </footer>
+</div>
+
+<!-- ===================== MENU AKSI TERPUSAT ===================== -->
+<div class="central-action-modal no-print" id="centralActionModal" style="display:none;">
+  <div class="central-action-backdrop" onclick="closeCentralAction()"></div>
+  <div class="central-action-box">
+    <div class="central-action-head"><h2 id="centralActionTitle">Aksi</h2><button class="central-action-close" onclick="closeCentralAction()">×</button></div>
+    <div id="centralActionBody"></div>
+  </div>
+</div>
+
+<!-- HALAMAN: REKAP SEMUA PERIODE -->
+<div class="all-periods-page" id="allPeriodsPage" style="display:none;">
+  <div class="btn-row no-print home-action-row">
+    <button class="btn btn-ghost home-full-btn" onclick="closeAllPeriodsRecap()">🏠 Beranda</button>
+  </div>
+  <div class="all-periods-inner">
+    <div class="ap-page-head">
+      <h1>📊 Rekap Semua Periode</h1>
+    </div>
+    <div id="allPeriodsBody"></div>
+  </div>
+</div>
+
+<div class="app" id="mainApp" style="display:none;">
 <div id="syncStatus" style="position:absolute;bottom:10px;right:14px;background:transparent;padding:0;border-radius:0;font-size:11px;font-weight:600;box-shadow:none;z-index:5;display:none;align-items:center;gap:5px;letter-spacing:.02em;"></div>
+  <div class="btn-row no-print home-action-row">
+    <button class="btn btn-ghost home-full-btn" onclick="goToLanding()">🏠 Beranda</button>
+  </div>
 
   <!-- MODE PEMBUKUAN -->
   <div class="mode-switch no-print" id="modeSwitch">
     <button class="mode-btn active" id="modeKasBtn" onclick="switchBook('kas')">📒 Kas Bulanan</button>
     <button class="mode-btn" id="modeTikBtn" onclick="switchBook('tik')">💻 TIK</button>
   </div>
+
 
   <header class="top">
     <div class="top-title">
@@ -505,18 +763,13 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
     <div class="card">
       <h2>Ringkasan Keseluruhan Kas Kelas 3B</h2>
       <div class="tbl-wrap" style="max-height:none;">
-        <table>
+        <table class="rekap-ringkasan-table">
           <thead><tr><th>Keterangan</th><th class="num">Uang Masuk</th><th class="num">Uang Keluar</th><th class="num">Kas Tersedia</th></tr></thead>
           <tbody id="tbodyRekapKas"></tbody>
         </table>
       </div>
-      <div class="rekap-actions no-print">
-        <button class="btn btn-ghost btn-export-outline" onclick="exportExcel()">Export ke Excel</button>
-        <div class="print-menu-wrap"><button class="btn btn-ghost btn-print-outline" onclick="togglePrintMenu('kasPrintMenu')">🖨️ Cetak ▾</button><div id="kasPrintMenu" class="print-menu"><button onclick="cetakSemuaKas();togglePrintMenu('kasPrintMenu')">Cetak Semua</button><button onclick="cetakRekap();togglePrintMenu('kasPrintMenu')">Cetak Rekap</button><button onclick="cetakBulanan();togglePrintMenu('kasPrintMenu')">Cetak Bulanan</button><button onclick="cetakRincian();togglePrintMenu('kasPrintMenu')">Cetak Rincian</button></div></div>
-        <div class="print-menu-wrap"><button class="btn btn-ghost btn-share-outline" onclick="togglePrintMenu('kasShareMenu')">🔗 Bagikan ▾</button><div id="kasShareMenu" class="print-menu"><button onclick="shareRekap('kas','pdf')">Bagikan PDF</button><button onclick="shareRekap('kas','gambar')">Bagikan Gambar</button><button onclick="shareRekap('kas','teks')">Bagikan Teks</button></div></div>
-      </div>
     </div>
-  </section>
+    </section>
 
   <!-- ===================== TIK APP ===================== -->
   <div id="tikApp" class="book-app" style="display:none;">
@@ -551,11 +804,6 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
       <div class="card">
         <h2>Ringkasan Uang TIK Kelas 3B</h2>
         <div class="tbl-wrap" style="max-height:none;"><table><thead><tr><th class="center">Keterangan</th><th class="num">Uang Masuk</th><th class="num">Uang Keluar</th><th class="num">Tersedia</th></tr></thead><tbody id="tikRekapBody"></tbody></table></div>
-        <div class="rekap-actions tik-actions no-print">
-          <button class="btn btn-ghost btn-export-outline" onclick="tikExportExcel()">Export ke Excel</button>
-          <div class="print-menu-wrap"><button class="btn btn-ghost btn-print-outline" onclick="togglePrintMenu('tikPrintMenu')">🖨️ Cetak ▾</button><div id="tikPrintMenu" class="print-menu"><button onclick="tikPrint('all')">Cetak Semua</button><button onclick="tikPrint('rekap')">Cetak Rekap</button><button onclick="tikPrint('rincian')">Cetak Rincian</button></div></div>
-          <div class="print-menu-wrap"><button class="btn btn-ghost btn-share-outline" onclick="togglePrintMenu('tikShareMenu')">🔗 Bagikan ▾</button><div id="tikShareMenu" class="print-menu"><button onclick="shareRekap('tik','pdf')">Bagikan PDF</button><button onclick="shareRekap('tik','gambar')">Bagikan Gambar</button><button onclick="shareRekap('tik','teks')">Bagikan Teks</button></div></div>
-        </div>
       </div>
     </section>
     <section class="panel" id="tik-siswa">
@@ -572,8 +820,12 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
   <footer class="app-footer no-print"></footer>
 </div>
 
-<script id="seed-data" type="application/json">
-{"students": [{"no": 1, "nama": "ALFARUQ ZIKRI"}, {"no": 2, "nama": "ALIKA NAYYA A"}, {"no": 3, "nama": "ALVAN SHATA A"}, {"no": 4, "nama": "ARA TRIA UTOMO"}, {"no": 5, "nama": "ATHAR AL FATIH"}, {"no": 6, "nama": "AYNINDIRRA PUTRI M"}, {"no": 7, "nama": "AZRIL WAZZA P"}, {"no": 8, "nama": "CHERLY MARCELIN"}, {"no": 9, "nama": "FADIL AL PATIH"}, {"no": 10, "nama": "FAHIR AFDAL"}, {"no": 11, "nama": "GALANG ARJITYA"}, {"no": 12, "nama": "HAFIKA MAKAILA"}, {"no": 13, "nama": "HISYAM AL FARIZKI"}, {"no": 14, "nama": "HAIDAR SHAQIL F"}, {"no": 15, "nama": "INARA SAKHI A"}, {"no": 16, "nama": "KALA NAIRA ZAIDA"}, {"no": 17, "nama": "KEANU ALTHAF SYABIL"}, {"no": 18, "nama": "KIRANA MAHARANI F"}, {"no": 19, "nama": "MUHAMMAD ALIF FAREZA"}, {"no": 20, "nama": "M RASYA RAMADHAN"}, {"no": 21, "nama": "M RIZKI RAMADHAN"}, {"no": 22, "nama": "NUR AZIZAH AL WAISY"}, {"no": 23, "nama": "PRIYA ABDI KURNIAWAN"}, {"no": 24, "nama": "RADEYA PUTRI HARIANATA"}, {"no": 25, "nama": "RAFFA FEBRIAN PRATAMA"}, {"no": 26, "nama": "RAFFASYA BYANZA N"}, {"no": 27, "nama": "RAFFASYA FATIH AL FIRDAUS"}, {"no": 28, "nama": "SITI AYRA FARZANA"}, {"no": 29, "nama": "SITI KHALISA NATHIFA"}, {"no": 30, "nama": "YUMNA FARIHA"}, {"no": 31, "nama": "KEEANU ATHALLAH RIO"}, {"no": 32, "nama": "KEENAN ARSHAKA RIO"}], "pemasukan": [{"id": 1, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-07-16", "bulanDari": "2026-08", "bulanSampai": "2027-06", "jumlahBulan": 11.0, "nama": "ARA TRIA UTOMO", "jumlah": 110000}, {"id": 2, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-07-28", "bulanDari": "2026-08", "bulanSampai": "2026-12", "jumlahBulan": 5.0, "nama": "ALVAN SHATA A", "jumlah": 50000}, {"id": 3, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-01", "bulanDari": "2026-08", "bulanSampai": "2027-05", "jumlahBulan": 10.0, "nama": "RADEYA PUTRI HARIANATA", "jumlah": 100000}, {"id": 4, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2027-06", "jumlahBulan": 11.0, "nama": "KEANU ALTHAF SYABIL", "jumlah": 110000}, {"id": 5, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2026-08", "jumlahBulan": 1.0, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 6, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2026-10", "jumlahBulan": 3.0, "nama": "ATHAR AL FATIH", "jumlah": 30000}, {"id": 7, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2026-12", "jumlahBulan": 5.0, "nama": "AZRIL WAZZA P", "jumlah": 50000}, {"id": 8, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2027-06", "jumlahBulan": 11.0, "nama": "FADIL AL PATIH", "jumlah": 110000}, {"id": 9, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2026-08", "jumlahBulan": 1.0, "nama": "KEEANU ATHALLAH RIO", "jumlah": 10000}, {"id": 10, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2026-08", "jumlahBulan": 1.0, "nama": "KEENAN ARSHAKA RIO", "jumlah": 10000}, {"id": 11, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-03", "bulanDari": "2026-08", "bulanSampai": "2026-09", "jumlahBulan": 2.0, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 20000}, {"id": 12, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-04", "bulanDari": "2026-08", "bulanSampai": "2026-12", "jumlahBulan": 5.0, "nama": "SITI KHALISA NATHIFA", "jumlah": 50000}, {"id": 13, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-05", "bulanDari": "2026-08", "bulanSampai": "2026-10", "jumlahBulan": 3.0, "nama": "GALANG ARJITYA", "jumlah": 30000}, {"id": 14, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-05", "bulanDari": "2026-08", "bulanSampai": "2026-12", "jumlahBulan": 5.0, "nama": "HISYAM AL FARIZKI", "jumlah": 50000}, {"id": 15, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-06", "bulanDari": "2026-08", "bulanSampai": "2026-10", "jumlahBulan": 3.0, "nama": "HAIDAR SHAQIL F", "jumlah": 30000}, {"id": 16, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-06", "bulanDari": "2027-06", "bulanSampai": "2027-06", "jumlahBulan": 1.0, "nama": "RADEYA PUTRI HARIANATA", "jumlah": 10000}, {"id": 17, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-07", "bulanDari": "2026-08", "bulanSampai": "2026-12", "jumlahBulan": 5.0, "nama": "M RASYA RAMADHAN", "jumlah": 50000}, {"id": 18, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-07", "bulanDari": "2026-08", "bulanSampai": "2027-05", "jumlahBulan": 10.0, "nama": "FAHIR AFDAL", "jumlah": 100000}, {"id": 19, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-11", "bulanDari": "2026-08", "bulanSampai": "2026-09", "jumlahBulan": 2.0, "nama": "ALIKA NAYYA A", "jumlah": 20000}, {"id": 20, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-20", "bulanDari": "2026-08", "bulanSampai": "2027-06", "jumlahBulan": 11.0, "nama": "RAFFASYA BYANZA N", "jumlah": 110000}, {"id": 21, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-20", "bulanDari": "2026-11", "bulanSampai": "2027-06", "jumlahBulan": 8.0, "nama": "ATHAR AL FATIH", "jumlah": 80000}, {"id": 22, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-28", "bulanDari": "2026-09", "bulanSampai": "2026-09", "jumlahBulan": 1.0, "nama": "KEEANU ATHALLAH RIO", "jumlah": 10000}, {"id": 23, "bulanPembukuan": "2026-08", "tanggalBayar": "2026-08-28", "bulanDari": "2026-09", "bulanSampai": "2026-09", "jumlahBulan": 1.0, "nama": "KEENAN ARSHAKA RIO", "jumlah": 10000}], "pengeluaran": [{"id": 1, "bulanPembukuan": "2026-08", "tanggal": "2026-07-27", "keterangan": "Kenang-kenangan Faeyza Al Ghifari", "jumlah": 120000.0}, {"id": 2, "bulanPembukuan": "2026-08", "tanggal": "2026-07-31", "keterangan": "Membeli Gantungan Map", "jumlah": 50000.0}, {"id": 3, "bulanPembukuan": "2026-08", "tanggal": "2026-08-03", "keterangan": "Menjenguk Khitan Hisyam Al Farizki", "jumlah": 100000.0}, {"id": 4, "bulanPembukuan": "2026-08", "tanggal": "2026-08-03", "keterangan": "Menjenguk Khitan Fahir Afdal", "jumlah": 100000.0}, {"id": 5, "bulanPembukuan": "2026-08", "tanggal": "2026-08-27", "keterangan": "Kas Komite Semester 1", "jumlah": 50000.0}]}
+<script id="seed-data" type="application/json">{"students":[{"no":1,"nama":"ALFARUQ ZIKRI"},{"no":2,"nama":"ALIKA NAYYA A"},{"no":3,"nama":"ALVAN SHATA A"},{"no":4,"nama":"ARA TRIA UTOMO"},{"no":5,"nama":"ATHAR AL FATIH"},{"no":6,"nama":"AYNINDIRRA PUTRI M"},{"no":7,"nama":"AZRIL WAZZA P"},{"no":8,"nama":"CHERLY MARCELIN"},{"no":9,"nama":"FADIL AL PATIH"},{"no":10,"nama":"FAHIR AFDAL"},{"no":11,"nama":"GALANG ARJITYA"},{"no":12,"nama":"HAFIKA MAKAILA"},{"no":13,"nama":"HISYAM AL FARIZKI"},{"no":14,"nama":"HAIDAR SHAQIL F"},{"no":15,"nama":"INARA SAKHI A"},{"no":16,"nama":"KALA NAIRA ZAIDA"},{"no":17,"nama":"KEANU ALTHAF SYABIL"},{"no":18,"nama":"KIRANA MAHARANI F"},{"no":19,"nama":"MUHAMMAD ALIF FAREZA"},{"no":20,"nama":"M RASYA RAMADHAN"},{"no":21,"nama":"M RIZKI RAMADHAN"},{"no":22,"nama":"NUR AZIZAH AL WAISY"},{"no":23,"nama":"PRIYA ABDI KURNIAWAN"},{"no":24,"nama":"RADEYA PUTRI HARIANATA"},{"no":25,"nama":"RAFFA FEBRIAN PRATAMA"},{"no":26,"nama":"RAFFASYA BYANZA N"},{"no":27,"nama":"RAFFASYA FATIH AL FIRDAUS"},{"no":28,"nama":"SITI AYRA FARZANA"},{"no":29,"nama":"SITI KHALISA NATHIFA"},{"no":30,"nama":"YUMNA FARIHA"},{"no":31,"nama":"KEEANU ATHALLAH RIO"},{"no":32,"nama":"KEENAN ARSHAKA RIO"}],"pemasukan":[{"id":1,"bulanPembukuan":"2026-08","tanggalBayar":"2026-07-16","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"ARA TRIA UTOMO","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":2,"bulanPembukuan":"2026-08","tanggalBayar":"2026-07-28","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"ALVAN SHATA A","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":3,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-01","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10.0,"nama":"RADEYA PUTRI HARIANATA","jumlah":100000,"keterangan":"Kas Bulanan"},{"id":4,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"KEANU ALTHAF SYABIL","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":5,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"ALFARUQ ZIKRI","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":6,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-10","jumlahBulan":3.0,"nama":"ATHAR AL FATIH","jumlah":30000,"keterangan":"Kas Bulanan"},{"id":7,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"AZRIL WAZZA P","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":8,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"FADIL AL PATIH","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":9,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"KEEANU ATHALLAH RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":10,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"KEENAN ARSHAKA RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":11,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2.0,"nama":"RAFFASYA FATIH AL FIRDAUS","jumlah":20000,"keterangan":"Kas Bulanan"},{"id":12,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-04","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"SITI KHALISA NATHIFA","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":13,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-05","bulanDari":"2026-08","bulanSampai":"2026-10","jumlahBulan":3.0,"nama":"GALANG ARJITYA","jumlah":30000,"keterangan":"Kas Bulanan"},{"id":14,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-05","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"HISYAM AL FARIZKI","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":15,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-06","bulanDari":"2026-08","bulanSampai":"2026-10","jumlahBulan":3.0,"nama":"HAIDAR SHAQIL F","jumlah":30000,"keterangan":"Kas Bulanan"},{"id":16,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-06","bulanDari":"2027-06","bulanSampai":"2027-06","jumlahBulan":1.0,"nama":"RADEYA PUTRI HARIANATA","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":17,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-07","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"M RASYA RAMADHAN","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":18,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-07","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10.0,"nama":"FAHIR AFDAL","jumlah":100000,"keterangan":"Kas Bulanan"},{"id":19,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-11","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2.0,"nama":"ALIKA NAYYA A","jumlah":20000,"keterangan":"Kas Bulanan"},{"id":20,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-20","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"RAFFASYA BYANZA N","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":21,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-20","bulanDari":"2026-11","bulanSampai":"2027-06","jumlahBulan":8.0,"nama":"ATHAR AL FATIH","jumlah":80000,"keterangan":"Kas Bulanan"},{"id":22,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-28","bulanDari":"2026-09","bulanSampai":"2026-09","jumlahBulan":1.0,"nama":"KEEANU ATHALLAH RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":23,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-28","bulanDari":"2026-09","bulanSampai":"2026-09","jumlahBulan":1.0,"nama":"KEENAN ARSHAKA RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":24,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-29","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"HAFIKA MAKAILA","jumlah":10000,"keterangan":"Bendahara 2"},{"id":25,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-31","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"KALA NAIRA ZAIDA","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":26,"bulanPembukuan":"2026-08","tanggalBayar":"2026-09-01","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2.0,"nama":null,"jumlah":20000,"keterangan":"Kas Bulanan"}],"pengeluaran":[{"id":1,"bulanPembukuan":"2026-08","tanggal":"2026-07-27","keterangan":"Kenang-kenangan Faeyza Al Ghifari","jumlah":120000},{"id":2,"bulanPembukuan":"2026-08","tanggal":"2026-07-31","keterangan":"Membeli Gantungan Map","jumlah":50000},{"id":3,"bulanPembukuan":"2026-08","tanggal":"2026-08-03","keterangan":"Menjenguk Khitan Hisyam Al Farizki","jumlah":100000},{"id":4,"bulanPembukuan":"2026-08","tanggal":"2026-08-03","keterangan":"Menjenguk Khitan Fahir Afdal","jumlah":100000},{"id":5,"bulanPembukuan":"2026-08","tanggal":"2026-08-27","keterangan":"Kas Komite Semester 1","jumlah":50000}]}</script>
+<script id="seed-data-kelas1" type="application/json">
+{"students": [{"no": 1, "nama": "ALFARUQ ZIKRI"}, {"no": 2, "nama": "ALIKA NAYYA A"}, {"no": 3, "nama": "ALVAN SHATA A"}, {"no": 4, "nama": "ARA TRIA UTOMO"}, {"no": 5, "nama": "ATHAR AL FATIH"}, {"no": 6, "nama": "AYNINDIRRA PUTRI M"}, {"no": 7, "nama": "AZRIL WAZZA P"}, {"no": 8, "nama": "CHERLY MARCELIN"}, {"no": 9, "nama": "FADIL AL PATIH"}, {"no": 10, "nama": "FAEYZA AL GHIFARI"}, {"no": 11, "nama": "FAHIR AFDAL"}, {"no": 12, "nama": "GALANG ARJITYA"}, {"no": 13, "nama": "HAFIKA MAKAILA"}, {"no": 14, "nama": "HISYAM AL FARIZKI"}, {"no": 15, "nama": "HAIDAR SHAQIL F"}, {"no": 16, "nama": "INARA SAKHI A"}, {"no": 17, "nama": "KALA NAIRA ZAIDA"}, {"no": 18, "nama": "KEANU ALTHAF SYABIL"}, {"no": 19, "nama": "KIRANA MAHARANI F"}, {"no": 20, "nama": "MUHAMMAD ALIF FAREZA"}, {"no": 21, "nama": "M RASYA RAMADHAN"}, {"no": 22, "nama": "M RIZKI RAMADHAN"}, {"no": 23, "nama": "NUR AZIZAH AL WAISY"}, {"no": 24, "nama": "PRIYA ABDI KURNIAWAN"}, {"no": 25, "nama": "RADEYA PUTRI HARIANATA"}, {"no": 26, "nama": "RAFFA FEBRIAN PRATAMA"}, {"no": 27, "nama": "RAFFASYA BYANZA N"}, {"no": 28, "nama": "RAFFASYA FATIH AL FIRDAUS"}, {"no": 29, "nama": "SITI AYRA FARZANA"}, {"no": 30, "nama": "SITI KHALISA NATHIFA"}, {"no": 31, "nama": "YUMNA FARIHA"}, {"no": 32, "nama": "ZASKIA ALNA H"}], "pemasukan": [{"id": 1, "bulanPembukuan": "2024-08", "tanggalBayar": "2024-08-01", "bulanDari": null, "bulanSampai": null, "jumlahBulan": 0, "nama": "LAIN-LAIN", "jumlah": 1733000, "keterangan": "Saldo Awal"}, {"id": 2, "bulanPembukuan": "2025-04", "tanggalBayar": "2025-04-28", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "RADEYA PUTRI HARIANATA", "jumlah": 20000}, {"id": 3, "bulanPembukuan": "2025-04", "tanggalBayar": "2025-04-28", "bulanDari": "2025-04", "bulanSampai": "2025-04", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 4, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-05", "bulanDari": "2025-03", "bulanSampai": "2025-06", "jumlahBulan": 4, "nama": "INARA SAKHI A", "jumlah": 40000}, {"id": 5, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-06", "bulanDari": "2025-03", "bulanSampai": "2025-06", "jumlahBulan": 4, "nama": "ALIKA NAYYA A", "jumlah": 40000}, {"id": 6, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-09", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "AZRIL WAZZA P", "jumlah": 20000}, {"id": 7, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-17", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "ALVAN SHATA A", "jumlah": 20000}, {"id": 8, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-28", "bulanDari": "2025-01", "bulanSampai": "2025-05", "jumlahBulan": 5, "nama": "HISYAM AL FARIZKI", "jumlah": 50000}, {"id": 9, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-29", "bulanDari": "2025-03", "bulanSampai": "2025-06", "jumlahBulan": 4, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 40000}, {"id": 10, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-29", "bulanDari": "2025-04", "bulanSampai": "2025-06", "jumlahBulan": 3, "nama": "MUHAMMAD ALIF FAREZA", "jumlah": 30000}, {"id": 11, "bulanPembukuan": "2025-05", "tanggalBayar": "2025-05-30", "bulanDari": "2025-04", "bulanSampai": "2025-06", "jumlahBulan": 3, "nama": "CHERLY MARCELIN", "jumlah": 30000}, {"id": 12, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-02", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "SITI AYRA FARZANA", "jumlah": 20000}, {"id": 13, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-03", "bulanDari": null, "bulanSampai": null, "jumlahBulan": 0, "nama": "LAIN-LAIN", "jumlah": 285700, "keterangan": "sisa isra' mi'raj"}, {"id": 14, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-10", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "FADIL AL PATIH", "jumlah": 20000}, {"id": 15, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-12", "bulanDari": "2025-02", "bulanSampai": "2025-06", "jumlahBulan": 5, "nama": "FAHIR AFDAL", "jumlah": 50000}, {"id": 16, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-24", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "ALFARUQ ZIKRI", "jumlah": 20000}, {"id": 17, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-25", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "HAFIKA MAKAILA", "jumlah": 20000}, {"id": 18, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-26", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "AYNINDIRRA PUTRI M", "jumlah": 20000}, {"id": 19, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-26", "bulanDari": "2025-06", "bulanSampai": "2025-06", "jumlahBulan": 1, "nama": "HISYAM AL FARIZKI", "jumlah": 10000}, {"id": 20, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-26", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "KALA NAIRA ZAIDA", "jumlah": 20000}, {"id": 21, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-26", "bulanDari": "2025-03", "bulanSampai": "2025-06", "jumlahBulan": 4, "nama": "M RIZKI RAMADHAN", "jumlah": 40000}, {"id": 22, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-26", "bulanDari": "2025-05", "bulanSampai": "2025-06", "jumlahBulan": 2, "nama": "PRIYA ABDI KURNIAWAN", "jumlah": 20000}, {"id": 23, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-26", "bulanDari": "2025-03", "bulanSampai": "2025-06", "jumlahBulan": 4, "nama": "RAFFA FEBRIAN PRATAMA", "jumlah": 40000}, {"id": 24, "bulanPembukuan": "2025-06", "tanggalBayar": "2025-06-28", "bulanDari": "2025-03", "bulanSampai": "2025-06", "jumlahBulan": 4, "nama": "NUR AZIZAH AL WAISY", "jumlah": 40000}, {"id": 25, "bulanPembukuan": "2025-07", "tanggalBayar": "2025-07-31", "bulanDari": "2025-03", "bulanSampai": "2025-06", "jumlahBulan": 4, "nama": "YUMNA FARIHA", "jumlah": 40000}], "pengeluaran": [{"id": 1, "bulanPembukuan": "2025-04", "tanggal": "2025-04-25", "keterangan": "Menjenguk Ayra Sakit", "jumlah": 100000}, {"id": 2, "bulanPembukuan": "2025-06", "tanggal": "2025-06-03", "keterangan": "Patungan Gift Guru", "jumlah": 100000}, {"id": 3, "bulanPembukuan": "2025-07", "tanggal": "2025-07-14", "keterangan": "Debet Menjenguk Khitan 3 Anak", "jumlah": 300000}]}
+</script>
+<script id="seed-data-kelas2" type="application/json">
+{"students": [{"no": 1, "nama": "ALFARUQ ZIKRI"}, {"no": 2, "nama": "ALIKA NAYYA A"}, {"no": 3, "nama": "ALVAN SHATA A"}, {"no": 4, "nama": "ARA TRIA UTOMO"}, {"no": 5, "nama": "ATHAR AL FATIH"}, {"no": 6, "nama": "AYNINDIRRA PUTRI M"}, {"no": 7, "nama": "AZRIL WAZZA P"}, {"no": 8, "nama": "CHERLY MARCELIN"}, {"no": 9, "nama": "FADIL AL PATIH"}, {"no": 10, "nama": "FAEYZA AL GHIFARI"}, {"no": 11, "nama": "FAHIR AFDAL"}, {"no": 12, "nama": "GALANG ARJITYA"}, {"no": 13, "nama": "HAFIKA MAKAILA"}, {"no": 14, "nama": "HISYAM AL FARIZKI"}, {"no": 15, "nama": "HAIDAR SHAQIL F"}, {"no": 16, "nama": "INARA SAKHI A"}, {"no": 17, "nama": "KALA NAIRA ZAIDA"}, {"no": 18, "nama": "KEANU ALTHAF SYABIL"}, {"no": 19, "nama": "KIRANA MAHARANI F"}, {"no": 20, "nama": "MUHAMMAD ALIF FAREZA"}, {"no": 21, "nama": "M RASYA RAMADHAN"}, {"no": 22, "nama": "M RIZKI RAMADHAN"}, {"no": 23, "nama": "NUR AZIZAH AL WAISY"}, {"no": 24, "nama": "PRIYA ABDI KURNIAWAN"}, {"no": 25, "nama": "RADEYA PUTRI HARIANATA"}, {"no": 26, "nama": "RAFFA FEBRIAN PRATAMA"}, {"no": 27, "nama": "RAFFASYA BYANZA N"}, {"no": 28, "nama": "RAFFASYA FATIH AL FIRDAUS"}, {"no": 29, "nama": "SITI AYRA FARZANA"}, {"no": 30, "nama": "SITI KHALISA NATHIFA"}, {"no": 31, "nama": "YUMNA FARIHA"}, {"no": 32, "nama": "ZASKIA ALNA H"}], "pemasukan": [{"id": 1, "bulanPembukuan": "2025-07", "tanggalBayar": "2025-07-14", "bulanDari": null, "bulanSampai": null, "jumlahBulan": 0, "nama": "LAIN-LAIN", "jumlah": 300000, "keterangan": "Debet Uang Kas Kelas 1"}, {"id": 2, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-01", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "ALVAN SHATA A", "jumlah": 50000}, {"id": 3, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-02", "bulanDari": "2025-08", "bulanSampai": "2026-06", "jumlahBulan": 11, "nama": "KEANU ALTHAF SYABIL", "jumlah": 110000}, {"id": 4, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-04", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "HISYAM AL FARIZKI", "jumlah": 50000}, {"id": 5, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-04", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "nama": "SITI KHALISA NATHIFA", "jumlah": 30000}, {"id": 6, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-04", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 7, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-06", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "nama": "GALANG ARJITYA", "jumlah": 10000}, {"id": 8, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-06", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "nama": "HAFIKA MAKAILA", "jumlah": 10000}, {"id": 9, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-06", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "nama": "RADEYA PUTRI HARIANATA", "jumlah": 10000}, {"id": 10, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-07", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "nama": "FADIL AL PATIH", "jumlah": 10000}, {"id": 11, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-07", "bulanDari": "2025-08", "bulanSampai": "2026-06", "jumlahBulan": 11, "nama": "ATHAR AL FATIH", "jumlah": 110000}, {"id": 12, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-07", "bulanDari": null, "bulanSampai": null, "jumlahBulan": 0, "nama": "LAIN-LAIN", "jumlah": 10000, "keterangan": "Donasi"}, {"id": 13, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-14", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "nama": "AZRIL WAZZA P", "jumlah": 30000}, {"id": 14, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-14", "bulanDari": null, "bulanSampai": null, "jumlahBulan": 0, "nama": "LAIN-LAIN", "jumlah": 100000, "keterangan": "Donasi"}, {"id": 15, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-16", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "PRIYA ABDI KURNIAWAN", "jumlah": 50000}, {"id": 16, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-16", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "nama": "M RIZKI RAMADHAN", "jumlah": 30000}, {"id": 17, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-16", "bulanDari": "2025-08", "bulanSampai": "2026-06", "jumlahBulan": 11, "nama": "ARA TRIA UTOMO", "jumlah": 110000}, {"id": 18, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-16", "bulanDari": "2025-08", "bulanSampai": "2026-05", "jumlahBulan": 10, "nama": "ZASKIA ALNA H", "jumlah": 100000}, {"id": 19, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-18", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 50000}, {"id": 20, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-18", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "FAEYZA AL GHIFARI", "jumlah": 50000}, {"id": 21, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-18", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "nama": "YUMNA FARIHA", "jumlah": 30000}, {"id": 22, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-19", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "KALA NAIRA ZAIDA", "jumlah": 50000}, {"id": 23, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-19", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "nama": "ALIKA NAYYA A", "jumlah": 20000}, {"id": 24, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-21", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "nama": "INARA SAKHI A", "jumlah": 30000}, {"id": 25, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-21", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "nama": "FAHIR AFDAL", "jumlah": 20000}, {"id": 26, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-21", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "nama": "HAIDAR SHAQIL F", "jumlah": 20000}, {"id": 27, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-24", "bulanDari": "2025-08", "bulanSampai": "2026-05", "jumlahBulan": 10, "nama": "RAFFASYA BYANZA N", "jumlah": 100000}, {"id": 28, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-26", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "nama": "MUHAMMAD ALIF FAREZA", "jumlah": 30000}, {"id": 29, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-26", "bulanDari": "2025-09", "bulanSampai": "2025-10", "jumlahBulan": 2, "nama": "RADEYA PUTRI HARIANATA", "jumlah": 20000}, {"id": 30, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-28", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "CHERLY MARCELIN", "jumlah": 50000}, {"id": 31, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-28", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "nama": "SITI AYRA FARZANA", "jumlah": 20000}, {"id": 32, "bulanPembukuan": "2025-08", "tanggalBayar": "2025-08-28", "bulanDari": "2025-09", "bulanSampai": "2025-10", "jumlahBulan": 2, "nama": "FADIL AL PATIH", "jumlah": 20000}, {"id": 33, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-01", "bulanDari": "2025-08", "bulanSampai": "2025-11", "jumlahBulan": 4, "nama": "NUR AZIZAH AL WAISY", "jumlah": 40000}, {"id": 34, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-03", "bulanDari": "2025-09", "bulanSampai": "2025-09", "jumlahBulan": 1, "nama": "GALANG ARJITYA", "jumlah": 10000}, {"id": 35, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-03", "bulanDari": "2025-09", "bulanSampai": "2025-09", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 36, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-05", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "nama": "KIRANA MAHARANI F", "jumlah": 30000}, {"id": 37, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-29", "bulanDari": "2025-09", "bulanSampai": "2025-09", "jumlahBulan": 1, "nama": "HAFIKA MAKAILA", "jumlah": 10000}, {"id": 38, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-30", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "nama": "FADIL AL PATIH", "jumlah": 20000}, {"id": 39, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-30", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "nama": "RADEYA PUTRI HARIANATA", "jumlah": 20000}, {"id": 40, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-30", "bulanDari": null, "bulanSampai": null, "jumlahBulan": 0, "nama": "LAIN-LAIN", "jumlah": 5000, "keterangan": "Donasi"}, {"id": 41, "bulanPembukuan": "2025-09", "tanggalBayar": "2025-09-30", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "nama": "HAIDAR SHAQIL F", "jumlah": 10000}, {"id": 42, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-01", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "nama": "ALIKA NAYYA A", "jumlah": 10000}, {"id": 43, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-01", "bulanDari": "2025-10", "bulanSampai": "2025-12", "jumlahBulan": 3, "nama": "GALANG ARJITYA", "jumlah": 30000}, {"id": 44, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-07", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 45, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-14", "bulanDari": "2025-10", "bulanSampai": "2025-11", "jumlahBulan": 2, "nama": "SITI AYRA FARZANA", "jumlah": 20000}, {"id": 46, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-21", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "nama": "HAFIKA MAKAILA", "jumlah": 10000}, {"id": 47, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-27", "bulanDari": "2025-11", "bulanSampai": "2026-01", "jumlahBulan": 3, "nama": "SITI KHALISA NATHIFA", "jumlah": 30000}, {"id": 48, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-27", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 49, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-27", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "M RASYA RAMADHAN", "jumlah": 50000}, {"id": 50, "bulanPembukuan": "2025-10", "tanggalBayar": "2025-10-30", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "nama": "AZRIL WAZZA P", "jumlah": 20000}, {"id": 51, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-03", "bulanDari": "2026-01", "bulanSampai": "2026-06", "jumlahBulan": 6, "nama": "RADEYA PUTRI HARIANATA", "jumlah": 60000}, {"id": 52, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-06", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "nama": "ALIKA NAYYA A", "jumlah": 10000}, {"id": 53, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-17", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "nama": "HAIDAR SHAQIL F", "jumlah": 10000}, {"id": 54, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-17", "bulanDari": "2025-10", "bulanSampai": "2025-11", "jumlahBulan": 2, "nama": "FAHIR AFDAL", "jumlah": 20000}, {"id": 55, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-26", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "AYNINDIRRA PUTRI M", "jumlah": 50000}, {"id": 56, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-27", "bulanDari": "2025-12", "bulanSampai": "2025-12", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 57, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-27", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "nama": "HAFIKA MAKAILA", "jumlah": 10000}, {"id": 58, "bulanPembukuan": "2025-11", "tanggalBayar": "2025-11-28", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "AZRIL WAZZA P", "jumlah": 20000}, {"id": 59, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-01", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "M RASYA RAMADHAN", "jumlah": 20000}, {"id": 60, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-01", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "nama": "M RIZKI RAMADHAN", "jumlah": 20000}, {"id": 61, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-01", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "nama": "INARA SAKHI A", "jumlah": 20000}, {"id": 62, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-16", "bulanDari": "2025-12", "bulanSampai": "2025-12", "jumlahBulan": 1, "nama": "HAFIKA MAKAILA", "jumlah": 10000}, {"id": 63, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-16", "bulanDari": "2025-11", "bulanSampai": "2026-02", "jumlahBulan": 4, "nama": "MUHAMMAD ALIF FAREZA", "jumlah": 40000}, {"id": 64, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-17", "bulanDari": "2025-12", "bulanSampai": "2026-03", "jumlahBulan": 4, "nama": "FAEYZA AL GHIFARI", "jumlah": 40000}, {"id": 65, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-21", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "nama": "RAFFA FEBRIAN PRATAMA", "jumlah": 50000}, {"id": 66, "bulanPembukuan": "2025-12", "tanggalBayar": "2025-12-22", "bulanDari": "2025-12", "bulanSampai": "2025-12", "jumlahBulan": 1, "nama": "HAIDAR SHAQIL F", "jumlah": 10000}, {"id": 67, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-13", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "GALANG ARJITYA", "jumlah": 20000}, {"id": 68, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-14", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "ALIKA NAYYA A", "jumlah": 20000}, {"id": 69, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-15", "bulanDari": "2026-01", "bulanSampai": "2026-04", "jumlahBulan": 4, "nama": "PRIYA ABDI KURNIAWAN", "jumlah": 40000}, {"id": 70, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-22", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "AYNINDIRRA PUTRI M", "jumlah": 20000}, {"id": 71, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-26", "bulanDari": "2026-01", "bulanSampai": "2026-01", "jumlahBulan": 1, "nama": "HAFIKA MAKAILA", "jumlah": 10000}, {"id": 72, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-27", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "HAIDAR SHAQIL F", "jumlah": 20000}, {"id": 73, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-27", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "nama": "AZRIL WAZZA P", "jumlah": 20000}, {"id": 74, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-27", "bulanDari": "2026-01", "bulanSampai": "2026-01", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 75, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-28", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "nama": "SITI KHALISA NATHIFA", "jumlah": 20000}, {"id": 76, "bulanPembukuan": "2026-01", "tanggalBayar": "2026-01-30", "bulanDari": "2026-01", "bulanSampai": "2026-01", "jumlahBulan": 1, "nama": "RAFFA FEBRIAN PRATAMA", "jumlah": 10000}, {"id": 77, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-02", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "FADIL AL PATIH", "jumlah": 20000}, {"id": 78, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-03", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "INARA SAKHI A", "jumlah": 20000}, {"id": 79, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-04", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 20000}, {"id": 80, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-05", "bulanDari": "2025-11", "bulanSampai": "2026-03", "jumlahBulan": 5, "nama": "KIRANA MAHARANI F", "jumlah": 50000}, {"id": 81, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-07", "bulanDari": "2026-03", "bulanSampai": "2026-03", "jumlahBulan": 1, "nama": "ALIKA NAYYA A", "jumlah": 10000}, {"id": 82, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-10", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "nama": "HISYAM AL FARIZKI", "jumlah": 20000}, {"id": 83, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-11", "bulanDari": "2025-12", "bulanSampai": "2026-02", "jumlahBulan": 3, "nama": "FAHIR AFDAL", "jumlah": 30000}, {"id": 84, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-24", "bulanDari": "2026-01", "bulanSampai": "2026-01", "jumlahBulan": 1, "nama": "CHERLY MARCELIN", "jumlah": 10000}, {"id": 85, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-24", "bulanDari": "2026-01", "bulanSampai": "2026-06", "jumlahBulan": 6, "nama": "KALA NAIRA ZAIDA", "jumlah": 60000}, {"id": 86, "bulanPembukuan": "2026-02", "tanggalBayar": "2026-02-24", "bulanDari": "2026-02", "bulanSampai": "2026-02", "jumlahBulan": 1, "nama": "HAFIKA MAKAILA", "jumlah": 10000}, {"id": 87, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-02", "bulanDari": "2026-03", "bulanSampai": "2026-03", "jumlahBulan": 1, "nama": "HAIDAR SHAQIL F", "jumlah": 10000}, {"id": 88, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-02", "bulanDari": "2026-03", "bulanSampai": "2026-05", "jumlahBulan": 3, "nama": "FADIL AL PATIH", "jumlah": 30000}, {"id": 89, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-02", "bulanDari": "2026-03", "bulanSampai": "2026-03", "jumlahBulan": 1, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 10000}, {"id": 90, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-06", "bulanDari": "2026-03", "bulanSampai": "2026-03", "jumlahBulan": 1, "nama": "AYNINDIRRA PUTRI M", "jumlah": 10000}, {"id": 91, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-09", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "nama": "GALANG ARJITYA", "jumlah": 20000}, {"id": 92, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-26", "bulanDari": "2026-04", "bulanSampai": "2026-06", "jumlahBulan": 3, "nama": "SITI KHALISA NATHIFA", "jumlah": 30000}, {"id": 93, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-26", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "nama": "M RASYA RAMADHAN", "jumlah": 20000}, {"id": 94, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-26", "bulanDari": "2026-05", "bulanSampai": "2026-06", "jumlahBulan": 2, "nama": "AZRIL WAZZA P", "jumlah": 20000}, {"id": 95, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-27", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "nama": "HAFIKA MAKAILA", "jumlah": 20000}, {"id": 96, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-27", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "nama": "MUHAMMAD ALIF FAREZA", "jumlah": 20000}, {"id": 97, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-29", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "nama": "ALFARUQ ZIKRI", "jumlah": 20000}, {"id": 98, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-29", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 10000}, {"id": 99, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-29", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "nama": "ALVAN SHATA A", "jumlah": 10000}, {"id": 100, "bulanPembukuan": "2026-03", "tanggalBayar": "2026-03-30", "bulanDari": "2025-12", "bulanSampai": "2026-03", "jumlahBulan": 4, "nama": "SITI AYRA FARZANA", "jumlah": 40000}, {"id": 101, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-03", "bulanDari": "2026-04", "bulanSampai": "2026-06", "jumlahBulan": 3, "nama": "FAEYZA AL GHIFARI", "jumlah": 30000}, {"id": 102, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-05", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "nama": "HAIDAR SHAQIL F", "jumlah": 10000}, {"id": 103, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-06", "bulanDari": "2026-03", "bulanSampai": "2026-06", "jumlahBulan": 4, "nama": "HISYAM AL FARIZKI", "jumlah": 40000}, {"id": 104, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-06", "bulanDari": "2026-04", "bulanSampai": "2026-06", "jumlahBulan": 3, "nama": "ALIKA NAYYA A", "jumlah": 30000}, {"id": 105, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-08", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "nama": "INARA SAKHI A", "jumlah": 20000}, {"id": 106, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-09", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "nama": "ALFARUQ ZIKRI", "jumlah": 10000}, {"id": 107, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-10", "bulanDari": "2026-02", "bulanSampai": "2026-05", "jumlahBulan": 4, "nama": "RAFFA FEBRIAN PRATAMA", "jumlah": 40000}, {"id": 108, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-14", "bulanDari": "2026-05", "bulanSampai": "2026-06", "jumlahBulan": 2, "nama": "GALANG ARJITYA", "jumlah": 20000}, {"id": 109, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-14", "bulanDari": "2025-11", "bulanSampai": "2026-06", "jumlahBulan": 8, "nama": "YUMNA FARIHA", "jumlah": 80000}, {"id": 110, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-15", "bulanDari": "2025-12", "bulanSampai": "2026-05", "jumlahBulan": 6, "nama": "NUR AZIZAH AL WAISY", "jumlah": 60000}, {"id": 111, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-27", "bulanDari": "2026-05", "bulanSampai": "2026-06", "jumlahBulan": 2, "nama": "INARA SAKHI A", "jumlah": 20000}, {"id": 112, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-27", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "nama": "HAIDAR SHAQIL F", "jumlah": 10000}, {"id": 113, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-28", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 10000}, {"id": 114, "bulanPembukuan": "2026-04", "tanggalBayar": "2026-04-29", "bulanDari": "2026-05", "bulanSampai": "2026-06", "jumlahBulan": 2, "nama": "ALFARUQ ZIKRI", "jumlah": 20000}, {"id": 115, "bulanPembukuan": "2026-05", "tanggalBayar": "2026-05-13", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "nama": "RAFFA FEBRIAN PRATAMA", "jumlah": 10000}, {"id": 116, "bulanPembukuan": "2026-05", "tanggalBayar": "2026-05-25", "bulanDari": "2026-05", "bulanSampai": "2026-06", "jumlahBulan": 2, "nama": "HAFIKA MAKAILA", "jumlah": 20000}, {"id": 117, "bulanPembukuan": "2026-05", "tanggalBayar": "2026-05-25", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "nama": "FADIL AL PATIH", "jumlah": 10000}, {"id": 118, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-04", "bulanDari": "2026-03", "bulanSampai": "2026-06", "jumlahBulan": 4, "nama": "FAHIR AFDAL", "jumlah": 40000}, {"id": 119, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-09", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "nama": "HAIDAR SHAQIL F", "jumlah": 10000}, {"id": 120, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-09", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "nama": "RAFFASYA FATIH AL FIRDAUS", "jumlah": 10000}, {"id": 121, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-10", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "nama": "NUR AZIZAH AL WAISY", "jumlah": 10000}, {"id": 122, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-11", "bulanDari": "2026-04", "bulanSampai": "2026-06", "jumlahBulan": 3, "nama": "KIRANA MAHARANI F", "jumlah": 30000}, {"id": 123, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-12", "bulanDari": "2026-01", "bulanSampai": "2026-06", "jumlahBulan": 6, "nama": "M RIZKI RAMADHAN", "jumlah": 60000}, {"id": 124, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-18", "bulanDari": "2026-04", "bulanSampai": "2026-06", "jumlahBulan": 3, "nama": "AYNINDIRRA PUTRI M", "jumlah": 30000}, {"id": 125, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-25", "bulanDari": "2026-02", "bulanSampai": "2026-06", "jumlahBulan": 5, "nama": "CHERLY MARCELIN", "jumlah": 50000}, {"id": 126, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-25", "bulanDari": "2026-04", "bulanSampai": "2026-06", "jumlahBulan": 3, "nama": "SITI AYRA FARZANA", "jumlah": 30000}, {"id": 127, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-25", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "nama": "RAFFASYA BYANZA N", "jumlah": 10000}, {"id": 128, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-25", "bulanDari": "2026-05", "bulanSampai": "2026-06", "jumlahBulan": 2, "nama": "MUHAMMAD ALIF FAREZA", "jumlah": 20000}, {"id": 129, "bulanPembukuan": "2026-06", "tanggalBayar": "2026-06-25", "bulanDari": "2026-05", "bulanSampai": "2026-06", "jumlahBulan": 2, "nama": "M RASYA RAMADHAN", "jumlah": 20000}, {"id": 130, "bulanPembukuan": "2026-12", "tanggalBayar": "2026-12-10", "bulanDari": "2026-01", "bulanSampai": "2026-05", "jumlahBulan": 5, "nama": "ALVAN SHATA A", "jumlah": 50000}], "pengeluaran": [{"id": 1, "bulanPembukuan": "2025-07", "tanggal": "2025-07-14", "keterangan": "Menjenguk Khitan M Alif Fareza", "jumlah": 100000}, {"id": 2, "bulanPembukuan": "2025-07", "tanggal": "2025-07-14", "keterangan": "Menjenguk Khitan Keanu Althaf Syabil", "jumlah": 100000}, {"id": 3, "bulanPembukuan": "2025-07", "tanggal": "2025-07-14", "keterangan": "Menjenguk Khitan Alvan Shata Azzahran", "jumlah": 100000}, {"id": 4, "bulanPembukuan": "2025-07", "tanggal": "2025-07-17", "keterangan": "Membeli Minyak Kayu Putih", "jumlah": 24000}, {"id": 5, "bulanPembukuan": "2025-07", "tanggal": "2025-07-17", "keterangan": "Printing + Laminating Jadwal Piket", "jumlah": 8000}, {"id": 6, "bulanPembukuan": "2025-08", "tanggal": "2025-08-01", "keterangan": "Tissue", "jumlah": 4000}, {"id": 7, "bulanPembukuan": "2025-08", "tanggal": "2025-08-13", "keterangan": "Kas Komite", "jumlah": 50000}, {"id": 8, "bulanPembukuan": "2025-08", "tanggal": "2025-08-13", "keterangan": "Patungan 17 Agustus", "jumlah": 110000}, {"id": 9, "bulanPembukuan": "2025-08", "tanggal": "2025-08-19", "keterangan": "Snack Anak 17 Agustus", "jumlah": 524000}, {"id": 10, "bulanPembukuan": "2025-08", "tanggal": "2025-08-19", "keterangan": "Goodie bag snack", "jumlah": 20000}, {"id": 11, "bulanPembukuan": "2025-08", "tanggal": "2025-08-19", "keterangan": "Aksesoris 17 Agustus", "jumlah": 50000}, {"id": 12, "bulanPembukuan": "2025-08", "tanggal": "2025-08-19", "keterangan": "Konsumsi Guru", "jumlah": 45000}, {"id": 13, "bulanPembukuan": "2025-08", "tanggal": "2025-08-19", "keterangan": "Patungan Lomba Tumpeng Kelas", "jumlah": 135000}, {"id": 14, "bulanPembukuan": "2025-08", "tanggal": "2025-08-19", "keterangan": "Air mineral 330ml", "jumlah": 40000}, {"id": 15, "bulanPembukuan": "2025-09", "tanggal": "2025-09-07", "keterangan": "Kondangan Bu Nisa", "jumlah": 100000}, {"id": 16, "bulanPembukuan": "2025-09", "tanggal": "2025-09-22", "keterangan": "Menjenguk Sakit Hisyam Al Farizki", "jumlah": 100000}, {"id": 17, "bulanPembukuan": "2025-09", "tanggal": "2025-09-22", "keterangan": "Menjenguk Sakit M Rasya Ramadhan", "jumlah": 100000}, {"id": 18, "bulanPembukuan": "2025-10", "tanggal": "2025-10-05", "keterangan": "Tissue", "jumlah": 4000}, {"id": 19, "bulanPembukuan": "2025-10", "tanggal": "2025-10-05", "keterangan": "Hand Wash", "jumlah": 10000}, {"id": 20, "bulanPembukuan": "2025-10", "tanggal": "2025-10-22", "keterangan": "Menjenguk Sakit Fahir Afdal", "jumlah": 100000}, {"id": 21, "bulanPembukuan": "2025-11", "tanggal": "2025-11-07", "keterangan": "Patungan Hari Guru", "jumlah": 70000}, {"id": 22, "bulanPembukuan": "2025-11", "tanggal": "2025-11-08", "keterangan": "Menjenguk Sakit Aynindirra  Putri M", "jumlah": 100000}, {"id": 23, "bulanPembukuan": "2025-11", "tanggal": "2025-11-15", "keterangan": "Konsumsi Guru (Renang)", "jumlah": 55000}, {"id": 24, "bulanPembukuan": "2025-11", "tanggal": "2025-11-17", "keterangan": "Tissu & Sabun Pel", "jumlah": 5000}, {"id": 25, "bulanPembukuan": "2025-12", "tanggal": "2025-12-02", "keterangan": "Menjenguk Sakit Raffasya Byanza N", "jumlah": 100000}, {"id": 26, "bulanPembukuan": "2025-12", "tanggal": "2025-12-16", "keterangan": "Menjenguk Sakit Ara Tria Utomo", "jumlah": 100000}, {"id": 27, "bulanPembukuan": "2025-12", "tanggal": "2025-12-19", "keterangan": "Menjenguk Sakit Zaskia Alna H", "jumlah": 100000}, {"id": 28, "bulanPembukuan": "2026-01", "tanggal": "2026-01-03", "keterangan": "Sabun Pel", "jumlah": 2000}, {"id": 29, "bulanPembukuan": "2026-01", "tanggal": "2026-01-11", "keterangan": "Menjenguk Sakit M Rizki Ramadhan", "jumlah": 100000}, {"id": 30, "bulanPembukuan": "2026-01", "tanggal": "2026-01-14", "keterangan": "Pembersihan Kipas & Area Pojok Baca", "jumlah": 25000}, {"id": 31, "bulanPembukuan": "2026-01", "tanggal": "2026-01-15", "keterangan": "Kenang-kenangan Zaskia Alna H", "jumlah": 100000}, {"id": 32, "bulanPembukuan": "2026-01", "tanggal": "2026-01-16", "keterangan": "Majalah Bobo", "jumlah": 50000}, {"id": 33, "bulanPembukuan": "2026-02", "tanggal": "2026-02-13", "keterangan": "Konsumsi Guru", "jumlah": 50000}, {"id": 34, "bulanPembukuan": "2026-02", "tanggal": "2026-02-27", "keterangan": "Patungan THR Guru Mapel", "jumlah": 50000}, {"id": 35, "bulanPembukuan": "2026-02", "tanggal": "2026-02-27", "keterangan": "Kas Komite", "jumlah": 60000}, {"id": 36, "bulanPembukuan": "2026-03", "tanggal": "2026-03-05", "keterangan": "Patungan Pojok Baca", "jumlah": 30000}, {"id": 37, "bulanPembukuan": "2026-03", "tanggal": "2026-03-12", "keterangan": "Tambahan THR Wali Kelas", "jumlah": 100000}, {"id": 38, "bulanPembukuan": "2026-04", "tanggal": "2026-04-03", "keterangan": "Tissue", "jumlah": 4000}, {"id": 39, "bulanPembukuan": "2026-05", "tanggal": "2026-05-01", "keterangan": "Konsumsi Guru (Renang)", "jumlah": 53000}, {"id": 40, "bulanPembukuan": "2026-05", "tanggal": "2026-05-04", "keterangan": "Menjenguk Sakit Yumna Fariha", "jumlah": 100000}, {"id": 41, "bulanPembukuan": "2026-06", "tanggal": "2026-06-05", "keterangan": "Photo Copy Latihan Soal", "jumlah": 62000}, {"id": 42, "bulanPembukuan": "2026-06", "tanggal": "2026-06-15", "keterangan": "Menjenguk Khitan M Rizki Ramadhan", "jumlah": 100000}, {"id": 43, "bulanPembukuan": "2026-06", "tanggal": "2026-06-17", "keterangan": "Patungan Kenang-Kenangan Guru Mapel", "jumlah": 100000}, {"id": 44, "bulanPembukuan": "2026-06", "tanggal": "2026-06-25", "keterangan": "Pemberian Tanda Terimakasih untuk Wali Kelas", "jumlah": 500000}, {"id": 45, "bulanPembukuan": "2026-06", "tanggal": "2026-06-30", "keterangan": "Menjenguk Khitan Alfaruq Zikri", "jumlah": 100000}]}
 </script>
 <script>
 
@@ -611,26 +863,50 @@ function formatTanggalPendek(d){
 
 // ===================== CONFIG =====================
 const IURAN = 10000;
-const MONTHS = [
-  {key:'2026-08', label:'Agustus 2026'},
-  {key:'2026-09', label:'September 2026'},
-  {key:'2026-10', label:'Oktober 2026'},
-  {key:'2026-11', label:'November 2026'},
-  {key:'2026-12', label:'Desember 2026'},
-  {key:'2027-01', label:'Januari 2027'},
-  {key:'2027-02', label:'Februari 2027'},
-  {key:'2027-03', label:'Maret 2027'},
-  {key:'2027-04', label:'April 2027'},
-  {key:'2027-05', label:'Mei 2027'},
-  {key:'2027-06', label:'Juni 2027'},
+const BULAN_ID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const BULAN_ID_FULL = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+// ===================== PERIODE (6 TAHUN, KELAS 1-6) =====================
+// Setiap periode adalah satu tahun ajaran (Agustus s.d. Juni untuk Kas, Agustus s.d. Mei untuk TIK).
+// Kelas 3 (indeks 2) memuat data yang sudah ada sebelumnya. Periode lain dimulai kosong (kas awal Rp0),
+// alurnya TIDAK dilanjutkan dari periode sebelumnya - setiap periode berdiri sendiri.
+const PERIODS = [
+  {kelas:1, label:'Kelas 1', startYear:2024},
+  {kelas:2, label:'Kelas 2', startYear:2025},
+  {kelas:3, label:'Kelas 3', startYear:2026},
+  {kelas:4, label:'Kelas 4', startYear:2027},
+  {kelas:5, label:'Kelas 5', startYear:2028},
+  {kelas:6, label:'Kelas 6', startYear:2029},
 ];
-const MONTH_SHORT = {
-  '2026-08':'Agu 26','2026-09':'Sep 26','2026-10':'Okt 26','2026-11':'Nov 26','2026-12':'Des 26',
-  '2027-01':'Jan 27','2027-02':'Feb 27','2027-03':'Mar 27','2027-04':'Apr 27','2027-05':'Mei 27','2027-06':'Jun 27'
-};
+const KELAS3_PERIOD_IDX = 2;
+let currentPeriodIdx = KELAS3_PERIOD_IDX;
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+function buildKasMonths(startYear){
+  const out=[];
+  for(let m=8;m<=12;m++) out.push({key:`${startYear}-${pad2(m)}`, label:`${BULAN_ID_FULL[m-1]} ${startYear}`});
+  for(let m=1;m<=6;m++) out.push({key:`${startYear+1}-${pad2(m)}`, label:`${BULAN_ID_FULL[m-1]} ${startYear+1}`});
+  return out;
+}
+function buildTikMonths(startYear){
+  const out=[];
+  for(let m=8;m<=12;m++) out.push({key:`${startYear}-${pad2(m)}`, label:`${BULAN_ID_FULL[m-1]} ${startYear}`});
+  for(let m=1;m<=5;m++) out.push({key:`${startYear+1}-${pad2(m)}`, label:`${BULAN_ID_FULL[m-1]} ${startYear+1}`});
+  return out;
+}
+function monthShortMap(monthsArr){
+  const o={};
+  monthsArr.forEach(m=>{ const [y,mm]=m.key.split('-'); o[m.key]=BULAN_ID[Number(mm)-1]+' '+String(y).slice(-2); });
+  return o;
+}
+function kasStorageKeyFor(idx){ const p=PERIODS[idx]; return `kas3b_${p.startYear}_${p.startYear+1}_${idx===KELAS3_PERIOD_IDX?'v2':'v1'}`; }
+function tikStorageKeyFor(idx){ const p=PERIODS[idx]; return `tik3b_${p.startYear}_${p.startYear+1}_v1`; }
+
+let MONTHS = buildKasMonths(PERIODS[KELAS3_PERIOD_IDX].startYear);
+let MONTH_SHORT = monthShortMap(MONTHS);
 function monthLabel(k){ const m = MONTHS.find(x=>x.key===k); return m? m.label : k; }
 function monthIndex(k){ return MONTHS.findIndex(x=>x.key===k); }
-function yr2(label){ return (label||'').replace(/(\d{4})/g, y=>y.slice(2)); }
+function yr2(label){ return formatBulanKasSingkat(label||'').replace(/(\d{4})/g, y=>y.slice(2)); }
 
 // ===================== PENYIMPANAN LOKAL (TANPA CLOUD/DATABASE) =====================
 // Versi ini sengaja TIDAK menyinkronkan data ke server/database mana pun.
@@ -643,31 +919,68 @@ function hideCloudOverlay(){
 }
 
 // ===================== STATE =====================
-const STORAGE_KEY = 'kas3b_2026_2027_v1';
+let STORAGE_KEY = kasStorageKeyFor(currentPeriodIdx);
 let state = null;
 
-async function loadState(){
+// Data Kas Kelas 3B resmi dari file Excel "Uang Kas Kelas 3B.xlsx".
+// Versi ini menghapus cache data lama Kelas 3B sekali saja agar data Excel baru benar-benar dipakai.
+const KAS3B_SEED_VERSION = '2026-09-07-excel-01';
+function resetOldKas3BDataIfNeeded(){
+  if(currentPeriodIdx !== KELAS3_PERIOD_IDX) return;
+  const markerKey = 'kas3b_seed_version';
+  const marker = localStorage.getItem(markerKey);
+  if(marker !== KAS3B_SEED_VERSION){
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(markerKey, KAS3B_SEED_VERSION);
+  }
+}
+resetOldKas3BDataIfNeeded();
+
+function baseSeedStudents(){
   const seed = JSON.parse(document.getElementById('seed-data').textContent);
+  return seed.students;
+}
+// Kelas 1 (idx 0) dan Kelas 2 (idx 1) memuat data historis dari rekap Excel yang sudah ada.
+// Kelas 3 (idx 2) memuat data yang sudah ada sebelumnya (seed-data). Periode lain mulai kosong.
+function periodSeedElId(idx){
+  if(idx === 0) return 'seed-data-kelas1';
+  if(idx === 1) return 'seed-data-kelas2';
+  if(idx === KELAS3_PERIOD_IDX) return 'seed-data';
+  return null;
+}
+async function loadState(){
   let candidate = null;
   const saved = localStorage.getItem(STORAGE_KEY);
   if(saved){ try{ candidate = JSON.parse(saved); }catch(e){ candidate = null; } }
-  // Jangan pernah menerima state kosong yang terbentuk karena versi revisi.
   const valid = candidate && Array.isArray(candidate.students) && candidate.students.length > 0
-    && Array.isArray(candidate.pemasukan) && Array.isArray(candidate.pengeluaran)
-    && (candidate.pemasukan.length + candidate.pengeluaran.length > 0);
+    && Array.isArray(candidate.pemasukan) && Array.isArray(candidate.pengeluaran);
   if(valid){
     state = candidate;
     backfillKeterangan();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     return;
   }
-  state = {
-    students: seed.students,
-    pemasukan: seed.pemasukan,
-    pengeluaran: seed.pengeluaran,
-    nextMasukId: seed.pemasukan.length ? Math.max(...seed.pemasukan.map(p=>p.id))+1 : 1,
-    nextKeluarId: seed.pengeluaran.length ? Math.max(...seed.pengeluaran.map(p=>p.id))+1 : 1,
-  };
+  const seedElId = periodSeedElId(currentPeriodIdx);
+  if(seedElId){
+    // Periode dengan data historis: gunakan data yang sudah ada sebelumnya.
+    const seed = JSON.parse(document.getElementById(seedElId).textContent);
+    state = {
+      students: seed.students,
+      pemasukan: seed.pemasukan,
+      pengeluaran: seed.pengeluaran,
+      nextMasukId: seed.pemasukan.length ? Math.max(...seed.pemasukan.map(p=>p.id))+1 : 1,
+      nextKeluarId: seed.pengeluaran.length ? Math.max(...seed.pengeluaran.map(p=>p.id))+1 : 1,
+    };
+  } else {
+    // Periode lain: mulai dari kas Rp0, daftar siswa sama dengan Kelas 3 sebagai titik awal.
+    state = {
+      students: baseSeedStudents().map(s=>({no:s.no, nama:s.nama})),
+      pemasukan: [],
+      pengeluaran: [],
+      nextMasukId: 1,
+      nextKeluarId: 1,
+    };
+  }
   backfillKeterangan();
   saveState();
 }
@@ -1019,7 +1332,7 @@ function renderMasuk(){
         <td class="name-cell">${p.nama}</td>
         <td>${fmtDate(p.tanggalBayar)}</td>
         <td>${bulanKas}</td>
-        <td class="num" style="color:var(--teal); font-weight:700;">${rpCell(p.jumlah)}</td>
+        <td class="num" style="color:var(--amber); font-weight:700;">${rpCell(p.jumlah)}</td>
         <td>${p.keterangan||''}</td>
         <td class="no-print">
           <button class="icon-btn" onclick="editPemasukan(${p.id})" title="Edit">✏️</button>
@@ -1171,7 +1484,7 @@ function renderBulanan(){
         <div class="mname">${yr2(d.label)}</div>
         <div class="month-figs">
           <span>Saldo awal: <b>${rp(d.saldoAwal)}</b></span>
-          <span style="color:var(--teal);">Masuk: <b>${rp(d.masuk)}</b></span>
+          <span style="color:var(--amber);">Masuk: <b>${rp(d.masuk)}</b></span>
           <span style="color:var(--coral);">Keluar: <b>${rp(d.keluar)}</b></span>
           <span class="saldo-akhir ${d.saldoAkhir<0?'minus':''}">Saldo akhir: <b>${rp(d.saldoAkhir)}</b></span>
         </div>
@@ -1239,7 +1552,7 @@ function renderMonthTable(d){
         <td>${r.kategori}</td>
         <td>${fmtDate(r.tanggal)}</td>
         <td>${r.ket || '-'}</td>
-        <td class="num" style="color:var(--teal);">${r.masuk ? rpCell(r.masuk):''}</td>
+        <td class="num" style="color:var(--amber);">${r.masuk ? rpCell(r.masuk):''}</td>
         <td class="num" style="color:var(--coral);">${r.keluar ? rpCell(r.keluar):''}</td>
       </tr>`).join('')}
     </tbody>
@@ -1322,11 +1635,11 @@ function renderRekapKas(){
   const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   // Hanya tampilkan bulan sampai bulan berjalan; bulan setelahnya disembunyikan.
   const visibleData = data.filter(d => d.key <= currentMonthKey);
-  let rows = `<tr style="background:var(--paper-2);"><td>Saldo Awal Keseluruhan</td><td class="num">-</td><td class="num">-</td><td class="num">${rpCell(0)}</td></tr>`;
+  let rows = `<tr class="total-row" style="background:var(--paper-2);"><td>Saldo Awal</td><td class="num">-</td><td class="num">-</td><td class="num">${rpCell(0)}</td></tr>`;
   visibleData.forEach(d=>{
     rows += `<tr><td>${yr2(d.label)}</td><td class="num">${rpCell(d.masuk)}</td><td class="num" style="color:var(--coral);">${rpCell(d.keluar)}</td><td class="num" style="font-weight:700;">${rpCell(d.saldoAkhir)}</td></tr>`;
   });
-  rows += `<tr style="background:var(--teal-tint); font-weight:700;"><td>KAS TERSEDIA</td><td class="num">${rpCell(totalMasuk)}</td><td class="num">${rpCell(totalKeluar)}</td><td class="num">${rpCell(saldo)}</td></tr>`;
+  rows += `<tr class="total-row" style="background:var(--teal-tint); font-weight:700;"><td>KAS TERSEDIA</td><td class="num">${rpCell(totalMasuk)}</td><td class="num">${rpCell(totalKeluar)}</td><td class="num">${rpCell(saldo)}</td></tr>`;
   document.getElementById('tbodyRekapKas').innerHTML = rows;
 }
 
@@ -1503,24 +1816,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.body.dataset.activePanel = id || 'rekap';
 });
 </script><script>
-const TIK_STORAGE_KEY='tik3b_2026_2027_v1';
+let TIK_STORAGE_KEY=tikStorageKeyFor(currentPeriodIdx);
 const TIK_IURAN=15000;
-const TIK_MONTHS = [
-  {key:'2026-08', label:'Agustus 2026'},
-  {key:'2026-09', label:'September 2026'},
-  {key:'2026-10', label:'Oktober 2026'},
-  {key:'2026-11', label:'November 2026'},
-  {key:'2026-12', label:'Desember 2026'},
-  {key:'2027-01', label:'Januari 2027'},
-  {key:'2027-02', label:'Februari 2027'},
-  {key:'2027-03', label:'Maret 2027'},
-  {key:'2027-04', label:'April 2027'},
-  {key:'2027-05', label:'Mei 2027'}
-];
-const TIK_MONTH_SHORT = {
-  '2026-08':'Agu 26','2026-09':'Sep 26','2026-10':'Okt 26','2026-11':'Nov 26','2026-12':'Des 26',
-  '2027-01':'Jan 27','2027-02':'Feb 27','2027-03':'Mar 27','2027-04':'Apr 27','2027-05':'Mei 27'
-};
+let TIK_MONTHS = buildTikMonths(PERIODS[KELAS3_PERIOD_IDX].startYear);
+let TIK_MONTH_SHORT = monthShortMap(TIK_MONTHS);
 function tikMonthIndex(k){ return TIK_MONTHS.findIndex(x=>x.key===k); }
 function tikComputeJumlahBulan(){
   const dari = document.getElementById('tikDari').value;
@@ -1552,13 +1851,40 @@ async function switchBook(mode){
     tik.style.display='none'; if(kasHeader)kasHeader.style.display='flex'; kasPanels.forEach(p=>p.style.display=''); kasMode.classList.add('active'); tikMode.classList.remove('active'); showPanel('panel-rekap'); placeSyncBadge();
   }
 }
+// Data TIK yang sudah ada sebelumnya - khusus periode Kelas 3.
+const TIK_SEED_KELAS3 = {
+  pemasukan:[{"id":1,"nama":"AZRIL WAZZA P","tanggalBayar":"2026-08-06","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":2,"nama":"RADEYA PUTRI HARIANATA","tanggalBayar":"2026-08-06","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":3,"nama":"FADIL AL PATIH","tanggalBayar":"2026-08-06","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":4,"nama":"HAIDAR SHAQIL F","tanggalBayar":"2026-08-08","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1,"jumlah":15000,"keterangan":"Iuran TIK"},{"id":5,"nama":"KEANU ALTHAF SYABIL","tanggalBayar":"2026-08-10","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":6,"nama":"HISYAM AL FARIZKI","tanggalBayar":"2026-08-10","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5,"jumlah":75000,"keterangan":"Iuran TIK"},{"id":7,"nama":"ALIKA NAYYA A","tanggalBayar":"2026-08-11","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":8,"nama":"ALFARUQ ZIKRI","tanggalBayar":"2026-08-18","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1,"jumlah":15000,"keterangan":"Iuran TIK"},{"id":9,"nama":"RAFFASYA BYANZA N","tanggalBayar":"2026-08-20","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":10,"nama":"SITI KHALISA NATHIFA","tanggalBayar":"2026-08-23","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5,"jumlah":75000,"keterangan":"Iuran TIK"},{"id":13,"nama":"RAFFASYA FATIH AL FIRDAUS","tanggalBayar":"2026-08-28","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":14,"nama":"KEEANU ATHALLAH RIO","tanggalBayar":"2026-08-28","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":15,"nama":"KEENAN ARSHAKA RIO","tanggalBayar":"2026-08-28","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":16,"nama":"HAFIKA MAKAILA","tanggalBayar":"2026-08-29","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1,"jumlah":15000,"keterangan":"Bendahara 2"}],
+  pengeluaran:[{"id":1,"tanggal":"2026-08-27","bulanPembukuan":"2026-08","jumlah":870000,"keterangan":"Setor Bu Iis"}],
+  nextMasukId:17,
+  nextKeluarId:2
+};
+const TIK_SEED_KELAS2 = {"pemasukan": [{"id": 1, "nama": "ATHAR AL FATIH", "tanggalBayar": "2025-08-26", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2026-05", "jumlahBulan": 10, "jumlah": 150000, "keterangan": "Setoran Agustus"}, {"id": 2, "nama": "KEANU ALTHAF SYABIL", "tanggalBayar": "2025-08-26", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2026-05", "jumlahBulan": 10, "jumlah": 150000, "keterangan": "Iuran TIK"}, {"id": 3, "nama": "RADEYA PUTRI HARIANATA", "tanggalBayar": "2025-08-26", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 4, "nama": "AZRIL WAZZA P", "tanggalBayar": "2025-08-26", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 5, "nama": "ALVAN SHATA A", "tanggalBayar": "2025-08-26", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2026-05", "jumlahBulan": 10, "jumlah": 150000, "keterangan": "Iuran TIK"}, {"id": 6, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2025-08-27", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 7, "nama": "INARA SAKHI A", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 8, "nama": "CHERLY MARCELIN", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 9, "nama": "SITI AYRA FARZANA", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 10, "nama": "SITI KHALISA NATHIFA", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 11, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 12, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 13, "nama": "GALANG ARJITYA", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-08", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 14, "nama": "FADIL AL PATIH", "tanggalBayar": "2025-08-28", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 15, "nama": "MUHAMMAD ALIF FAREZA", "tanggalBayar": "2025-08-29", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 16, "nama": "AYNINDIRRA PUTRI M", "tanggalBayar": "2025-08-29", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 17, "nama": "HISYAM AL FARIZKI", "tanggalBayar": "2025-08-29", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 18, "nama": "PRIYA ABDI KURNIAWAN", "tanggalBayar": "2025-08-29", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 19, "nama": "FAEYZA AL GHIFARI", "tanggalBayar": "2025-08-29", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 20, "nama": "NUR AZIZAH AL WAISY", "tanggalBayar": "2025-08-30", "bulanPembukuan": "2025-08", "bulanDari": "2025-08", "bulanSampai": "2025-11", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 21, "nama": "GALANG ARJITYA", "tanggalBayar": "2025-09-03", "bulanPembukuan": "2025-09", "bulanDari": "2025-09", "bulanSampai": "2025-10", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 22, "nama": "M RASYA RAMADHAN", "tanggalBayar": "2025-09-05", "bulanPembukuan": "2025-09", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Setoran September"}, {"id": 23, "nama": "RAFFASYA BYANZA N", "tanggalBayar": "2025-09-08", "bulanPembukuan": "2025-09", "bulanDari": "2025-08", "bulanSampai": "2026-02", "jumlahBulan": 7, "jumlah": 105000, "keterangan": "Iuran TIK"}, {"id": 24, "nama": "ALIKA NAYYA A", "tanggalBayar": "2025-09-09", "bulanPembukuan": "2025-09", "bulanDari": "2025-08", "bulanSampai": "2025-09", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 25, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2025-09-09", "bulanPembukuan": "2025-09", "bulanDari": "2025-09", "bulanSampai": "2025-09", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 26, "nama": "KALA NAIRA ZAIDA", "tanggalBayar": "2025-09-28", "bulanPembukuan": "2025-09", "bulanDari": "2025-08", "bulanSampai": "2026-05", "jumlahBulan": 10, "jumlah": 150000, "keterangan": "Iuran TIK"}, {"id": 27, "nama": "HISYAM AL FARIZKI", "tanggalBayar": "2025-09-29", "bulanPembukuan": "2025-09", "bulanDari": "2025-10", "bulanSampai": "2025-11", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 28, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2025-09-29", "bulanPembukuan": "2025-09", "bulanDari": "2025-09", "bulanSampai": "2025-09", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 29, "nama": "RAFFASYA FATIH AL FIRDAUS", "tanggalBayar": "2025-09-29", "bulanPembukuan": "2025-09", "bulanDari": "2025-08", "bulanSampai": "2025-10", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 30, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2025-09-30", "bulanPembukuan": "2025-09", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 31, "nama": "FAEYZA AL GHIFARI", "tanggalBayar": "2025-09-30", "bulanPembukuan": "2025-09", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Setoran Oktober"}, {"id": 32, "nama": "RADEYA PUTRI HARIANATA", "tanggalBayar": "2025-09-30", "bulanPembukuan": "2025-09", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 33, "nama": "FADIL AL PATIH", "tanggalBayar": "2025-09-30", "bulanPembukuan": "2025-09", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 34, "nama": "ALIKA NAYYA A", "tanggalBayar": "2025-09-30", "bulanPembukuan": "2025-09", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 35, "nama": "RADEYA PUTRI HARIANATA", "tanggalBayar": "2025-10-07", "bulanPembukuan": "2025-10", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 36, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2025-10-07", "bulanPembukuan": "2025-10", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 37, "nama": "SITI AYRA FARZANA", "tanggalBayar": "2025-10-14", "bulanPembukuan": "2025-10", "bulanDari": "2025-10", "bulanSampai": "2025-11", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 38, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2025-10-21", "bulanPembukuan": "2025-10", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 39, "nama": "SITI KHALISA NATHIFA", "tanggalBayar": "2025-10-27", "bulanPembukuan": "2025-10", "bulanDari": "2025-11", "bulanSampai": "2026-01", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 40, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2025-10-27", "bulanPembukuan": "2025-10", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 41, "nama": "INARA SAKHI A", "tanggalBayar": "2025-10-29", "bulanPembukuan": "2025-10", "bulanDari": "2025-10", "bulanSampai": "2025-10", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 42, "nama": "AZRIL WAZZA P", "tanggalBayar": "2025-10-30", "bulanPembukuan": "2025-10", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 43, "nama": "GALANG ARJITYA", "tanggalBayar": "2025-10-30", "bulanPembukuan": "2025-10", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Setoran November"}, {"id": 44, "nama": "ZASKIA ALNA H", "tanggalBayar": "2025-11-03", "bulanPembukuan": "2025-11", "bulanDari": "2025-08", "bulanSampai": "2025-11", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 45, "nama": "RADEYA PUTRI HARIANATA", "tanggalBayar": "2025-11-03", "bulanPembukuan": "2025-11", "bulanDari": "2026-01", "bulanSampai": "2026-05", "jumlahBulan": 5, "jumlah": 75000, "keterangan": "Iuran TIK"}, {"id": 46, "nama": "ALIKA NAYYA A", "tanggalBayar": "2025-11-06", "bulanPembukuan": "2025-11", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 47, "nama": "YUMNA FARIHA", "tanggalBayar": "2025-11-13", "bulanPembukuan": "2025-11", "bulanDari": "2025-08", "bulanSampai": "2025-11", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 48, "nama": "AYNINDIRRA PUTRI M", "tanggalBayar": "2025-11-13", "bulanPembukuan": "2025-11", "bulanDari": "2025-10", "bulanSampai": "2025-11", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 49, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2025-11-17", "bulanPembukuan": "2025-11", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 50, "nama": "FAHIR AFDAL", "tanggalBayar": "2025-11-17", "bulanPembukuan": "2025-11", "bulanDari": "2025-08", "bulanSampai": "2025-11", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 51, "nama": "FADIL AL PATIH", "tanggalBayar": "2025-11-17", "bulanPembukuan": "2025-11", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 52, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2025-11-27", "bulanPembukuan": "2025-11", "bulanDari": "2025-12", "bulanSampai": "2025-12", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 53, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2025-11-27", "bulanPembukuan": "2025-11", "bulanDari": "2025-11", "bulanSampai": "2025-11", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 54, "nama": "AZRIL WAZZA P", "tanggalBayar": "2025-11-28", "bulanPembukuan": "2025-11", "bulanDari": "2025-12", "bulanSampai": "2026-01", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Setoran Desember"}, {"id": 55, "nama": "M RASYA RAMADHAN", "tanggalBayar": "2025-12-01", "bulanPembukuan": "2025-12", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 56, "nama": "HISYAM AL FARIZKI", "tanggalBayar": "2025-12-01", "bulanPembukuan": "2025-12", "bulanDari": "2025-12", "bulanSampai": "2026-01", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 57, "nama": "M RIZKI RAMADHAN", "tanggalBayar": "2025-12-01", "bulanPembukuan": "2025-12", "bulanDari": "2025-08", "bulanSampai": "2025-11", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 58, "nama": "INARA SAKHI A", "tanggalBayar": "2025-12-01", "bulanPembukuan": "2025-12", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 59, "nama": "PRIYA ABDI KURNIAWAN", "tanggalBayar": "2025-12-05", "bulanPembukuan": "2025-12", "bulanDari": "2025-10", "bulanSampai": "2025-11", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 60, "nama": "RAFFASYA FATIH AL FIRDAUS", "tanggalBayar": "2025-12-05", "bulanPembukuan": "2025-12", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 61, "nama": "CHERLY MARCELIN", "tanggalBayar": "2025-12-14", "bulanPembukuan": "2025-12", "bulanDari": "2025-11", "bulanSampai": "2025-12", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 62, "nama": "FADIL AL PATIH", "tanggalBayar": "2025-12-16", "bulanPembukuan": "2025-12", "bulanDari": "2025-12", "bulanSampai": "2026-01", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 63, "nama": "MUHAMMAD ALIF FAREZA", "tanggalBayar": "2025-12-16", "bulanPembukuan": "2025-12", "bulanDari": "2025-10", "bulanSampai": "2026-01", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 64, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2025-12-17", "bulanPembukuan": "2025-12", "bulanDari": "2025-12", "bulanSampai": "2025-12", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 65, "nama": "FAEYZA AL GHIFARI", "tanggalBayar": "2025-12-17", "bulanPembukuan": "2025-12", "bulanDari": "2025-11", "bulanSampai": "2026-02", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 66, "nama": "RAFFA FEBRIAN PRATAMA", "tanggalBayar": "2025-12-21", "bulanPembukuan": "2025-12", "bulanDari": "2025-08", "bulanSampai": "2025-12", "jumlahBulan": 5, "jumlah": 75000, "keterangan": "Setoran Januari"}, {"id": 67, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2025-12-22", "bulanPembukuan": "2025-12", "bulanDari": "2025-12", "bulanSampai": "2025-12", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 68, "nama": "GALANG ARJITYA", "tanggalBayar": "2026-01-13", "bulanPembukuan": "2026-01", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 69, "nama": "PRIYA ABDI KURNIAWAN", "tanggalBayar": "2026-01-15", "bulanPembukuan": "2026-01", "bulanDari": "2025-12", "bulanSampai": "2026-03", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 70, "nama": "AYNINDIRRA PUTRI M", "tanggalBayar": "2026-01-22", "bulanPembukuan": "2026-01", "bulanDari": "2025-12", "bulanSampai": "2026-01", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 71, "nama": "ALIKA NAYYA A", "tanggalBayar": "2026-01-25", "bulanPembukuan": "2026-01", "bulanDari": "2025-12", "bulanSampai": "2026-01", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 72, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2026-01-26", "bulanPembukuan": "2026-01", "bulanDari": "2026-01", "bulanSampai": "2026-01", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 73, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2026-01-27", "bulanPembukuan": "2026-01", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 74, "nama": "AZRIL WAZZA P", "tanggalBayar": "2026-01-27", "bulanPembukuan": "2026-01", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 75, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2026-01-27", "bulanPembukuan": "2026-01", "bulanDari": "2026-01", "bulanSampai": "2026-01", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 76, "nama": "SITI KHALISA NATHIFA", "tanggalBayar": "2026-01-28", "bulanPembukuan": "2026-01", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 77, "nama": "RAFFA FEBRIAN PRATAMA", "tanggalBayar": "2026-01-30", "bulanPembukuan": "2026-01", "bulanDari": "2026-01", "bulanSampai": "2026-01", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 78, "nama": "FADIL AL PATIH", "tanggalBayar": "2026-02-02", "bulanPembukuan": "2026-02", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Setoran Februari"}, {"id": 79, "nama": "INARA SAKHI A", "tanggalBayar": "2026-02-03", "bulanPembukuan": "2026-02", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 80, "nama": "RAFFASYA FATIH AL FIRDAUS", "tanggalBayar": "2026-02-04", "bulanPembukuan": "2026-02", "bulanDari": "2026-01", "bulanSampai": "2026-02", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 81, "nama": "ALIKA NAYYA A", "tanggalBayar": "2026-02-07", "bulanPembukuan": "2026-02", "bulanDari": "2026-02", "bulanSampai": "2026-02", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 82, "nama": "HISYAM AL FARIZKI", "tanggalBayar": "2026-02-10", "bulanPembukuan": "2026-02", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 83, "nama": "FAHIR AFDAL", "tanggalBayar": "2026-02-11", "bulanPembukuan": "2026-02", "bulanDari": "2025-12", "bulanSampai": "2026-02", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 84, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2026-02-27", "bulanPembukuan": "2026-02", "bulanDari": "2026-02", "bulanSampai": "2026-02", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 85, "nama": "KIRANA MAHARANI F", "tanggalBayar": "2026-03-01", "bulanPembukuan": "2026-03", "bulanDari": "2025-08", "bulanSampai": "2026-01", "jumlahBulan": 6, "jumlah": 90000, "keterangan": "Setoran Maret"}, {"id": 86, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2026-03-02", "bulanPembukuan": "2026-03", "bulanDari": "2026-03", "bulanSampai": "2026-03", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 87, "nama": "FADIL AL PATIH", "tanggalBayar": "2026-03-02", "bulanPembukuan": "2026-03", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 88, "nama": "RAFFASYA FATIH AL FIRDAUS", "tanggalBayar": "2026-03-02", "bulanPembukuan": "2026-03", "bulanDari": "2026-03", "bulanSampai": "2026-03", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 89, "nama": "AYNINDIRRA PUTRI M", "tanggalBayar": "2026-03-06", "bulanPembukuan": "2026-03", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 90, "nama": "GALANG ARJITYA", "tanggalBayar": "2026-03-09", "bulanPembukuan": "2026-03", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 91, "nama": "SITI KHALISA NATHIFA", "tanggalBayar": "2026-03-26", "bulanPembukuan": "2026-03", "bulanDari": "2026-04", "bulanSampai": "2026-05", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 92, "nama": "M RASYA RAMADHAN", "tanggalBayar": "2026-03-26", "bulanPembukuan": "2026-03", "bulanDari": "2026-01", "bulanSampai": "2026-05", "jumlahBulan": 5, "jumlah": 75000, "keterangan": "Iuran TIK"}, {"id": 93, "nama": "AZRIL WAZZA P", "tanggalBayar": "2026-03-26", "bulanPembukuan": "2026-03", "bulanDari": "2026-04", "bulanSampai": "2026-05", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 94, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2026-03-27", "bulanPembukuan": "2026-03", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 95, "nama": "MUHAMMAD ALIF FAREZA", "tanggalBayar": "2026-03-27", "bulanPembukuan": "2026-03", "bulanDari": "2026-02", "bulanSampai": "2026-03", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 96, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2026-03-29", "bulanPembukuan": "2026-03", "bulanDari": "2026-03", "bulanSampai": "2026-03", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 97, "nama": "RAFFASYA FATIH AL FIRDAUS", "tanggalBayar": "2026-03-29", "bulanPembukuan": "2026-03", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 98, "nama": "SITI AYRA FARZANA", "tanggalBayar": "2026-03-30", "bulanPembukuan": "2026-03", "bulanDari": "2025-12", "bulanSampai": "2026-03", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 99, "nama": "FAEYZA AL GHIFARI", "tanggalBayar": "2026-04-03", "bulanPembukuan": "2026-04", "bulanDari": "2026-03", "bulanSampai": "2026-05", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Setoran April"}, {"id": 100, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2026-04-05", "bulanPembukuan": "2026-04", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 101, "nama": "HISYAM AL FARIZKI", "tanggalBayar": "2026-04-06", "bulanPembukuan": "2026-04", "bulanDari": "2026-04", "bulanSampai": "2026-05", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 102, "nama": "ALIKA NAYYA A", "tanggalBayar": "2026-04-06", "bulanPembukuan": "2026-04", "bulanDari": "2026-03", "bulanSampai": "2026-05", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 103, "nama": "CHERLY MARCELIN", "tanggalBayar": "2026-04-07", "bulanPembukuan": "2026-04", "bulanDari": "2026-01", "bulanSampai": "2026-03", "jumlahBulan": 3, "jumlah": 45000, "keterangan": "Iuran TIK"}, {"id": 104, "nama": "INARA SAKHI A", "tanggalBayar": "2026-04-08", "bulanPembukuan": "2026-04", "bulanDari": "2026-03", "bulanSampai": "2026-04", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 105, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2026-04-09", "bulanPembukuan": "2026-04", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 106, "nama": "RAFFA FEBRIAN PRATAMA", "tanggalBayar": "2026-04-10", "bulanPembukuan": "2026-04", "bulanDari": "2026-02", "bulanSampai": "2026-05", "jumlahBulan": 4, "jumlah": 60000, "keterangan": "Iuran TIK"}, {"id": 107, "nama": "GALANG ARJITYA", "tanggalBayar": "2026-04-14", "bulanPembukuan": "2026-04", "bulanDari": "2026-06", "bulanSampai": "2026-06", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 108, "nama": "YUMNA FARIHA", "tanggalBayar": "2026-04-14", "bulanPembukuan": "2026-04", "bulanDari": "2025-12", "bulanSampai": "2026-05", "jumlahBulan": 6, "jumlah": 90000, "keterangan": "Iuran TIK"}, {"id": 109, "nama": "NUR AZIZAH AL WAISY", "tanggalBayar": "2026-04-15", "bulanPembukuan": "2026-04", "bulanDari": "2025-12", "bulanSampai": "2026-05", "jumlahBulan": 6, "jumlah": 90000, "keterangan": "Iuran TIK"}, {"id": 110, "nama": "CHERLY MARCELIN", "tanggalBayar": "2026-04-24", "bulanPembukuan": "2026-04", "bulanDari": "2026-04", "bulanSampai": "2026-05", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}, {"id": 111, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2026-04-24", "bulanPembukuan": "2026-04", "bulanDari": "2026-04", "bulanSampai": "2026-04", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 112, "nama": "INARA SAKHI A", "tanggalBayar": "2026-04-27", "bulanPembukuan": "2026-04", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 113, "nama": "HAIDAR SHAQIL F", "tanggalBayar": "2026-04-27", "bulanPembukuan": "2026-04", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 114, "nama": "RAFFASYA FATIH AL FIRDAUS", "tanggalBayar": "2026-04-28", "bulanPembukuan": "2026-04", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 115, "nama": "ALFARUQ ZIKRI", "tanggalBayar": "2026-04-29", "bulanPembukuan": "2026-04", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 116, "nama": "HAFIKA MAKAILA", "tanggalBayar": "2026-05-13", "bulanPembukuan": "2026-05", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Setoran Mei"}, {"id": 117, "nama": "FADIL AL PATIH", "tanggalBayar": "2026-05-25", "bulanPembukuan": "2026-05", "bulanDari": "2026-05", "bulanSampai": "2026-05", "jumlahBulan": 1, "jumlah": 15000, "keterangan": "Iuran TIK"}, {"id": 118, "nama": "SITI AYRA FARZANA", "tanggalBayar": "2026-05-29", "bulanPembukuan": "2026-05", "bulanDari": "2026-04", "bulanSampai": "2026-05", "jumlahBulan": 2, "jumlah": 30000, "keterangan": "Iuran TIK"}], "pengeluaran": [{"id": 1, "tanggal": "2025-08-29", "bulanPembukuan": "2025-08", "jumlah": 900000, "keterangan": "Setor Bu Iis"}, {"id": 2, "tanggal": "2025-09-04", "bulanPembukuan": "2025-09", "jumlah": 120000, "keterangan": "Setor Bu Iis"}, {"id": 3, "tanggal": "2025-09-30", "bulanPembukuan": "2025-09", "jumlah": 450000, "keterangan": "Setor Bu Iis"}, {"id": 4, "tanggal": "2025-10-30", "bulanPembukuan": "2025-10", "jumlah": 255000, "keterangan": "Setor Bu Iis"}, {"id": 5, "tanggal": "2025-11-28", "bulanPembukuan": "2025-11", "jumlah": 375000, "keterangan": "Setor Bu Iis"}, {"id": 6, "tanggal": "2025-12-17", "bulanPembukuan": "2025-12", "jumlah": 435000, "keterangan": "Setor Bu Iis"}, {"id": 7, "tanggal": "2026-01-30", "bulanPembukuan": "2026-01", "jumlah": 375000, "keterangan": "Setor Bu Iis"}, {"id": 8, "tanggal": "2026-02-27", "bulanPembukuan": "2026-02", "jumlah": 195000, "keterangan": "Setor Bu Iis"}, {"id": 9, "tanggal": "2026-03-31", "bulanPembukuan": "2026-03", "jumlah": 480000, "keterangan": "Setor Bu Iis"}, {"id": 10, "tanggal": "2026-04-30", "bulanPembukuan": "2026-04", "jumlah": 585000, "keterangan": "Setor Bu Iis"}, {"id": 11, "tanggal": "2026-05-29", "bulanPembukuan": "2026-05", "jumlah": 60000, "keterangan": "Setor Bu Iis"}], "nextMasukId": 119, "nextKeluarId": 12};
 function tikSeed(){
+  if(currentPeriodIdx === KELAS3_PERIOD_IDX){
+    return {
+      students:state.students.map(s=>({no:s.no,nama:s.nama})),
+      pemasukan: TIK_SEED_KELAS3.pemasukan.map(x=>({...x})),
+      pengeluaran: TIK_SEED_KELAS3.pengeluaran.map(x=>({...x})),
+      nextMasukId: TIK_SEED_KELAS3.nextMasukId,
+      nextKeluarId: TIK_SEED_KELAS3.nextKeluarId
+    };
+  }
+  if(currentPeriodIdx === 1){
+    // Kelas 2: data TIK historis dari rekap Excel yang sudah ada.
+    return {
+      students:state.students.map(s=>({no:s.no,nama:s.nama})),
+      pemasukan: TIK_SEED_KELAS2.pemasukan.map(x=>({...x})),
+      pengeluaran: TIK_SEED_KELAS2.pengeluaran.map(x=>({...x})),
+      nextMasukId: TIK_SEED_KELAS2.nextMasukId,
+      nextKeluarId: TIK_SEED_KELAS2.nextKeluarId
+    };
+  }
   return {
     students:state.students.map(s=>({no:s.no,nama:s.nama})),
-    pemasukan:[{"id":1,"nama":"AZRIL WAZZA P","tanggalBayar":"2026-08-06","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":2,"nama":"RADEYA PUTRI HARIANATA","tanggalBayar":"2026-08-06","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":3,"nama":"FADIL AL PATIH","tanggalBayar":"2026-08-06","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":4,"nama":"HAIDAR SHAQIL F","tanggalBayar":"2026-08-08","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1,"jumlah":15000,"keterangan":"Iuran TIK"},{"id":5,"nama":"KEANU ALTHAF SYABIL","tanggalBayar":"2026-08-10","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":6,"nama":"HISYAM AL FARIZKI","tanggalBayar":"2026-08-10","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5,"jumlah":75000,"keterangan":"Iuran TIK"},{"id":7,"nama":"ALIKA NAYYA A","tanggalBayar":"2026-08-11","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":8,"nama":"ALFARUQ ZIKRI","tanggalBayar":"2026-08-18","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1,"jumlah":15000,"keterangan":"Iuran TIK"},{"id":9,"nama":"RAFFASYA BYANZA N","tanggalBayar":"2026-08-20","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10,"jumlah":150000,"keterangan":"Iuran TIK"},{"id":10,"nama":"SITI KHALISA NATHIFA","tanggalBayar":"2026-08-23","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5,"jumlah":75000,"keterangan":"Iuran TIK"},{"id":13,"nama":"RAFFASYA FATIH AL FIRDAUS","tanggalBayar":"2026-08-28","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":14,"nama":"KEEANU ATHALLAH RIO","tanggalBayar":"2026-08-28","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":15,"nama":"KEENAN ARSHAKA RIO","tanggalBayar":"2026-08-28","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2,"jumlah":30000,"keterangan":"Iuran TIK"},{"id":16,"nama":"HAFIKA MAKAILA","tanggalBayar":"2026-08-29","bulanPembukuan":"2026-08","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1,"jumlah":15000,"keterangan":"Bendahara 2"}],
-    pengeluaran:[{"id":1,"tanggal":"2026-08-27","bulanPembukuan":"2026-08","jumlah":870000,"keterangan":"Setor Bu Iis"}],
-    nextMasukId:17,
-    nextKeluarId:2
+    pemasukan:[],
+    pengeluaran:[],
+    nextMasukId:1,
+    nextKeluarId:1
   };
 }
 let tikLoaded=false;
@@ -1674,7 +2000,11 @@ function tikRenderLists(){
 }
 function tikRenderRekap(){
  const masuk=tikState.pemasukan.reduce((a,b)=>a+Number(b.jumlah||0),0),keluar=tikState.pengeluaran.reduce((a,b)=>a+Number(b.jumlah||0),0),saldo=masuk-keluar;document.getElementById('tikStatMasukTop').textContent=rp(masuk);document.getElementById('tikStatKeluarTop').textContent=rp(keluar);document.getElementById('tikStatSaldoTop').textContent=rp(saldo);document.getElementById('tikStatMasuk').textContent=rp(masuk);document.getElementById('tikStatKeluar').textContent=rp(keluar);document.getElementById('tikStatSaldo').textContent=rp(saldo);
- const data=TIK_MONTHS.map(m=>{const im=tikState.pemasukan.filter(p=>p.bulanPembukuan===m.key).reduce((a,b)=>a+Number(b.jumlah||0),0);const ok=tikState.pengeluaran.filter(p=>p.bulanPembukuan===m.key).reduce((a,b)=>a+Number(b.jumlah||0),0);return {...m,masuk:im,keluar:ok}});let run=0,rows='<tr style="background:var(--paper-2)"><td class="center">Saldo Awal Keseluruhan</td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>';data.forEach(d=>{if(!d.masuk&&!d.keluar)return;run+=d.masuk-d.keluar;rows+=`<tr><td class="center">${yr2(d.label)}</td><td class="num">${rpCell(d.masuk)}</td><td class="num" style="color:var(--coral)">${rpCell(d.keluar)}</td><td class="num" style="font-weight:700">${rpCell(run)}</td></tr>`});rows+=`<tr style="background:var(--teal-tint);font-weight:700"><td class="center">TIK TERSEDIA</td><td class="num">${rpCell(masuk)}</td><td class="num">${rpCell(keluar)}</td><td class="num">${rpCell(saldo)}</td></tr>`;document.getElementById('tikRekapBody').innerHTML=rows;
+ const data=TIK_MONTHS.map(m=>{const im=tikState.pemasukan.filter(p=>p.bulanPembukuan===m.key).reduce((a,b)=>a+Number(b.jumlah||0),0);const ok=tikState.pengeluaran.filter(p=>p.bulanPembukuan===m.key).reduce((a,b)=>a+Number(b.jumlah||0),0);return {...m,masuk:im,keluar:ok}});
+ const now=new Date();const currentMonthKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+ // Tampilkan setiap bulan periode sampai bulan berjalan (bukan hanya bulan yang ada transaksinya), sama seperti Rekap Kas.
+ const visibleData=data.filter(d=>d.key<=currentMonthKey);
+ let run=0,rows='<tr class="total-row" style="background:var(--paper-2)"><td class="center">Saldo Awal</td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>';visibleData.forEach(d=>{run+=d.masuk-d.keluar;rows+=`<tr><td class="center">${yr2(d.label)}</td><td class="num">${rpCell(d.masuk)}</td><td class="num" style="color:var(--coral)">${rpCell(d.keluar)}</td><td class="num" style="font-weight:700">${rpCell(run)}</td></tr>`});rows+=`<tr class="total-row" style="background:var(--teal-tint);font-weight:700"><td class="center">TIK TERSEDIA</td><td class="num">${rpCell(masuk)}</td><td class="num">${rpCell(keluar)}</td><td class="num">${rpCell(saldo)}</td></tr>`;document.getElementById('tikRekapBody').innerHTML=rows;
 }
 function renderTik(){tikFillStudents();tikFillMonths();tikRenderSiswa();tikRenderLists();tikRenderRekap();document.getElementById('tikTanggal').value=todayText();document.getElementById('tikKeluarTanggal').value=todayText();document.getElementById('tikJumlah').addEventListener('input',formatRibuanInput);document.getElementById('tikKeluarJumlah').addEventListener('input',formatRibuanInput)}
 let tikEditMasukId=null;
@@ -1867,5 +2197,402 @@ function tikExportExcel(){if(typeof XLSX==='undefined'){alert('Library Excel bel
 
 // Catatan: versi ini murni localStorage, jadi tidak ada auto-sync/polling
 // ke server mana pun — semua perubahan langsung tersimpan di browser saat itu juga.
+
+// ===================== 6 PERIODE (KELAS 1-6) =====================
+function applyPeriod(idx){
+  currentPeriodIdx = idx;
+  const p = PERIODS[idx];
+  MONTHS = buildKasMonths(p.startYear);
+  MONTH_SHORT = monthShortMap(MONTHS);
+  STORAGE_KEY = kasStorageKeyFor(idx);
+  resetOldKas3BDataIfNeeded();
+  TIK_MONTHS = buildTikMonths(p.startYear);
+  TIK_MONTH_SHORT = monthShortMap(TIK_MONTHS);
+  TIK_STORAGE_KEY = tikStorageKeyFor(idx);
+}
+function updateHeaderLabels(){
+  const p = PERIODS[currentPeriodIdx];
+  const kasRange = `${BULAN_ID[7]} ${String(p.startYear).slice(-2)} — ${BULAN_ID[5]} ${String(p.startYear+1).slice(-2)}`;
+  const tikRange = `${BULAN_ID[7]} ${String(p.startYear).slice(-2)} — ${BULAN_ID[4]} ${String(p.startYear+1).slice(-2)}`;
+  const kasHeader = document.querySelector('header.top:not(.tik-top)');
+  if(kasHeader){
+    const eb=kasHeader.querySelector('.eyebrow'), h1=kasHeader.querySelector('h1'), pe=kasHeader.querySelector('.period');
+    if(eb) eb.textContent = `Buku Kas · Kelas ${p.kelas}B`;
+    if(h1) h1.textContent = `Rekap Uang Kas ${p.kelas}B`;
+    if(pe) pe.textContent = kasRange;
+  }
+  const tikHeader = document.querySelector('header.top.tik-top');
+  if(tikHeader){
+    const eb=tikHeader.querySelector('.eyebrow'), h1=tikHeader.querySelector('h1'), pe=tikHeader.querySelector('.period');
+    if(eb) eb.textContent = `Buku TIK · Kelas ${p.kelas}B`;
+    if(h1) h1.textContent = `Rekap Uang TIK ${p.kelas}B`;
+    if(pe) pe.textContent = tikRange;
+  }
+  document.title = `Kas Kelas ${p.kelas}B — ${BULAN_ID_FULL[7]} ${p.startYear} s.d. ${BULAN_ID_FULL[5]} ${p.startYear+1}`;
+  document.querySelectorAll('#periodSwitch button').forEach(b=>b.classList.toggle('active', Number(b.dataset.idx)===currentPeriodIdx));
+}
+async function switchPeriod(idx){
+  if(idx===currentPeriodIdx) return;
+  applyPeriod(idx);
+  updateHeaderLabels();
+  state = null; tikState = null; tikLoaded = false;
+  await loadState();
+  fillMonthSelects();
+  fillStudentSelect();
+  resetFormMasuk();
+  resetFormKeluar();
+  renderAll();
+  const tikVisible = document.getElementById('tikApp').style.display !== 'none';
+  if(tikVisible){
+    await loadTik();
+    renderTik();
+    tikShow('rekap');
+  } else {
+    showPanel('panel-rekap');
+  }
+  placeSyncBadge();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ---- Navigasi Beranda <-> Aplikasi ----
+async function enterClass(idx){
+  document.getElementById('landingPage').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  if(idx !== currentPeriodIdx){
+    await switchPeriod(idx);
+  } else {
+    showPanel('panel-rekap');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+function goToLanding(){
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('landingPage').style.display = 'flex';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ---- Rekap gabungan lintas periode (tanpa mengubah periode yang sedang aktif) ----
+function getPeriodKasData(idx){
+  const key = kasStorageKeyFor(idx);
+  const saved = localStorage.getItem(key);
+  if(saved){
+    try{
+      const d = JSON.parse(saved);
+      if(d && Array.isArray(d.pemasukan) && Array.isArray(d.pengeluaran) && Array.isArray(d.students)){
+        return {pemasukan:d.pemasukan, pengeluaran:d.pengeluaran, students:d.students};
+      }
+    }catch(e){}
+  }
+  if(idx === KELAS3_PERIOD_IDX){
+    const seed = JSON.parse(document.getElementById('seed-data').textContent);
+    return {pemasukan:seed.pemasukan, pengeluaran:seed.pengeluaran, students:seed.students};
+  }
+  return {pemasukan:[], pengeluaran:[], students: baseSeedStudents()};
+}
+function getPeriodTikData(idx){
+  const key = tikStorageKeyFor(idx);
+  const saved = localStorage.getItem(key);
+  if(saved){
+    try{
+      const d = JSON.parse(saved);
+      if(d && Array.isArray(d.pemasukan) && Array.isArray(d.pengeluaran)){
+        return {pemasukan:d.pemasukan, pengeluaran:d.pengeluaran};
+      }
+    }catch(e){}
+  }
+  if(idx === KELAS3_PERIOD_IDX){
+    return {pemasukan:TIK_SEED_KELAS3.pemasukan, pengeluaran:TIK_SEED_KELAS3.pengeluaran};
+  }
+  return {pemasukan:[], pengeluaran:[]};
+}
+function sumJumlah(arr){ return arr.reduce((a,b)=>a+Number(b.jumlah||0),0); }
+function buildAllPeriodsTable(getData, label){
+  let rows='', totMasuk=0, totKeluar=0;
+  PERIODS.forEach((p,i)=>{
+    const d = getData(i);
+    const masuk = sumJumlah(d.pemasukan);
+    const keluar = sumJumlah(d.pengeluaran);
+    totMasuk+=masuk; totKeluar+=keluar;
+    const range = `${BULAN_ID[7]}${String(p.startYear).slice(-2)}–${BULAN_ID[label==='tik'?4:5]}${String(p.startYear+1).slice(-2)}`;
+    rows += `<tr class="${i===currentPeriodIdx?'current-period':''}"><td>Kelas ${p.kelas} <span style="color:var(--ink-soft);font-weight:400">(${range})</span></td><td>${rp(masuk)}</td><td>${rp(keluar)}</td><td>${rp(masuk-keluar)}</td></tr>`;
+  });
+  rows += `<tr class="grand-total"><td>Total 6 Periode</td><td>${rp(totMasuk)}</td><td>${rp(totKeluar)}</td><td>${rp(totMasuk-totKeluar)}</td></tr>`;
+  return `<table><thead><tr><th>Periode</th><th>Masuk</th><th>Keluar</th><th>Saldo</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+/* ===================== AKSI TERPUSAT DARI BERANDA ===================== */
+const centralActionState={action:null,step:'destination',classIdx:null,book:null,part:null};
+function centralActionLabel(a){return a==='export'?'📥 Export Excel':a==='print'?'🖨️ Cetak':'🔗 Share'}
+function openCentralAction(action){
+  centralActionState.action=action; centralActionState.step='destination'; centralActionState.classIdx=null; centralActionState.book=null; centralActionState.part=null;
+  renderCentralAction();
+  document.getElementById('centralActionModal').style.display='flex';
+}
+function closeCentralAction(){document.getElementById('centralActionModal').style.display='none'}
+function centralChoice(label,sub,onClick){return `<button class="central-action-choice" onclick="${onClick}"><span class="choice-main">${label}</span>${sub?`<span class="choice-sub">${sub}</span>`:''}</button>`}
+function renderCentralAction(){
+  const a=centralActionState.action, step=centralActionState.step;
+  document.getElementById('centralActionTitle').textContent=centralActionLabel(a);
+  let body='';
+  if(step==='destination'){
+    body='<div class="central-action-grid destination-grid">';
+    PERIODS.forEach((p,i)=>body+=centralChoice(`Kelas ${p.kelas}`,`${BULAN_ID_FULL[7]} ${p.startYear} – ${BULAN_ID_FULL[5]} ${p.startYear+1}`,`centralPickClass(${i})`));
+    body+=centralChoice('📊 Rekap Semua Periode','Gabungan Kelas 1–6',`centralPickAllPeriods()`);
+    body+='</div>';
+  }else if(step==='book'){
+    body='<div class="central-action-grid one">'+centralChoice('📒 Kas Bulanan','Pembukuan Kas',`centralPickBook('kas')`)+centralChoice('💻 TIK','Pembukuan TIK',`centralPickBook('tik')` )+'</div>';
+    body+=`<button class="btn btn-ghost central-action-back" onclick="centralBack('destination')">← Kembali</button>`;
+  }else if(step==='part'){
+    body='<div class="central-action-grid">';
+    body+=centralChoice('📚 Semua','Semua bagian',`centralPickPart('all')`);
+    body+=centralChoice('📊 Rekap','Ringkasan + data siswa',`centralPickPart('rekap')`);
+    body+=centralChoice('🧾 Rincian','Pemasukan + pengeluaran',`centralPickPart('rincian')`);
+    if(centralActionState.book==='kas') body+=centralChoice('📅 Bulanan','Rekap per bulan',`centralPickPart('bulanan')`);
+    body+=`</div><button class="btn btn-ghost central-action-back" onclick="centralBack('book')">← Kembali</button>`;
+  }else if(step==='sharetype'){
+    body=`<div class="central-action-grid one">${centralChoice('🖼️ JPEG','Bagikan sebagai gambar',`centralDoShare('jpeg')`)}${centralChoice('📄 PDF','Bagikan sebagai PDF',`centralDoShare('pdf')`)}${centralChoice('📝 Text','Bagikan sebagai teks',`centralDoShare('text')`)}</div><button class="btn btn-ghost central-action-back" onclick="centralBack('part')">← Kembali</button>`;
+  }else if(step==='allperiodshare'){
+    body=`<div class="central-action-grid one">${centralChoice('🖼️ JPEG','Rekap Semua Periode',`centralDoAllShare('jpeg')`)}${centralChoice('📄 PDF','Rekap Semua Periode',`centralDoAllShare('pdf')`)}${centralChoice('📝 Text','Rekap Semua Periode',`centralDoAllShare('text')`)}</div><button class="btn btn-ghost central-action-back" onclick="centralBack('destination')">← Kembali</button>`;
+  }
+  document.getElementById('centralActionBody').innerHTML=body;
+}
+function centralBack(step){centralActionState.step=step;renderCentralAction()}
+function centralPickClass(i){centralActionState.classIdx=i;centralActionState.step='book';renderCentralAction()}
+function centralPickBook(book){centralActionState.book=book;centralActionState.step='part';renderCentralAction()}
+function centralPickPart(part){centralActionState.part=part;if(centralActionState.action==='share'){centralActionState.step='sharetype';renderCentralAction();}else centralExecute()}
+function centralPickAllPeriods(){
+  centralActionState.classIdx=null;centralActionState.book=null;centralActionState.part='all';
+  if(centralActionState.action==='share'){centralActionState.step='allperiodshare';renderCentralAction();return;}
+  closeCentralAction();
+  if(centralActionState.action==='export') exportAllPeriodsExcel(); else printAllPeriods();
+}
+async function centralExecute(){
+  const a=centralActionState.action, idx=centralActionState.classIdx, book=centralActionState.book, part=centralActionState.part;
+  closeCentralAction();
+  if(a==='export') await centralExportClass(idx,book,part);
+  else if(a==='print') await centralPrintClass(idx,book,part);
+}
+async function centralWithClass(idx,book,fn){
+  // Jalankan aksi untuk kelas tujuan tanpa merusak state kelas yang sedang aktif.
+  // State aktif disimpan di memori dan dikembalikan persis setelah aksi selesai.
+  const oldIdx=currentPeriodIdx;
+  const oldBook=document.getElementById('tikApp').style.display!=='none'?'tik':'kas';
+  const oldState=state;
+  const oldTikState=tikState;
+  const oldTikLoaded=tikLoaded;
+  const oldStorageKey=STORAGE_KEY;
+  const oldTikStorageKey=TIK_STORAGE_KEY;
+  const oldMonths=MONTHS;
+  const oldMonthShort=MONTH_SHORT;
+  const oldTikMonths=TIK_MONTHS;
+  const oldTikMonthShort=TIK_MONTH_SHORT;
+  try{
+    if(idx!==currentPeriodIdx) await switchPeriod(idx);
+    await switchBook(book);
+    await fn();
+  } finally {
+    // Kembalikan seluruh state/konfigurasi kelas yang sebelumnya aktif.
+    currentPeriodIdx=oldIdx;
+    STORAGE_KEY=oldStorageKey;
+    TIK_STORAGE_KEY=oldTikStorageKey;
+    MONTHS=oldMonths;
+    MONTH_SHORT=oldMonthShort;
+    TIK_MONTHS=oldTikMonths;
+    TIK_MONTH_SHORT=oldTikMonthShort;
+    state=oldState;
+    tikState=oldTikState;
+    tikLoaded=oldTikLoaded;
+    updateHeaderLabels();
+    await switchBook(oldBook);
+    renderAll();
+    if(oldBook==='tik'){
+      if(!tikLoaded) await loadTik();
+      renderTik();
+      tikShow('rekap');
+    }
+  }
+}
+function centralExcelFile(wb,name){XLSX.writeFile(wb,name)}
+async function centralExportClass(idx,book,part){
+  await centralWithClass(idx,book,async()=>{
+    if(book==='kas' && part==='all'){exportExcel();return}
+    if(book==='tik' && part==='all'){tikExportExcel();return}
+    const wb=XLSX.utils.book_new();
+    if(book==='kas'){
+      if(part==='rekap'){
+        const tm=sumJumlah(state.pemasukan),tk=sumJumlah(state.pengeluaran);
+        const aoa=[['REKAP KAS KELAS 3B'],[],['Keterangan','Uang Masuk','Uang Keluar','Kas Tersedia'],['Saldo Awal',0,0,0],['Total',tm,tk,tm-tk]];
+        XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Rekap');
+      }else if(part==='rincian'){
+        const aoa=[['PEMASUKAN'],[],['NO','NAMA','TANGGAL BAYAR','JUMLAH','KETERANGAN'],...state.pemasukan.map((x,i)=>[i+1,x.nama,x.tanggalBayar,x.jumlah,x.keterangan||'']),[],['PENGELUARAN'],[],['NO','TANGGAL','JUMLAH','KETERANGAN'],...state.pengeluaran.map((x,i)=>[i+1,x.tanggal,x.jumlah,x.keterangan||''])];
+        XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Rincian');
+      }else if(part==='bulanan'){
+        const d=computeBulanan();const aoa=[['REKAP KAS BULANAN'],[],['BULAN','MASUK','KELUAR','SALDO'],...d.map(x=>[x.label,x.masuk,x.keluar,x.saldoAkhir])];
+        XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Bulanan');
+      }
+      centralExcelFile(wb,`Kas_Kelas_${PERIODS[idx].kelas}_${part}.xlsx`);
+    }else{
+      if(part==='rekap'){
+        const m=sumJumlah(tikState.pemasukan),k=sumJumlah(tikState.pengeluaran);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['REKAP TIK KELAS 3B'],[],['Keterangan','Uang Masuk','Uang Keluar','Tersedia'],['Saldo Awal',0,0,0],['Total',m,k,m-k]]),'Rekap');
+      }else if(part==='rincian'){
+        const aoa=[['PEMASUKAN TIK'],[],['NO','NAMA','TANGGAL','JUMLAH','KETERANGAN'],...tikState.pemasukan.map((x,i)=>[i+1,x.nama,x.tanggalBayar,x.jumlah,x.keterangan||'']),[],['PENGELUARAN TIK'],[],['NO','TANGGAL','JUMLAH','KETERANGAN'],...tikState.pengeluaran.map((x,i)=>[i+1,x.tanggal,x.jumlah,x.keterangan||''])];XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Rincian');
+      }
+      centralExcelFile(wb,`TIK_Kelas_${PERIODS[idx].kelas}_${part}.xlsx`);
+    }
+  });
+}
+async function centralPrintClass(idx,book,part){
+  const old=currentPeriodIdx;
+  const oldBook=document.getElementById('tikApp').style.display!=='none'?'tik':'kas';
+  if(idx!==currentPeriodIdx) await switchPeriod(idx);
+  await switchBook(book);
+  let restored=false;
+  const restore=async()=>{
+    if(restored) return; restored=true;
+    window.removeEventListener('afterprint',restore);
+    if(old!==idx) await switchPeriod(old);
+    await switchBook(oldBook);
+  };
+  window.addEventListener('afterprint',restore);
+  if(book==='kas'){
+    if(part==='all') cetakSemuaKas(); else if(part==='rekap') cetakRekap(); else if(part==='rincian') cetakRincian(); else cetakBulanan();
+  }else{
+    if(part==='all') tikPrint('all'); else if(part==='rekap') tikPrint('rekap'); else tikPrint('rincian');
+  }
+}
+function centralShareText(book,part){
+  if(part==='rekap') return buildShareText(book);
+  const title=book==='kas'?'Rekap Kas':'Rekap TIK';
+  const d=book==='kas'?state:tikState;
+  let out=`${title} — Kelas ${PERIODS[currentPeriodIdx].kelas}B\n\n`;
+  if(part==='rincian'){
+    out+='PEMASUKAN\n'+d.pemasukan.map((x,i)=>`${i+1}. ${x.nama||'-'} — ${rp(x.jumlah)} — ${x.keterangan||''}`).join('\n')+'\n\nPENGELUARAN\n'+d.pengeluaran.map((x,i)=>`${i+1}. ${rp(x.jumlah)} — ${x.keterangan||''}`).join('\n');
+  }else if(part==='bulanan') out+=computeBulanan().map(x=>`${x.label}: Masuk ${rp(x.masuk)} | Keluar ${rp(x.keluar)} | Saldo ${rp(x.saldoAkhir)}`).join('\n');
+  else out+='Semua data pembukuan kelas.';
+  return out;
+}
+async function centralDoShare(type){
+  const idx=centralActionState.classIdx,book=centralActionState.book,part=centralActionState.part;closeCentralAction();
+  await centralWithClass(idx,book,async()=>{await shareClassPart(book,part,type)});
+}
+async function shareClassPart(book,part,type){
+  if(type==='text'){
+    const text=centralShareText(book,part);try{if(navigator.share){await navigator.share({title:`${book==='kas'?'Kas':'TIK'} Kelas ${PERIODS[currentPeriodIdx].kelas}B`,text});return}if(navigator.clipboard){await navigator.clipboard.writeText(text);alert('Teks rekap sudah disalin.');return}prompt('Salin teks berikut:',text)}catch(e){if(e.name!=='AbortError')console.error(e)}return;
+  }
+  await loadShareLibs();
+  const ids=book==='kas'?(part==='all'?['panel-rekap','panel-siswa','panel-bulanan','panel-masuk','panel-keluar']:part==='rekap'?['panel-rekap','panel-siswa']:part==='rincian'?['panel-masuk','panel-keluar']:['panel-bulanan']):(part==='all'?['tik-rekap','tik-siswa','tik-masuk','tik-keluar']:part==='rekap'?['tik-rekap','tik-siswa']:['tik-masuk','tik-keluar']);
+  const wrap=document.createElement('div');wrap.style.cssText='position:absolute;left:-100000px;top:0;width:900px;background:#fff;padding:20px;';
+  ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const c=el.cloneNode(true);c.style.display='block';c.style.visibility='visible';c.querySelectorAll('.no-print').forEach(x=>x.remove());wrap.appendChild(c)});
+  document.body.appendChild(wrap);let canvas;try{canvas=await html2canvas(wrap,{backgroundColor:'#fff',scale:1.5,useCORS:true,logging:false})}finally{wrap.remove()}
+  if(type==='jpeg'){
+    const blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',.9));const file=new File([blob],`Kelas_${PERIODS[currentPeriodIdx].kelas}_${book}_${part}.jpg`,{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:file.name});return}catch(e){if(e.name==='AbortError')return}}downloadBlob(blob,file.name);alert('File JPEG sudah disimpan.');
+  }else{
+    const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:canvas.width>canvas.height?'landscape':'portrait',unit:'px',format:[canvas.width,canvas.height],compress:true});pdf.addImage(canvas.toDataURL('image/jpeg',.9),'JPEG',0,0,canvas.width,canvas.height);const blob=pdf.output('blob');const file=new File([blob],`Kelas_${PERIODS[currentPeriodIdx].kelas}_${book}_${part}.pdf`,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:file.name});return}catch(e){if(e.name==='AbortError')return}}downloadBlob(blob,file.name);alert('File PDF sudah disimpan.');
+  }
+}
+async function centralDoAllShare(type){closeCentralAction();await shareAllPeriods(type)}
+
+function openAllPeriodsRecap(){
+  const html = `<h3>📒 Kas Bulanan</h3>${buildAllPeriodsTable(getPeriodKasData,'kas')}<h3>💻 TIK</h3>${buildAllPeriodsTable(getPeriodTikData,'tik')}`;
+  document.getElementById('allPeriodsBody').innerHTML = html;
+  document.getElementById('landingPage').style.display='none';
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('allPeriodsPage').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function exportAllPeriodsExcel(){
+  if(typeof XLSX==='undefined'){alert('Library Excel belum tersedia.');return;}
+  const wb=XLSX.utils.book_new();
+  const aoa=[['REKAP SEMUA PERIODE'],[],['KAS BULANAN'],['PERIODE','MASUK','KELUAR','SALDO']];
+  let tm=0,tk=0;
+  PERIODS.forEach((p,i)=>{
+    const d=getPeriodKasData(i),m=sumJumlah(d.pemasukan),k=sumJumlah(d.pengeluaran);tm+=m;tk+=k;
+    const range=`${BULAN_ID[7]}${String(p.startYear).slice(-2)}–${BULAN_ID[5]}${String(p.startYear+1).slice(-2)}`;
+    aoa.push([`Kelas ${p.kelas} (${range})`,m,k,m-k]);
+  });
+  aoa.push(['Total 6 Periode',tm,tk,tm-tk],[],['TIK'],['PERIODE','MASUK','KELUAR','SALDO']);
+  tm=0;tk=0;
+  PERIODS.forEach((p,i)=>{
+    const d=getPeriodTikData(i),m=sumJumlah(d.pemasukan),k=sumJumlah(d.pengeluaran);tm+=m;tk+=k;
+    const range=`${BULAN_ID[7]}${String(p.startYear).slice(-2)}–${BULAN_ID[4]}${String(p.startYear+1).slice(-2)}`;
+    aoa.push([`Kelas ${p.kelas} (${range})`,m,k,m-k]);
+  });
+  aoa.push(['Total 6 Periode',tm,tk,tm-tk]);
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:34},{wch:18},{wch:18},{wch:18}];
+  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:3}},{s:{r:2,c:0},e:{r:2,c:3}},{s:{r:11,c:0},e:{r:11,c:3}}];
+  XLSX.utils.book_append_sheet(wb,ws,'Rekap Semua Periode');
+  XLSX.writeFile(wb,'Rekap_Semua_Periode_Kelas_1-6.xlsx');
+}
+function printAllPeriods(){
+  // Cetak langsung dari halaman rekap agar struktur, ukuran, dan warna tabel
+  // sama dengan tampilan aslinya. Tombol/elemen no-print otomatis disembunyikan.
+  document.body.classList.add('printing-all-periods');
+  const cleanup=()=>{
+    document.body.classList.remove('printing-all-periods');
+    window.removeEventListener('afterprint',cleanup);
+  };
+  window.addEventListener('afterprint',cleanup);
+  setTimeout(()=>window.print(),80);
+}
+
+async function shareAllPeriods(type){
+  const menu=document.getElementById('allPeriodsShareMenu'); if(menu) menu.classList.remove('show');
+  let text='Rekap Semua Periode\n\n';
+  [['Kas Bulanan',getPeriodKasData],['TIK',getPeriodTikData]].forEach(([title,getData])=>{
+    text+=title+'\n';let tm=0,tk=0;
+    PERIODS.forEach((p,i)=>{const d=getData(i),m=sumJumlah(d.pemasukan),k=sumJumlah(d.pengeluaran);tm+=m;tk+=k;text+=`Kelas ${p.kelas}: Masuk ${rp(m)} | Keluar ${rp(k)} | Saldo ${rp(m-k)}\n`;});
+    text+=`Total: Masuk ${rp(tm)} | Keluar ${rp(tk)} | Saldo ${rp(tm-tk)}\n\n`;
+  });
+  if(type==='text'){
+    try{
+      if(navigator.share){await navigator.share({title:'Rekap Semua Periode',text});return;}
+      if(navigator.clipboard){await navigator.clipboard.writeText(text);alert('Teks rekap sudah disalin. Silakan tempel di WhatsApp atau aplikasi lain.');return;}
+      prompt('Salin teks berikut:',text);
+    }catch(e){if(e.name!=='AbortError')console.error(e)}
+    return;
+  }
+  try{
+    await loadShareLibs();
+    const el=document.querySelector('#allPeriodsPage .all-periods-inner');
+    if(!el) throw new Error('Area rekap tidak ditemukan');
+    document.body.classList.add('capturing-share');
+    const canvas=await html2canvas(el,{backgroundColor:'#ffffff',scale:1.5,useCORS:true,logging:false});
+    document.body.classList.remove('capturing-share');
+
+    if(type==='jpeg'){
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.9));
+      if(!blob) throw new Error('Gagal membuat JPEG');
+      const file=new File([blob],'Rekap_Semua_Periode_Kelas_1-6.jpg',{type:'image/jpeg'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file],title:'Rekap Semua Periode'}); return; }catch(e){ if(e.name==='AbortError') return; }
+      }
+      downloadBlob(blob,file.name);
+      alert('File JPEG sudah disimpan. Silakan bagikan dari Galeri/File.');
+    }else if(type==='pdf'){
+      const {jsPDF}=window.jspdf;
+      const pdf=new jsPDF({orientation:canvas.width>canvas.height?'landscape':'portrait',unit:'px',format:[canvas.width,canvas.height],compress:true});
+      pdf.addImage(canvas.toDataURL('image/jpeg',0.9),'JPEG',0,0,canvas.width,canvas.height);
+      const blob=pdf.output('blob');
+      const file=new File([blob],'Rekap_Semua_Periode_Kelas_1-6.pdf',{type:'application/pdf'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file],title:'Rekap Semua Periode'}); return; }catch(e){ if(e.name==='AbortError') return; }
+      }
+      downloadBlob(blob,file.name);
+      alert('File PDF sudah disimpan. Silakan bagikan dari File Manager.');
+    }
+  }catch(e){
+    document.body.classList.remove('capturing-share');
+    console.error(e);
+    alert('Gagal membuat file share. Pastikan koneksi internet aktif lalu coba lagi.');
+  }
+}
+function closeAllPeriodsRecap(){
+  document.getElementById('allPeriodsPage').style.display='none';
+  document.getElementById('landingPage').style.display='flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+applyPeriod(currentPeriodIdx);
+updateHeaderLabels();
 </script></body>
 </html>
