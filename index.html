@@ -910,21 +910,37 @@ function monthIndex(k){ return MONTHS.findIndex(x=>x.key===k); }
 function yr2(label){ return formatBulanKasSingkat(label||'').replace(/(\d{4})/g, y=>y.slice(2)); }
 
 // ===================== PENYIMPANAN GOOGLE SHEETS + APPS SCRIPT =====================
-// Data utama disimpan di Google Spreadsheet melalui google.script.run.
-// localStorage tetap dipakai sebagai fallback/migrasi jika data cloud belum tersedia.
+// GitHub Pages = tampilan aplikasi. Google Apps Script Web App = API. Google Sheets = database.
+// GANTI URL di bawah dengan URL Web App Apps Script setelah deployment.
+const APPS_SCRIPT_URL = 'PASTE_URL_WEB_APP_APPS_SCRIPT_DI_SINI';
 let cloudOnline = false;
-function gasRun(fn, args=[]){
+
+function apiReady(){
+  return /^https:\/\//.test(APPS_SCRIPT_URL) && !APPS_SCRIPT_URL.includes('PASTE_URL');
+}
+
+function apiGet(action, params={}){
   return new Promise((resolve,reject)=>{
-    if(!window.google || !google.script || !google.script.run){
-      reject(new Error('Google Apps Script tidak tersedia. Buka aplikasi dari URL Web App Apps Script.'));
-      return;
-    }
-    let runner = google.script.run
-      .withSuccessHandler(resolve)
-      .withFailureHandler(err=>reject(err instanceof Error ? err : new Error(String(err))));
-    runner[fn](...args);
+    if(!apiReady()) return reject(new Error('URL Web App Apps Script belum diisi di APPS_SCRIPT_URL.'));
+    const cb='__gs_cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const script=document.createElement('script');
+    const q=new URLSearchParams({action, callback:cb, ...params});
+    const cleanup=()=>{ clearTimeout(timer); delete window[cb]; script.remove(); };
+    const timer=setTimeout(()=>{cleanup();reject(new Error('Koneksi ke Google Apps Script timeout.'));},15000);
+    window[cb]=(data)=>{cleanup(); if(data&&data.ok===false) reject(new Error(data.error||'Gagal mengambil data.')); else resolve(data&&Object.prototype.hasOwnProperty.call(data,'data')?data.data:data);};
+    script.onerror=()=>{cleanup();reject(new Error('Gagal terhubung ke Google Apps Script.'));};
+    script.src=APPS_SCRIPT_URL+(APPS_SCRIPT_URL.includes('?')?'&':'?')+q.toString();
+    document.head.appendChild(script);
   });
 }
+
+async function apiPost(action, params={}){
+  if(!apiReady()) throw new Error('URL Web App Apps Script belum diisi di APPS_SCRIPT_URL.');
+  const body=new URLSearchParams({action, ...params});
+  await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body});
+  return true;
+}
+
 function placeSyncBadge(){
   const el=document.getElementById('syncStatus');
   if(!el) return;
@@ -943,7 +959,10 @@ function hideCloudOverlay(){
 }
 async function cloudSave(kind, idx, data){
   try{
-    await gasRun(kind==='kas' ? 'saveKasState' : 'saveTikState',[idx, data]);
+    await apiPost(kind==='kas' ? 'saveKasState' : 'saveTikState', {
+      periodIdx: String(idx),
+      payload: JSON.stringify(data)
+    });
     cloudOnline=true; placeSyncBadge();
     return true;
   }catch(e){
@@ -976,7 +995,7 @@ function periodSeedElId(idx){
 async function loadState(){
   let candidate = null;
   try{
-    candidate = await gasRun('getKasState',[currentPeriodIdx]);
+    candidate = await apiGet('getKasState',{periodIdx:String(currentPeriodIdx)});
     cloudOnline = true;
   }catch(e){
     cloudOnline = false;
@@ -1937,7 +1956,7 @@ async function loadTik(){
   tikLoaded=true;
   let x = null;
   try{
-    x = await gasRun('getTikState',[currentPeriodIdx]);
+    x = await apiGet('getTikState',{periodIdx:String(currentPeriodIdx)});
     cloudOnline = true;
   }catch(e){
     cloudOnline = false;
