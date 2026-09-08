@@ -22,30 +22,30 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:16p
 header.top::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(217,164,65,0.18)}
 header.top::before{content:"";position:absolute;left:30%;bottom:-70px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.05)}
 .top-title{position:relative;z-index:1}
-.top-title .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:4px}
-.top-title h1{margin:0;font-size:30px;font-weight:600;line-height:1.15}
-.top-title .period{margin-top:8px;font-size:15px;color:rgba(255,255,255,0.78)}
+.top-title .eyebrow{font-size:17.28px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:4px}
+.top-title h1{margin:0;font-size:43.2px;font-weight:600;line-height:1.15}
+.top-title .period{margin-top:8px;font-size:21.6px;color:rgba(255,255,255,0.78)}
 .top-stats{position:relative;z-index:1;display:flex;gap:22px;flex-wrap:wrap}
 .top-stat{text-align:right}
-.top-stat .num{font-family:'Fraunces', Georgia, serif;font-size:21px;font-weight:600;color:#fff;letter-spacing:-0.01em}
-.top-stat .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.65);margin-top:2px}
-nav.tabs button{flex:1 1 auto;min-width:120px;border:none;background:transparent;cursor:pointer;padding:10px 14px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink-soft);transition:all .15s ease;display:flex;align-items:center;justify-content:center;gap:6px}
+.top-stat .num{font-family:'Fraunces', Georgia, serif;font-size:30.24px;font-weight:600;color:#fff;letter-spacing:-0.01em}
+.top-stat .lbl{font-size:15.84px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.65);margin-top:2px}
+nav.tabs button{flex:1 1 auto;min-width:120px;border:none;background:transparent;cursor:pointer;padding:10px 14px;border-radius:8px;font-size:19.44px;font-weight:600;color:var(--ink-soft);transition:all .15s ease;display:flex;align-items:center;justify-content:center;gap:6px}
 nav.tabs button:hover{background:rgba(212,175,55,0.12);color:var(--amber)}
 nav.tabs button.active{background:var(--teal);color:#fff;box-shadow:var(--shadow)}
 section.panel{display:none}
 section.panel.active{display:block;animation:fadeIn .25s ease}
 @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
 .card{background:var(--white);border-radius:var(--radius);border:1px solid var(--line);border-top:3px solid var(--amber);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
-.card h2{margin:0 0 4px;font-size:18px;color:var(--amber);font-weight:600;letter-spacing:.01em}
-.card .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:25.92px;color:var(--amber);font-weight:600;letter-spacing:.01em}
+.card .sub{font-size:18px;color:var(--ink-soft);margin-bottom:14px}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(160px,1fr));gap:12px;align-items:end}
-.field label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
-.field input, .field select{width:100%;padding:9px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink)}
+.field label{display:block;font-size:16.56px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.field input, .field select{width:100%;padding:9px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);font-size:20.16px;color:var(--ink)}
 .field input:focus, .field select:focus{outline:none;border-color:var(--amber);background:var(--white)}
 .field select:disabled{background:var(--paper-2);color:var(--ink-soft);cursor:not-allowed;opacity:.7}
 .csel{position:relative}
 .csel select.csel-native{display:none}
-.csel-trigger{width:100%;text-align:left;padding:9px 30px 9px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);cursor:pointer;position:relative;font-family:inherit;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csel-trigger{width:100%;text-align:left;padding:9px 30px 9px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);font-size:20.16px;color:var(--ink);cursor:pointer;position:relative;font-family:inherit;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .csel-trigger::after{content:"";position:absolute;right:12px;top:44%;width:7px;height:7px;border-right:2px solid var(--ink-soft);border-bottom:2px solid var(--ink-soft);transform:translateY(-50%) rotate(45deg);transition:transform .15s ease}
 .csel-trigger.open::after{transform:translateY(-15%) rotate(-135deg)}
 .csel-trigger.placeholder{color:var(--ink-soft)}
@@ -53,29 +53,29 @@ section.panel.active{display:block;animation:fadeIn .25s ease}
 .csel-trigger.disabled{background:var(--paper-2);color:var(--ink-soft);cursor:not-allowed;opacity:.7}
 .csel-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:30;background:var(--white);border:1.5px solid var(--amber);border-radius:8px;box-shadow:var(--shadow);max-height:230px;overflow-y:auto;padding:4px}
 .csel-menu.show{display:block}
-.csel-opt{padding:8px 10px;border-radius:6px;font-size:13.5px;cursor:pointer;color:var(--ink)}
+.csel-opt{padding:8px 10px;border-radius:6px;font-size:19.44px;cursor:pointer;color:var(--ink)}
 .csel-opt:hover{background:var(--teal-tint)}
 .csel-opt.sel{background:var(--teal);color:#fff;font-weight:600}
 .csel-opt.disabled{color:#5A5240;cursor:not-allowed}
 .cetak-break-before{page-break-before:always!important;break-before:page!important}
-#mNama option{font-size:13px}
+#mNama option{font-size:18.72px}
 .field.readout input{background:var(--amber-tint);border-color:var(--amber);font-weight:600}
-.btn{border:none;cursor:pointer;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;transition:all .15s ease;display:inline-flex;align-items:center;gap:6px}
+.btn{border:none;cursor:pointer;padding:10px 18px;border-radius:8px;font-size:19.44px;font-weight:600;transition:all .15s ease;display:inline-flex;align-items:center;gap:6px}
 .btn-primary{background:var(--teal);color:#fff}
 .btn-primary:hover{background:var(--teal-dark)}
 .btn-ghost{background:var(--teal-tint);color:var(--amber)}
 .btn-ghost:hover{background:#d8e8e2}
-.btn-danger{background:var(--coral-tint);color:var(--coral);padding:6px 10px;font-size:12px}
+.btn-danger{background:var(--coral-tint);color:var(--coral);padding:6px 10px;font-size:17.28px}
 .btn-danger:hover{background:#f0d3ce}
 .btn-amber{background:var(--amber);color:#4a3410}
 .btn-amber:hover{filter:brightness(0.95)}
 .btn-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
 .btn-row-right{justify-content:flex-end}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{background:var(--teal-tint);color:var(--amber);text-align:left;padding:8px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;font-weight:700;border:1px solid var(--line);border-bottom:2px solid var(--amber);position:sticky;top:0}
+table{width:100%;border-collapse:collapse;font-size:18.72px}
+thead th{background:var(--teal-tint);color:var(--amber);text-align:left;padding:8px 9px;font-size:16.56px;text-transform:uppercase;letter-spacing:.03em;font-weight:700;border:1px solid var(--line);border-bottom:2px solid var(--amber);position:sticky;top:0}
 thead th.sortable{cursor:pointer;user-select:none;white-space:nowrap}
 thead th.sortable:hover{background:var(--teal-tint,#211B10)}
-thead th.sortable::after{content:'⇅';margin-left:5px;font-size:10px;opacity:.45}
+thead th.sortable::after{content:'⇅';margin-left:5px;font-size:14.4px;opacity:.45}
 thead th.sortable.sort-asc::after{content:'▲';opacity:1}
 thead th.sortable.sort-desc::after{content:'▼';opacity:1}
 tbody td{padding:7px 9px;border:1px solid var(--line)}
@@ -91,10 +91,10 @@ tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) .rp-cell.rp-zer
 .paid{color:var(--teal-tint);font-weight:700}
 .siswa-table td.paid-cell{background:var(--amber)}
 .unpaid{color:var(--ink-soft)}
-.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:15.84px;font-weight:700}
 .pill-total{background:var(--amber-tint);color:var(--amber)}
 .name-cell{font-weight:600}
-.row-no{color:var(--ink-soft);font-size:12px}
+.row-no{color:var(--ink-soft);font-size:17.28px}
 .rp-cell{display:flex;align-items:center;justify-content:space-between;gap:6px;font-variant-numeric:tabular-nums}
 .rp-cell .rp-label{opacity:.75;font-weight:600}
 .rp-cell .rp-value{font-weight:700}
@@ -111,49 +111,49 @@ tr.row-lunas, tr.row-lunas:hover{background:transparent}
 .kpi.amber .lbl{font-weight:800;color:var(--ink)}
 .kpi.amber .val{font-weight:800}
 .kpi.coral{border-left-color:var(--coral)}
-.kpi .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600}
-.kpi .val{font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:600;color:var(--amber);margin-top:4px}
+.kpi .lbl{font-size:16.56px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600}
+.kpi .val{font-family:'Fraunces',Georgia,serif;font-size:34.56px;font-weight:600;color:var(--amber);margin-top:4px}
 .month-block{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden}
 .month-head{background:var(--paper-2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.month-head .mname{font-weight:700;color:var(--amber);font-family:'Fraunces',serif;font-size:15px}
-.month-figs{display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap}
+.month-head .mname{font-weight:700;color:var(--amber);font-family:'Fraunces',serif;font-size:21.6px}
+.month-figs{display:flex;gap:16px;font-size:18px;flex-wrap:wrap}
 .month-figs b{font-variant-numeric:tabular-nums}
 .month-body{padding:6px 14px 10px}
 .month-tbl-wrap{overflow-x:auto;border-radius:8px}
 .month-tbl-wrap table{white-space:nowrap}
-.tx-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px;white-space:nowrap}
+.tx-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:18px;white-space:nowrap}
 .tx-row:last-child{border-bottom:none}
-.tx-date{flex:0 0 auto;color:var(--ink-soft);font-size:11px;width:44px}
+.tx-date{flex:0 0 auto;color:var(--ink-soft);font-size:15.84px;width:44px}
 .tx-desc{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tx-amount{flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:700;font-size:12px}
+.tx-amount{flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:700;font-size:17.28px}
 .tx-amount.plus{color:var(--amber)}
 .tx-amount.minus{color:var(--coral)}
 .list-wrap{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px}
-.list-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12.5px;white-space:nowrap;width:max-content;min-width:100%}
+.list-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:18px;white-space:nowrap;width:max-content;min-width:100%}
 .list-row:last-child{border-bottom:none}
 .list-row:nth-child(even){background:var(--paper-2)}
-.list-date{flex:0 0 auto;width:50px;color:var(--ink-soft);font-size:11px;line-height:1.3}
+.list-date{flex:0 0 auto;width:50px;color:var(--ink-soft);font-size:15.84px;line-height:1.3}
 .list-main{flex:0 0 auto}
 .list-title{white-space:nowrap;font-weight:600;color:var(--ink)}
-.list-sub{white-space:nowrap;color:var(--ink-soft);font-size:11px;margin-top:1px}
-.list-amount{flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;font-size:12.5px;min-width:78px;text-align:right}
+.list-sub{white-space:nowrap;color:var(--ink-soft);font-size:15.84px;margin-top:1px}
+.list-amount{flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;font-size:18px;min-width:78px;text-align:right}
 .list-actions{flex:0 0 auto;display:flex;gap:2px}
-.icon-btn{border:none;background:transparent;cursor:pointer;font-size:14px;padding:4px 5px;border-radius:6px;line-height:1}
+.icon-btn{border:none;background:transparent;cursor:pointer;font-size:20.16px;padding:4px 5px;border-radius:6px;line-height:1}
 .icon-btn:hover{background:var(--teal-tint)}
 .icon-btn.danger:hover{background:var(--coral-tint)}
-#tblSiswa .no-print .icon-btn{font-size:14px;padding:4px 6px}
+#tblSiswa .no-print .icon-btn{font-size:20.16px;padding:4px 6px}
 #tblSiswa td, #tblSiswa th{white-space:nowrap}
-.siswa-table .no-print .icon-btn{font-size:14px;padding:4px 6px}
+.siswa-table .no-print .icon-btn{font-size:20.16px;padding:4px 6px}
 .siswa-table td, .siswa-table th{white-space:nowrap}
 th.sortable-th{cursor:pointer;user-select:none;white-space:nowrap}
 th.sortable-th:hover{background:var(--teal-tint)}
-th.sortable-th .sort-arrow{font-size:9px;margin-left:3px;opacity:.85}
-.mini-row{display:flex;justify-content:space-between;padding:3px 0;font-size:12.5px;border-bottom:1px dashed var(--line)}
+th.sortable-th .sort-arrow{font-size:12.96px;margin-left:3px;opacity:.85}
+.mini-row{display:flex;justify-content:space-between;padding:3px 0;font-size:18px;border-bottom:1px dashed var(--line)}
 .mini-row:last-child{border-bottom:none}
 .saldo-akhir{font-weight:700;color:var(--amber)}
 .saldo-akhir.minus{color:var(--coral)}
-.badge-edit{cursor:pointer;color:var(--amber);font-weight:600;font-size:12px;margin-right:8px}
-footer.app-footer{text-align:center;color:var(--ink-soft);font-size:11.5px;margin-top:24px;padding-top:14px;border-top:1px solid var(--line)}
+.badge-edit{cursor:pointer;color:var(--amber);font-weight:600;font-size:17.28px;margin-right:8px}
+footer.app-footer{text-align:center;color:var(--ink-soft);font-size:16.56px;margin-top:24px;padding-top:14px;border-top:1px solid var(--line)}
 .kpi-grid .kpi{text-align:center}
 .kpi-link{cursor:pointer;transition:transform .12s ease}
 .kpi-link:active{transform:scale(.98)}
@@ -203,7 +203,7 @@ body[data-active-panel="tik-keluar"] .mode-switch{display:none!important}
 @media print {@page{ size: A4 portrait; margin: 8mm; }}
 @media (max-width: 640px){
 .top-stats{display:none}
-nav.tabs button{min-width:90px;font-size:12px;padding:9px 8px}
+nav.tabs button{min-width:90px;font-size:17.28px;padding:9px 8px}
 .card{padding:14px}
 }
 .tambah-siswa-row{display:flex;justify-content:flex-end}
@@ -237,7 +237,7 @@ nav.tabs button[data-tab="rekap"]{order:0}
 .rekap-actions .print-menu-wrap>.btn{width:100%!important;min-width:0!important}
 #kasLegacyNav{display:none!important}
 .period-switch{display:flex;gap:8px;padding:2px 2px 10px;width:100%}
-.period-switch button{flex:1 1 0;min-width:0;border:1.5px solid var(--line);background:var(--white);color:var(--ink-soft);font-weight:700;font-size:12.5px;padding:8px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;text-align:center;font-family:inherit}
+.period-switch button{flex:1 1 0;min-width:0;border:1.5px solid var(--line);background:var(--white);color:var(--ink-soft);font-weight:700;font-size:18px;padding:8px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;text-align:center;font-family:inherit}
 .period-switch button.active{background:var(--teal);border-color:var(--amber);color:var(--amber)}
 .period-switch button:hover{border-color:var(--amber)}
 .btn-all-periods{width:100%;justify-content:center;margin-bottom:12px}
@@ -245,11 +245,11 @@ nav.tabs button[data-tab="rekap"]{order:0}
 .ap-modal.show{display:flex}
 .ap-modal-inner{background:var(--white);border-radius:var(--radius);max-width:760px;width:100%;padding:18px 18px 22px;margin-top:20px}
 .ap-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.ap-modal-head h2{margin:0;font-size:18px;color:var(--amber)}
-.ap-modal-head button{border:none;background:var(--teal-tint);color:var(--amber);width:30px;height:30px;border-radius:8px;font-size:15px;cursor:pointer}
-.ap-modal h3{font-size:13.5px;color:var(--amber);margin:16px 0 6px;font-family:'Fraunces',serif}
-.ap-modal table{width:100%;border-collapse:collapse;font-size:12.5px}
-.ap-modal th{background:var(--teal-tint);color:var(--amber);text-align:right;padding:6px 8px;font-size:11px;text-transform:uppercase}
+.ap-modal-head h2{margin:0;font-size:25.92px;color:var(--amber)}
+.ap-modal-head button{border:none;background:var(--teal-tint);color:var(--amber);width:30px;height:30px;border-radius:8px;font-size:21.6px;cursor:pointer}
+.ap-modal h3{font-size:19.44px;color:var(--amber);margin:16px 0 6px;font-family:'Fraunces',serif}
+.ap-modal table{width:100%;border-collapse:collapse;font-size:18px}
+.ap-modal th{background:var(--teal-tint);color:var(--amber);text-align:right;padding:6px 8px;font-size:15.84px;text-transform:uppercase}
 .ap-modal th:first-child, .ap-modal td:first-child{text-align:left}
 .ap-modal td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
 .ap-modal tr.grand-total td{font-weight:800;background:var(--paper-2)}
@@ -261,17 +261,17 @@ nav.tabs button[data-tab="rekap"]{order:0}
 .landing-header{position:relative;text-align:center;padding:58px 16px;border-radius:var(--radius);background:linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);border-bottom:2px solid var(--amber);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;flex:0 0 auto}
 .landing-header::after{content:"";position:absolute;right:-40px;top:-40px;width:170px;height:170px;border-radius:50%;background:rgba(217,164,65,0.18)}
 .landing-header::before{content:"";position:absolute;left:20%;bottom:-70px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.05)}
-.landing-header .eyebrow{position:relative;z-index:1;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:6px}
-.landing-header h1{position:relative;z-index:1;margin:0;font-size:clamp(30px,8vw,46px);font-weight:800;line-height:1.15;color:#F7E9B5}.landing-header .landing-subtitle{position:relative;z-index:1;margin-top:10px;font-size:clamp(18px,5vw,27px);font-weight:700;line-height:1.15;color:var(--ink)}
+.landing-header .eyebrow{position:relative;z-index:1;font-size:21.6px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:6px}
+.landing-header h1{position:relative;z-index:1;margin:0;font-size:clamp(36px,9.6vw,55.2px);font-weight:800;line-height:1.15;color:#F7E9B5}.landing-header .landing-subtitle{position:relative;z-index:1;margin-top:10px;font-size:clamp(21.6px,6vw,32.4px);font-weight:700;line-height:1.15;color:var(--ink)}
 .landing-grid{flex:1 1 auto;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);gap:12px;margin-bottom:16px;min-height:0}
 .landing-card{appearance:none;border:1px solid var(--line);border-top:3px solid var(--amber);background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 6px;font-family:inherit;color:var(--ink);transition:transform .15s ease, background .15s ease;min-height:0}
 .landing-card:hover, .landing-card:active{transform:translateY(-2px);background:var(--teal-tint)}
-.landing-card .lc-label{font-family:'Fraunces',Georgia,serif;font-size:clamp(20px,6vw,30px);font-weight:700;color:var(--amber);line-height:1.15;text-align:center}
-.landing-card .lc-sub{font-size:clamp(10px,2.4vw,12.5px);color:var(--ink-soft);letter-spacing:.03em;text-align:center;order:2}.landing-card .lc-count{order:3;font-size:clamp(15px,3.6vw,18px);font-weight:700;color:var(--ink);line-height:1.2;text-align:center}
+.landing-card .lc-label{font-family:'Fraunces',Georgia,serif;font-size:clamp(24px,7.2vw,36px);font-weight:700;color:var(--amber);line-height:1.15;text-align:center}
+.landing-card .lc-sub{font-size:clamp(12px,2.88vw,15px);color:var(--ink-soft);letter-spacing:.03em;text-align:center;order:2}.landing-card .lc-count{order:3;font-size:clamp(18px,4.32vw,21.6px);font-weight:700;color:var(--ink);line-height:1.2;text-align:center}
 
 .landing-footer{flex:0 0 auto;display:flex;justify-content:stretch}
 .landing-footer{flex-direction:column;gap:0}
-.landing-footer .btn{width:100%;justify-content:center;padding:13px 18px;font-size:14px}
+.landing-footer .btn{width:100%;justify-content:center;padding:13px 18px;font-size:20.16px}
 @media (max-width:420px){
   .landing-page{padding:16px 10px calc(14px + env(safe-area-inset-bottom))}
   .landing-grid{gap:8px}
@@ -293,28 +293,28 @@ nav.tabs button[data-tab="rekap"]{order:0}
 input[readonly]{background:var(--paper-2);cursor:not-allowed}
 @media (max-width:600px){
 .rekap-actions{gap:6px}
-.rekap-actions .btn{font-size:11px;padding-left:5px;padding-right:5px}
+.rekap-actions .btn{font-size:15.84px;padding-left:5px;padding-right:5px}
 .form-action-row, .siswa-action-row{gap:8px!important}
 .form-action-row .btn, .siswa-action-row .btn{white-space:nowrap}
-.rekap-actions>.btn, .rekap-actions>.print-menu-wrap{min-width:0!important;font-size:11px!important;padding:9px 12px!important}
-.rekap-actions .print-menu-wrap>.btn{width:100%!important;font-size:11px!important;padding:9px 12px!important}
+.rekap-actions>.btn, .rekap-actions>.print-menu-wrap{min-width:0!important;font-size:15.84px!important;padding:9px 12px!important}
+.rekap-actions .print-menu-wrap>.btn{width:100%!important;font-size:15.84px!important;padding:9px 12px!important}
 .mode-switch{gap:6px}
-.mode-btn{font-size:12px;padding:10px}
-.tik-actions .btn{font-size:12px;padding:9px 12px}
+.mode-btn{font-size:17.28px;padding:10px}
+.tik-actions .btn{font-size:17.28px;padding:9px 12px}
 }
 @page{size:A4 portrait;margin:8mm 8mm 9mm;}
 @media print{
 body.printing-rekap-only #panel-rekap .btn-row, body.printing-bulanan #panel-bulanan .btn-row, body.printing-rekap-only #panel-siswa .no-print, nav.tabs, section.panel:not(.print-active), body.printing-gabungan #rekapKpiGrid{display:none!important}
 #panel-rekap.print-active .kpi-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:4px!important;margin-bottom:5px!important}
 #panel-rekap.print-active .kpi{padding:4px 6px!important;min-height:0!important}
-#panel-rekap.print-active .kpi .lbl{font-size:7px!important}
-#panel-rekap.print-active .kpi .val{font-size:10px!important;margin-top:1px!important}
+#panel-rekap.print-active .kpi .lbl{font-size:8.4px!important}
+#panel-rekap.print-active .kpi .val{font-size:12px!important;margin-top:1px!important}
 #panel-rekap.print-active .card{padding:5px 7px!important;margin-bottom:5px!important}
-#panel-rekap.print-active .card h2{font-size:10px!important;margin:0 0 3px!important}
+#panel-rekap.print-active .card h2{font-size:12px!important;margin:0 0 3px!important}
 #panel-rekap.print-active table{width:100%!important;table-layout:fixed;border-collapse:collapse}
-#panel-rekap.print-active table th, #panel-rekap.print-active table td{padding:2px 4px!important;font-size:7px!important;line-height:1.1!important;border:1px solid var(--teal-dark)!important}
+#panel-rekap.print-active table th, #panel-rekap.print-active table td{padding:2px 4px!important;font-size:8.4px!important;line-height:1.1!important;border:1px solid var(--teal-dark)!important}
 #panel-siswa.print-active .card{padding:5px 7px!important;margin:0!important}
-#panel-siswa.print-active .card h2{font-size:10px!important;margin:0 0 2px!important}
+#panel-siswa.print-active .card h2{font-size:12px!important;margin:0 0 2px!important}
 #panel-siswa.print-active .card .sub{display:none!important}
 #panel-siswa.print-active .tbl-wrap{max-height:none!important;overflow:visible!important;border:1px solid #999;width:100%!important}
 #tblSiswa{width:100%!important;max-width:100%!important;margin:0!important;table-layout:fixed;border-collapse:collapse}
@@ -322,7 +322,7 @@ body.printing-rekap-only #panel-rekap .btn-row, body.printing-bulanan #panel-bul
 #tblSiswa th:nth-child(2), #tblSiswa td:nth-child(2){width:16.5%!important}
 #tblSiswa th:nth-child(n+4):not(:last-child), #tblSiswa td:nth-child(n+4):not(:last-child){width:6.4%!important;min-width:0!important;max-width:none!important}
 #tblSiswa th:last-child, #tblSiswa td:last-child{display:none!important}
-#tblSiswa th, #tblSiswa td{padding:3px 3px;font-size:7.2px;line-height:1.15;border:1px solid var(--teal-dark)!important}
+#tblSiswa th, #tblSiswa td{padding:3px 3px;font-size:8.64px;line-height:1.15;border:1px solid var(--teal-dark)!important}
 #tblSiswa thead, #tblSiswa thead tr{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa thead th{position:static;background:var(--teal-dark)!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa tbody tr.total-row{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -332,8 +332,8 @@ body.printing-rekap-only #panel-rekap .btn-row, body.printing-bulanan #panel-bul
 #tblSiswa td.paid-cell{background:var(--amber)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa th:nth-child(3), #tblSiswa td:nth-child(3){width:9.4%!important;min-width:0!important;max-width:none!important;white-space:normal!important;overflow:hidden}
 #tblSiswa td:nth-child(3) .rp-cell{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:2px!important;width:100%!important;min-width:0!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-align:right!important;line-height:1.1!important}
-#tblSiswa td:nth-child(3) .rp-label{font-size:6.5px!important;flex:0 0 auto!important}
-#tblSiswa td:nth-child(3) .rp-value{font-size:6.5px!important;flex:0 0 auto!important;white-space:nowrap!important}
+#tblSiswa td:nth-child(3) .rp-label{font-size:7.8px!important;flex:0 0 auto!important}
+#tblSiswa td:nth-child(3) .rp-value{font-size:7.8px!important;flex:0 0 auto!important;white-space:nowrap!important}
 #tblSiswa tr{page-break-inside:avoid}
 #tblSiswa .name-cell{white-space:nowrap}
 #panel-rekap.print-active, #panel-siswa.print-active{margin:0!important;padding:0!important;page-break-before:avoid!important;page-break-after:avoid!important;break-before:avoid-page!important;break-after:avoid-page!important}
@@ -342,8 +342,8 @@ body.printing-gabungan #panel-siswa.print-active{display:block!important;order:2
 #panel-siswa.print-active .btn-row, #panel-rekap.print-active .btn-row{display:none!important}
 header.top{background:#000000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:5px 16px;margin-bottom:4px}
 #panel-siswa .card{padding:8px 12px;margin-bottom:6px}
-#panel-siswa .card h2{font-size:14px;margin-bottom:2px}
-#panel-siswa .card .sub{font-size:9px;margin-bottom:5px}
+#panel-siswa .card h2{font-size:16.8px;margin-bottom:2px}
+#panel-siswa .card .sub{font-size:10.8px;margin-bottom:5px}
 body.printing-kas-all section.panel.print-active{display:block!important}
 body.printing-kas-all section.panel:not(.print-active){display:none!important}
 .paid-cell{background:var(--amber)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.total-row, thead th{background:var(--teal-tint)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -351,30 +351,30 @@ body.printing-kas-all section.panel:not(.print-active){display:none!important}
 #tikApp .panel.print-active{display:block!important}
 .tik-top{display:flex!important}
 html{margin:0!important;padding:0!important;width:100%!important;background:#fff!important}
-body{background:#fff!important;margin:0!important;padding:0!important;width:100%!important;color:#111!important;font-size:9pt!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+body{background:#fff!important;margin:0!important;padding:0!important;width:100%!important;color:#111!important;font-size:10.8pt!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 nav, .mode-switch, .no-print, .print-menu, button, input, select, textarea, .app-footer{display:none!important}
 .app{padding:0!important;max-width:none!important;width:100%!important;margin:0!important}
 section.panel{display:none!important;visibility:hidden!important;position:static!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
 section.panel.print-active{display:block!important;visibility:visible!important}
 .top, #tikApp .tik-top{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;width:100%!important;min-height:0!important;margin:0 0 4mm!important;padding:0 0 2.5mm!important;border-bottom:1px solid #666!important;box-shadow:none!important}
 body.printing-tik-rekap header.top:not(.tik-top), body.printing-tik-rincian header.top:not(.tik-top), body.printing-tik-all header.top:not(.tik-top){display:none!important}
-.top-title h1{font-size:15pt!important;margin:0!important;line-height:1.1!important}
-.top-title .eyebrow{display:none;font-size:7.5pt!important}
-.top-title .period{font-size:7.5pt!important;margin-top:1px}
-.top-title .sub{font-size:7.5pt!important}
+.top-title h1{font-size:18pt!important;margin:0!important;line-height:1.1!important}
+.top-title .eyebrow{display:none;font-size:9pt!important}
+.top-title .period{font-size:9pt!important;margin-top:1px}
+.top-title .sub{font-size:9pt!important}
 .top-stats{gap:3mm!important;display:flex!important}
 .top-stat{min-width:24mm!important;padding:0 1mm!important}
-.top-stat .num{font-size:8.5pt!important}
-.top-stat .lbl{font-size:6.5pt!important}
+.top-stat .num{font-size:10.2pt!important}
+.top-stat .lbl{font-size:7.8pt!important}
 .card{box-shadow:none!important;border:0!important;width:100%!important;max-width:none!important;margin:0 0 3mm!important;padding:0!important;background:#fff!important}
-.card h2{margin:0 0 1.5mm!important;font-size:10pt!important;line-height:1.15!important}
+.card h2{margin:0 0 1.5mm!important;font-size:12pt!important;line-height:1.15!important}
 .tbl-wrap, .month-tbl-wrap{max-height:none!important;height:auto!important;overflow:visible!important}
 table{width:100%!important;border-collapse:collapse!important;table-layout:auto!important;margin:0!important}
 thead{display:table-header-group!important}
 tfoot{display:table-footer-group!important}
 tr{break-inside:avoid!important;page-break-inside:avoid!important}
-td{border:1px solid #888!important;padding:2.5px 3.5px!important;font-size:7pt!important;line-height:1.15!important;vertical-align:middle!important}
-th{border:1px solid #888!important;padding:2.5px 3.5px!important;font-size:7pt!important;line-height:1.15!important;vertical-align:middle!important;font-weight:800!important;background:#F1E8CE!important;color:#111!important}
+td{border:1px solid #888!important;padding:2.5px 3.5px!important;font-size:8.4pt!important;line-height:1.15!important;vertical-align:middle!important}
+th{border:1px solid #888!important;padding:2.5px 3.5px!important;font-size:8.4pt!important;line-height:1.15!important;vertical-align:middle!important;font-weight:800!important;background:#F1E8CE!important;color:#111!important}
 body.printing-rekap-only #rekapKpiGrid{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;margin:0!important;padding:0!important}
 body.printing-rekap-only #panel-rekap{display:block!important;visibility:visible!important;position:relative!important;width:100%!important;max-width:none!important}
 body.printing-rekap-only #panel-rekap .rekap-actions, body.printing-rekap-only #panel-rekap .no-print{display:none!important}
@@ -383,7 +383,7 @@ body.printing-rekap-only #panel-siswa{display:block!important;visibility:visible
 body.printing-rekap-only #panel-siswa .card{margin-top:0!important}
 body.printing-rekap-only #panel-siswa thead th{background:#000000!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 body.printing-rekap-only #panel-siswa td.paid-cell, body.printing-rekap-only #panel-siswa .total-row{background:#F1E8CE!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-body.printing-rekap-only #panel-siswa th, body.printing-rekap-only #panel-siswa td{padding:2.2px 3px!important;font-size:6.7pt!important}
+body.printing-rekap-only #panel-siswa th, body.printing-rekap-only #panel-siswa td{padding:2.2px 3px!important;font-size:8.04pt!important}
 body.printing-rincian #panel-rekap, body.printing-rincian #panel-siswa, body.printing-rincian #panel-bulanan{display:none!important}
 body.printing-rincian #panel-masuk, body.printing-rincian #panel-keluar{display:block!important;visibility:visible!important;width:100%!important;max-width:none!important}
 body.printing-bulanan #panel-rekap, body.printing-bulanan #panel-siswa, body.printing-bulanan #panel-masuk, body.printing-bulanan #panel-keluar{display:none!important}
@@ -406,11 +406,11 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
 .landing-card::before{content:"";position:absolute;width:105px;height:105px;right:-38px;top:-42px;border-radius:50%;background:rgba(212,175,55,.09);border:1px solid rgba(212,175,55,.12)}
 .landing-card::after{content:"";position:absolute;left:-30px;bottom:-55px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.025)}
 .landing-card:hover,.landing-card:active{transform:translateY(-4px) scale(1.01);background:linear-gradient(145deg,#211b10 0%,#11100c 60%,#2a2110 100%);border-color:rgba(212,175,55,.65);box-shadow:0 10px 28px rgba(0,0,0,.55),0 0 0 1px rgba(212,175,55,.08) inset}
-.landing-card .lc-icon{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:16px;background:linear-gradient(145deg,#2b2413,#17130b);border:1px solid rgba(212,175,55,.45);box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);font-family:Georgia,serif;font-size:25px;font-weight:700;color:var(--amber);margin-bottom:2px}
-.landing-card .lc-label{position:relative;z-index:1;font-size:clamp(28px,8vw,38px);font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.55)}
+.landing-card .lc-icon{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:16px;background:linear-gradient(145deg,#2b2413,#17130b);border:1px solid rgba(212,175,55,.45);box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);font-family:Georgia,serif;font-size:36px;font-weight:700;color:var(--amber);margin-bottom:2px}
+.landing-card .lc-label{position:relative;z-index:1;font-size:clamp(33.6px,9.6vw,45.6px);font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.55)}
 .landing-card .lc-sub{position:relative;z-index:1}
-.landing-card .lc-arrow{position:absolute;z-index:2;right:12px;bottom:9px;color:var(--amber);font-size:22px;line-height:1;opacity:.7}
-.landing-card .lc-arrow.lc-arrow-locked{font-size:17px;filter:grayscale(1) sepia(1) saturate(4) brightness(.85) hue-rotate(-8deg);opacity:.6}
+.landing-card .lc-arrow{position:absolute;z-index:2;right:12px;bottom:9px;color:var(--amber);font-size:31.68px;line-height:1;opacity:.7}
+.landing-card .lc-arrow.lc-arrow-locked{font-size:24.48px;filter:grayscale(1) sepia(1) saturate(4) brightness(.85) hue-rotate(-8deg);opacity:.6}
 .home-action-row{width:100%;margin:0 0 12px!important}
 .home-action-row.home-action-fixed{
   position:fixed;left:0;right:0;bottom:0;z-index:400;
@@ -426,23 +426,23 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
 #allPeriodsPage{padding-bottom:76px}
 .home-full-btn{width:100%!important;justify-content:center!important}
 .rekap-ringkasan-table{table-layout:fixed}.rekap-ringkasan-table th,.rekap-ringkasan-table td{width:25%}
-@media (max-width:420px){.landing-card{min-height:135px;padding:14px 10px}.landing-card .lc-icon{width:44px;height:44px;font-size:22px;border-radius:14px}}
+@media (max-width:420px){.landing-card{min-height:135px;padding:14px 10px}.landing-card .lc-icon{width:44px;height:44px;font-size:31.68px;border-radius:14px}}
 
 /* ===== REKAP SEMUA PERIODE: SHARE & CETAK ===== */
 .all-periods-page{min-height:100dvh;background:var(--page-bg);padding:16px;overflow-y:auto}
 .all-periods-inner{max-width:900px;width:100%;margin:0 auto;background:var(--white);border:1px solid var(--line);border-top:3px solid var(--amber);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px 22px}
 .ap-page-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.ap-page-head h1{margin:0;color:var(--amber);font-family:'Fraunces',serif;font-size:21px;font-weight:700}
+.ap-page-head h1{margin:0;color:var(--amber);font-family:'Fraunces',serif;font-size:30.24px;font-weight:700}
 .ap-page-head .btn{flex:0 0 auto}
 .ap-page-actions{display:flex;gap:8px;flex-wrap:nowrap;margin:16px 0 0}.ap-page-actions>.btn,.ap-page-actions>.print-menu-wrap{flex:1 1 0;min-width:0}.ap-page-actions>.btn{justify-content:center;box-sizing:border-box}.ap-page-actions>.print-menu-wrap{display:flex}.ap-page-actions>.print-menu-wrap>.btn{width:100%;flex:1;justify-content:center;box-sizing:border-box}.ap-page-actions .btn{min-width:0}
-.all-periods-page h3{font-size:14px;color:var(--amber);margin:18px 0 7px;font-family:'Fraunces',serif}
-.all-periods-page table{width:100%;border-collapse:collapse;font-size:12.5px}
-.all-periods-page th{background:var(--teal-tint);color:var(--amber);text-align:right;padding:7px 8px;font-size:11px;text-transform:uppercase;border-bottom:2px solid var(--amber)}
+.all-periods-page h3{font-size:20.16px;color:var(--amber);margin:18px 0 7px;font-family:'Fraunces',serif}
+.all-periods-page table{width:100%;border-collapse:collapse;font-size:18px}
+.all-periods-page th{background:var(--teal-tint);color:var(--amber);text-align:right;padding:7px 8px;font-size:15.84px;text-transform:uppercase;border-bottom:2px solid var(--amber)}
 .all-periods-page th:first-child,.all-periods-page td:first-child{text-align:left}
 .all-periods-page td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
 .all-periods-page tr.grand-total td{font-weight:800;background:var(--paper-2)}
 .all-periods-page tr.current-period td:first-child{color:var(--amber);font-weight:700}
-@media(max-width:640px){.all-periods-page{padding:10px}.all-periods-inner{padding:14px 12px 18px}.ap-page-head{align-items:flex-start}.ap-page-head h1{font-size:18px}.all-periods-page table{font-size:11.5px}.all-periods-page th,.all-periods-page td{padding:6px 5px}.ap-page-actions .btn{min-width:0;padding:9px 10px}}
+@media(max-width:640px){.all-periods-page{padding:10px}.all-periods-inner{padding:14px 12px 18px}.ap-page-head{align-items:flex-start}.ap-page-head h1{font-size:25.92px}.all-periods-page table{font-size:16.56px}.all-periods-page th,.all-periods-page td{padding:6px 5px}.ap-page-actions .btn{min-width:0;padding:9px 10px}}
 
 .all-periods-share-wrap{position:relative}
 .all-periods-share-wrap .print-menu{right:0;left:auto;bottom:calc(100% + 6px);top:auto;min-width:150px;z-index:10000}
@@ -481,12 +481,12 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
   }
   body.printing-all-periods #allPeriodsPage .ap-page-head h1{
     margin:0!important;
-    font-size:21px!important;
+    font-size:25.2px!important;
     color:var(--amber)!important;
   }
   body.printing-all-periods #allPeriodsPage h3{
     margin:18px 0 7px!important;
-    font-size:14px!important;
+    font-size:16.8px!important;
     color:var(--amber)!important;
   }
   body.printing-all-periods #allPeriodsPage table{
@@ -494,7 +494,7 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
     border-collapse:collapse!important;
     table-layout:auto!important;
     font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif!important;
-    font-size:12.5px!important;
+    font-size:15px!important;
     line-height:1.25!important;
     color:var(--ink)!important;
     background:transparent!important;
@@ -505,7 +505,7 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
     color:var(--amber)!important;
     text-align:right!important;
     padding:7px 8px!important;
-    font-size:11px!important;
+    font-size:13.2px!important;
     line-height:1.15!important;
     text-transform:uppercase!important;
     white-space:nowrap!important;
@@ -587,6 +587,7 @@ body{background:#4B3426!important}
     margin:0!important;
   }
 }
+
 </style>
 
 <style id="transaction-layout-clean-v42">
@@ -741,12 +742,12 @@ body{background:#4B3426!important}
     height:auto;
   }
   #landingPage .landing-recap-btn {
-    font-size:20px!important;
+    font-size:28.8px!important;
     min-height:58px!important;
     padding:14px 18px!important;
   }
   #landingPage .landing-export-actions .btn {
-    font-size:16px!important;
+    font-size:23.04px!important;
     min-height:50px!important;
     padding:10px 12px!important;
   }
@@ -754,8 +755,8 @@ body{background:#4B3426!important}
 @media(max-width:420px){
   #landingPage .landing-header {padding:24px 12px;}
   #landingPage .landing-grid {gap:8px;}
-  #landingPage .landing-recap-btn {font-size:18px!important;min-height:54px!important;}
-  #landingPage .landing-export-actions .btn {font-size:15px!important;min-height:48px!important;}
+  #landingPage .landing-recap-btn {font-size:25.92px!important;min-height:54px!important;}
+  #landingPage .landing-export-actions .btn {font-size:21.6px!important;min-height:48px!important;}
 }
 </style>
 
@@ -902,18 +903,184 @@ body{background:#4B3426!important}
 <style id="share-table-fit-fix">
 /* Khusus hasil Share JPEG/PDF: jangan biarkan kolom Nama Siswa terpotong. */
 .share-export-student-table{width:100%!important;max-width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
-.share-export-student-table th:nth-child(1),.share-export-student-table td:nth-child(1){width:3.5%!important;}
-.share-export-student-table th:nth-child(2),.share-export-student-table td:nth-child(2){width:25%!important;}
-.share-export-student-table th:nth-child(3),.share-export-student-table td:nth-child(3){width:9.5%!important;}
-.share-export-student-table th:nth-child(n+4):not(:last-child),.share-export-student-table td:nth-child(n+4):not(:last-child){width:5.17%!important;}
-.share-export-student-table .name-cell{white-space:normal!important;overflow:visible!important;word-break:normal!important;overflow-wrap:anywhere!important;}
-.share-export-student-table th,.share-export-student-table td{box-sizing:border-box!important;}
+.share-export-student-table th:nth-child(1),.share-export-student-table td:nth-child(1){width:4%!important;}
+.share-export-student-table th:nth-child(2),.share-export-student-table td:nth-child(2){width:25%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+.share-export-student-table th:nth-child(3),.share-export-student-table td:nth-child(3){width:10%!important;}
+.share-export-student-table th:nth-child(n+4),.share-export-student-table td:nth-child(n+4){width:5.5454545%!important;}
+.share-export-student-table .name-cell{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;word-break:normal!important;overflow-wrap:normal!important;}
+.share-export-student-table th,.share-export-student-table td{box-sizing:border-box!important;line-height:1.15!important;}
+</style>
+
+
+<style id="landing-header-font-unchanged">
+/* Header halaman utama tetap pada ukuran semula. */
+.landing-header .eyebrow{font-size:15px!important;}
+.landing-header h1{font-size:clamp(30px,8vw,46px)!important;}
+.landing-header .landing-subtitle{font-size:clamp(18px,5vw,27px)!important;}
+</style>
+
+<style id="monthly-summary-below-table">
+/* Ringkasan nominal setiap bulan ditempatkan setelah tabel. */
+.month-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:center;width:100%;padding:12px 14px;border-top:1px solid var(--line);background:var(--paper-2);font-size:18px;}
+.month-summary span{font-weight:600;color:var(--ink-soft);text-align:center;white-space:nowrap;}
+.month-summary b{font-weight:800;font-variant-numeric:tabular-nums;}
+.month-summary .summary-masuk,.month-summary .summary-masuk b{color:#6B4022!important;}
+.month-summary .summary-keluar,.month-summary .summary-keluar b{color:var(--coral)!important;}
+.month-summary .summary-saldo,.month-summary .summary-saldo b{color:var(--amber)!important;}
+@media(max-width:640px){.month-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:10px 8px;font-size:16.8px;}.month-summary span{white-space:normal;line-height:1.25;}}
+</style>
+
+<style id="font-scale-20-current">
+/* Semua teks aplikasi diperbesar 20% dari ukuran saat ini. Header halaman utama tetap. */
+#mainApp, #tikApp, #appNotice, #allPeriodsPage { font-size: inherit; }
+</style>
+
+<style id="save-back-button-equal-width">
+/* Semua tombol Simpan dibuat sama lebar dengan tombol Kembali ke Rekap. */
+.form-action-row .back-to-rekap .btn,
+#btnSubmitMasuk, #btnSubmitKeluar,
+#tikBtnSubmitMasuk, #tikBtnSubmitKeluar{
+  width:220px!important;
+  min-width:220px!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:600px){
+  .form-action-row .back-to-rekap .btn,
+  #btnSubmitMasuk, #btnSubmitKeluar,
+  #tikBtnSubmitMasuk, #tikBtnSubmitKeluar{
+    width:170px!important;
+    min-width:170px!important;
+  }
+}
+</style>
+
+<style id="popup-font-center-student-fit-final">
+/* Perubahan sekali ini: ukuran teks POPUP +20% tanpa mengubah ukuran font halaman utama. */
+.central-action-box,
+.central-action-box *{
+  font-size: 1.2em;
+}
+.central-action-box .central-action-head h2{font-size:34.56px!important;}
+.central-action-box .central-action-close{font-size:41.47px!important;}
+.central-action-box .central-action-choice{font-size:16.8px!important;}
+.central-action-box .central-action-choice .choice-sub{font-size:15px!important;line-height:1.25!important;}
+.central-action-box .database-access-input{font-size:19.2px!important;}
+.central-action-box .btn{font-size:23.33px!important;}
+.central-action-box .database-access-error{font-size:22.46px!important;}
+.ap-modal-inner,
+.ap-modal-inner *{font-size:1.2em;}
+.ap-modal-head h2{font-size:31.10px!important;}
+.ap-modal-head button{font-size:25.92px!important;}
+.ap-modal h3{font-size:23.33px!important;}
+.ap-modal table{font-size:21.6px!important;}
+.ap-modal th{font-size:19.01px!important;}
+
+/* Notifikasi simpan: tepat di tengah halaman. */
+.app-notice{
+  left:50%!important;
+  top:50%!important;
+  bottom:auto!important;
+  transform:translate(-50%,-50%) scale(.98)!important;
+  font-size:15.6px!important;
+}
+.app-notice.show{transform:translate(-50%,-50%) scale(1)!important;}
+
+/* Data Siswa: panel mengikuti tinggi layar, tabel yang melakukan scroll. */
+@media screen and (min-width:641px){
+  body[data-active-panel="siswa"] #mainApp{
+    height:100vh!important;
+    min-height:100vh!important;
+    overflow:hidden!important;
+    padding-bottom:0!important;
+  }
+  body[data-active-panel="siswa"] #panel-siswa{
+    height:calc(100vh - 185px)!important;
+    min-height:0!important;
+    max-height:calc(100vh - 185px)!important;
+    overflow:hidden!important;
+    display:block!important;
+  }
+  body[data-active-panel="siswa"] #panel-siswa > .card{
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin-bottom:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  body[data-active-panel="siswa"] #panel-siswa .tbl-wrap{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    height:auto!important;
+    overflow-x:auto!important;
+    overflow-y:auto!important;
+  }
+}
+@media screen and (max-width:640px){
+  body[data-active-panel="siswa"] #panel-siswa > .card{
+    display:flex!important;
+    flex-direction:column!important;
+    height:calc(100dvh - 175px)!important;
+    min-height:0!important;
+    max-height:calc(100dvh - 175px)!important;
+    margin-bottom:0!important;
+  }
+  body[data-active-panel="siswa"] #panel-siswa .tbl-wrap{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    height:auto!important;
+    overflow-x:auto!important;
+    overflow-y:auto!important;
+  }
+}
+</style>
+
+
+<style id="share-rekap-no-wrap-fix">
+/* Hasil Share JPEG/PDF untuk pilihan Rekap: tabel rapi dan setiap baris tetap satu baris. */
+body.capturing-share .month-tbl-wrap{overflow:visible!important;width:100%!important;max-width:none!important;}
+body.capturing-share .month-tbl-wrap table{width:100%!important;max-width:none!important;table-layout:fixed!important;border-collapse:collapse!important;white-space:nowrap!important;}
+body.capturing-share .month-tbl-wrap th,
+body.capturing-share .month-tbl-wrap td{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;vertical-align:middle!important;box-sizing:border-box!important;}
+body.capturing-share .month-tbl-wrap th:nth-child(1),
+body.capturing-share .month-tbl-wrap td:nth-child(1){width:5%!important;}
+body.capturing-share .month-tbl-wrap th:nth-child(2),
+body.capturing-share .month-tbl-wrap td:nth-child(2){width:15%!important;}
+body.capturing-share .month-tbl-wrap th:nth-child(3),
+body.capturing-share .month-tbl-wrap td:nth-child(3){width:14%!important;}
+body.capturing-share .month-tbl-wrap th:nth-child(4),
+body.capturing-share .month-tbl-wrap td:nth-child(4){width:31%!important;}
+body.capturing-share .month-tbl-wrap th:nth-child(5),
+body.capturing-share .month-tbl-wrap td:nth-child(5),
+body.capturing-share .month-tbl-wrap th:nth-child(6),
+body.capturing-share .month-tbl-wrap td:nth-child(6){width:17.5%!important;}
+body.capturing-share .share-export-student-table th,
+body.capturing-share .share-export-student-table td{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;box-sizing:border-box!important;line-height:1.15!important;}
+body.capturing-share .share-export-student-table th:nth-child(1),body.capturing-share .share-export-student-table td:nth-child(1){width:4%!important;}
+body.capturing-share .share-export-student-table th:nth-child(2),body.capturing-share .share-export-student-table td:nth-child(2){width:25%!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+body.capturing-share .share-export-student-table th:nth-child(3),body.capturing-share .share-export-student-table td:nth-child(3){width:10%!important;}
+body.capturing-share .share-export-student-table th:nth-child(n+4),body.capturing-share .share-export-student-table td:nth-child(n+4){width:5.5454545%!important;}
+body.capturing-share #allPeriodsPage table{width:100%!important;max-width:none!important;table-layout:fixed!important;border-collapse:collapse!important;white-space:nowrap!important;}
+body.capturing-share #allPeriodsPage th,
+body.capturing-share #allPeriodsPage td{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;vertical-align:middle!important;box-sizing:border-box!important;}
+body.capturing-share #allPeriodsPage th:first-child,
+body.capturing-share #allPeriodsPage td:first-child{width:46%!important;}
+body.capturing-share #allPeriodsPage th:not(:first-child),
+body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
+</style>
+
+<style id="gear-outline-size-fix">
+.landing-export-actions .landing-utility .gear-outline{width:26px;height:26px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+@media(max-width:420px){.landing-export-actions .landing-utility .gear-outline{width:22px;height:22px;}}
 </style>
 </head>
 <body>
 <div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
   <div style="width:38px;height:38px;border-radius:50%;border:3px solid #3A3220;border-top-color:#D4AF37;animation:cloudspin 0.8s linear infinite;"></div>
-  <div style="font-family:'Inter',-apple-system,sans-serif;color:#A8987A;font-size:13.5px;font-weight:600;">Memuat data terbaru...</div>
+  <div style="font-family:'Inter',-apple-system,sans-serif;color:#A8987A;font-size:16.2px;font-weight:600;">Memuat data terbaru...</div>
 </div>
 <style>@keyframes cloudspin{to{transform:rotate(360deg)}}
 /* ===== AKSI EXPORT / CETAK / SHARE TERPUSAT ===== */
@@ -921,9 +1088,9 @@ body{background:#4B3426!important}
 .landing-export-actions .btn{width:100%;justify-content:center;min-height:52px;border:2px solid var(--amber)!important}
 .landing-export-actions .landing-utility{border:2px solid var(--amber)!important;background:var(--teal-tint);color:var(--amber);opacity:1;min-height:52px;height:52px!important}
 .landing-export-actions .landing-utility:hover{background:var(--teal-tint);border-color:var(--amber)!important;opacity:1}
-.landing-utility{width:52px!important;height:48px!important;min-height:48px!important;padding:0!important;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:transparent;color:var(--ink-soft);border-radius:10px;font-size:34px;font-family:Arial, sans-serif;line-height:1;opacity:.72;cursor:pointer}
+.landing-utility{width:52px!important;height:48px!important;min-height:48px!important;padding:0!important;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:transparent;color:var(--ink-soft);border-radius:10px;font-size:48.96px;font-family:Arial, sans-serif;line-height:1;opacity:.72;cursor:pointer}
 .landing-utility:hover{opacity:1;border-color:var(--amber);background:rgba(212,175,55,.06)}
-.landing-recap-btn{width:100%;justify-content:center;display:flex;min-height:60px!important;padding:17px 18px!important;border:2px solid var(--amber)!important;font-size:16px!important}
+.landing-recap-btn{width:100%;justify-content:center;display:flex;min-height:60px!important;padding:17px 18px!important;border:2px solid var(--amber)!important;font-size:23.04px!important}
 .central-action-modal{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px}
 .central-action-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}
 .central-action-box{position:relative;z-index:1;width:min(430px,100%);max-height:90vh;overflow:auto;background:var(--paper);border:1px solid rgba(212,175,55,.35);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:16px}
@@ -931,31 +1098,31 @@ body{background:#4B3426!important}
 .database-access-input{width:100%;box-sizing:border-box;padding:13px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:600 16px Inter,sans-serif;text-align:center;letter-spacing:.18em;outline:none}
 .database-access-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(212,175,55,.12)}
 .database-access-input[aria-invalid="true"]{border-color:#8B2E2E;color:#ff6b6b;box-shadow:0 0 0 3px rgba(139,46,46,.12)}
-.database-access-error{display:none;padding:9px 10px;border:1px solid rgba(139,46,46,.7);border-radius:9px;background:rgba(139,46,46,.12);color:#ff6b6b;font-size:13px;font-weight:700;line-height:1.4;text-align:center}
+.database-access-error{display:none;padding:9px 10px;border:1px solid rgba(139,46,46,.7);border-radius:9px;background:rgba(139,46,46,.12);color:#ff6b6b;font-size:18.72px;font-weight:700;line-height:1.4;text-align:center}
 .central-action-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.central-action-head h2{margin:0;font-size:20px}
-.central-action-close{border:0;background:var(--paper-2);color:var(--ink);width:36px;height:36px;border-radius:12px;font-size:24px;cursor:pointer}
+.central-action-head h2{margin:0;font-size:28.8px}
+.central-action-close{border:0;background:var(--paper-2);color:var(--ink);width:36px;height:36px;border-radius:12px;font-size:34.56px;cursor:pointer}
 .central-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .central-action-grid.destination-grid .central-action-choice:last-child{grid-column:1 / -1}
 .central-action-choice,.central-action-choice .choice-main,.central-action-choice .choice-sub{text-align:center}
 .central-action-grid.one{grid-template-columns:1fr}
 .central-action-choice{width:100%;min-height:48px;border:1px solid var(--line);background:var(--white);color:var(--ink);border-radius:12px;padding:10px 12px;font:600 14px Inter, sans-serif;cursor:pointer;text-align:left}
 .central-action-choice:hover{border-color:var(--amber);background:var(--paper-2)}
-.central-action-choice .choice-main{display:block!important;font-weight:700!important}.central-action-choice .choice-sub{display:block!important;font-size:11px;color:var(--ink-soft);font-weight:500;margin-top:2px}
+.central-action-choice .choice-main{display:block!important;font-weight:700!important}.central-action-choice .choice-sub{display:block!important;font-size:15.84px;color:var(--ink-soft);font-weight:500;margin-top:2px}
 .central-action-choice.period-not-started{background:#e4ded2!important;border-color:var(--line)!important;opacity:.55;cursor:not-allowed}
 .central-action-choice.period-not-started:hover{background:#e4ded2!important;border-color:var(--line)!important}
 .central-action-choice.period-not-started .choice-main,.central-action-choice.period-not-started .choice-sub{color:var(--ink-soft)!important}
 .central-action-choice.period-active{background:var(--teal-tint)!important;border:1.5px solid var(--amber)!important;box-shadow:0 2px 10px rgba(0,0,0,.1)}
 .central-action-choice.period-active .choice-main{color:var(--amber)!important}
 .central-action-back{margin-top:12px;width:100%;justify-content:center}
-@media(max-width:420px){.landing-export-actions{grid-template-columns:40px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px}.landing-export-actions .btn{padding-left:6px;padding-right:6px;font-size:12px}.landing-utility{width:40px!important;height:40px!important;min-height:40px!important;font-size:18px}.central-action-grid{grid-template-columns:1fr}}
+@media(max-width:420px){.landing-export-actions{grid-template-columns:40px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px}.landing-export-actions .btn{padding-left:6px;padding-right:6px;font-size:17.28px}.landing-utility{width:40px!important;height:40px!important;min-height:40px!important;font-size:25.92px}.central-action-grid{grid-template-columns:1fr}}
 
 /* ===== NOTIFIKASI TEMA DARK COKLAT / EMAS ===== */
 .app-notice{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:12000;min-width:min(380px,calc(100vw - 32px));max-width:calc(100vw - 32px);padding:13px 16px;border:1px solid rgba(212,175,55,.6);border-radius:12px;background:linear-gradient(145deg,#2b2118,#17120d);color:var(--ink);box-shadow:0 14px 45px rgba(0,0,0,.55);display:flex;align-items:center;gap:10px;font:600 13px Inter,sans-serif;opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
 .app-notice.show{opacity:1;transform:translate(-50%,0)}
 .app-notice.ok{border-color:rgba(212,175,55,.72)}
 .app-notice.error{border-color:rgba(180,55,55,.8)}
-.app-notice .notice-icon{font-size:20px;line-height:1}
+.app-notice .notice-icon{font-size:28.8px;line-height:1}
 .app-notice.error .notice-icon{color:#ff6b6b}
 .app-notice.ok .notice-icon{color:var(--amber)}
 .database-access-box .btn.btn-amber{border:1px solid var(--amber)!important;box-shadow:0 5px 18px rgba(0,0,0,.28)}
@@ -1010,7 +1177,7 @@ body{background:#4B3426!important}
   <footer class="landing-footer">
     <button class="btn btn-amber landing-recap-btn" onclick="openAllPeriodsRecap()">📊 Rekap Semua Periode</button>
     <div class="landing-export-actions no-print">
-      <button class="landing-utility" onclick="openDatabaseSettings()" aria-label="Pengaturan database" title="Pengaturan database">⚙︎</button>
+      <button class="landing-utility" onclick="openDatabaseSettings()" aria-label="Pengaturan database" title="Pengaturan database"><svg class="gear-outline" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Zm8.25 3.75c0-.47-.04-.92-.12-1.36l1.56-1.21-1.9-3.29-1.83.74a8.62 8.62 0 0 0-2.36-1.36L15.36 3h-3.8l-.24 2.52c-.84.3-1.63.75-2.36 1.36l-1.83-.74-1.9 3.29 1.56 1.21c-.08.44-.12.89-.12 1.36s.04.92.12 1.36l-1.56 1.21 1.9 3.29 1.83-.74a8.62 8.62 0 0 0 2.36 1.36L11.56 21h3.8l.24-2.52a8.62 8.62 0 0 0 2.36-1.36l1.83.74 1.9-3.29-1.56-1.21c.08-.44.12-.89.12-1.36Z"/></svg></button>
       <button class="btn btn-ghost" onclick="openCentralAction('export')">📥 Export</button>
       <button class="btn btn-ghost" onclick="openCentralAction('share')">🔗 Share</button>
       <button class="landing-utility" onclick="refreshDatabaseConnection()" aria-label="Refresh koneksi database" title="Refresh koneksi database">↻</button>
@@ -1024,7 +1191,7 @@ body{background:#4B3426!important}
   <div class="central-action-box database-access-box" style="max-width:360px;">
     <div class="central-action-head"><h2>⚙︎ Pengaturan Database</h2><button class="central-action-close" onclick="closeDatabaseSettings()">×</button></div>
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="font-size:13px;color:var(--ink-soft);line-height:1.5;">Masukkan kode akses untuk membuka Google Sheets database.</div>
+      <div style="font-size:15.6px;color:var(--ink-soft);line-height:1.5;">Masukkan kode akses untuk membuka Google Sheets database.</div>
       <input id="databaseAccessCode" class="database-access-input" type="password" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="Kode akses">
       <div id="databaseAccessError" class="database-access-error">⚠︎ Kode akses salah. Silakan coba lagi.</div>
       <button class="btn btn-amber" onclick="openDatabaseSheet()" style="width:100%;justify-content:center;">Buka Database</button>
@@ -1046,7 +1213,7 @@ body{background:#4B3426!important}
   <div class="central-action-backdrop" onclick="resolveCustomConfirm(false)"></div>
   <div class="central-action-box database-access-box" style="max-width:360px;">
     <div class="central-action-head"><h2 id="customConfirmTitle">⚠︎ Konfirmasi</h2><button class="central-action-close" onclick="resolveCustomConfirm(false)">×</button></div>
-    <div id="customConfirmBody" style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:16px;white-space:pre-line;"></div>
+    <div id="customConfirmBody" style="font-size:16.2px;color:var(--ink-soft);line-height:1.55;margin-bottom:16px;white-space:pre-line;"></div>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="resolveCustomConfirm(false)">Batal</button>
       <button class="btn btn-amber" id="customConfirmOkBtn" style="flex:1;justify-content:center;" onclick="resolveCustomConfirm(true)">Ya, Lanjutkan</button>
@@ -1059,7 +1226,7 @@ body{background:#4B3426!important}
   <div class="central-action-backdrop" onclick="resolveCustomPrompt(null)"></div>
   <div class="central-action-box database-access-box" style="max-width:360px;">
     <div class="central-action-head"><h2 id="customPromptTitle">Input</h2><button class="central-action-close" onclick="resolveCustomPrompt(null)">×</button></div>
-    <div id="customPromptBody" style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:8px;"></div>
+    <div id="customPromptBody" style="font-size:16.2px;color:var(--ink-soft);line-height:1.55;margin-bottom:8px;"></div>
     <textarea id="customPromptInput" class="database-access-input" style="letter-spacing:normal;text-align:left;min-height:38px;resize:vertical;"></textarea>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-ghost" id="customPromptCancelBtn" style="flex:1;justify-content:center;" onclick="resolveCustomPrompt(null)">Batal</button>
@@ -1081,7 +1248,10 @@ body{background:#4B3426!important}
   </div>
 </div>
 
-<div id="syncStatus" style="position:fixed;top:2px;left:14px;background:transparent;padding:0;border-radius:0;font-size:11px;font-weight:700;box-shadow:none;z-index:99999;display:none;align-items:center;gap:5px;letter-spacing:.02em;pointer-events:none;"></div>
+<div class="app-notice" id="appNotice" role="status" aria-live="polite" aria-atomic="true">
+  <span class="notice-icon">✓</span><span id="appNoticeText"></span>
+</div>
+<div id="syncStatus" style="position:fixed;top:2px;left:14px;background:transparent;padding:0;border-radius:0;font-size:13.2px;font-weight:700;box-shadow:none;z-index:99999;display:none;align-items:center;gap:5px;letter-spacing:.02em;pointer-events:none;"></div>
 <div class="app" id="mainApp" style="display:none;">
 <div class="btn-row no-print home-action-row home-action-fixed">
     <button class="btn btn-ghost home-full-btn" onclick="goToLanding()">🏠 Beranda</button>
@@ -2098,7 +2268,7 @@ function renderMasuk(){
     return cmp*dir;
   });
   if(list.length===0){
-    wrap.innerHTML = `<tr><td colspan="7" style="padding:16px; color:var(--ink-soft); font-size:13px;">Belum ada data pemasukan.</td></tr>`;
+    wrap.innerHTML = `<tr><td colspan="7" style="padding:16px; color:var(--ink-soft); font-size:15.6px;">Belum ada data pemasukan.</td></tr>`;
   } else {
     wrap.innerHTML = list.map((p,i)=>{
       const bulanKas = bulanKasLabel(p.bulanDari, p.bulanSampai);
@@ -2201,7 +2371,7 @@ function renderKeluar(){
     return cmp*dir;
   });
   if(list.length===0){
-    wrap.innerHTML = `<tr><td colspan="5" style="padding:16px; color:var(--ink-soft); font-size:13px;">Belum ada data pengeluaran.</td></tr>`;
+    wrap.innerHTML = `<tr><td colspan="5" style="padding:16px; color:var(--ink-soft); font-size:15.6px;">Belum ada data pengeluaran.</td></tr>`;
   } else {
     wrap.innerHTML = list.map((p,i)=>`<tr>
         <td class="row-no">${i+1}</td>
@@ -2249,13 +2419,15 @@ function renderBulanan(){
         <div class="mname">${yr2(d.label)}</div>
         <div class="month-figs">
           <span>Saldo awal: <b>${rp(d.saldoAwal)}</b></span>
-          <span style="color:var(--amber);">Masuk: <b>${rp(d.masuk)}</b></span>
-          <span style="color:var(--coral);">Keluar: <b>${rp(d.keluar)}</b></span>
-          <span class="saldo-akhir ${d.saldoAkhir<0?'minus':''}">Saldo akhir: <b>${rp(d.saldoAkhir)}</b></span>
         </div>
       </div>
       <div class="month-body">
         ${renderMonthTable(d)}
+      </div>
+      <div class="month-summary">
+        <span class="summary-masuk">Masuk: <b>${rp(d.masuk)}</b></span>
+        <span class="summary-keluar">Keluar: <b>${rp(d.keluar)}</b></span>
+        <span class="summary-saldo ${d.saldoAkhir<0?'minus':''}">Saldo akhir: <b>${rp(d.saldoAkhir)}</b></span>
       </div>
     </div>
   `).join('');
@@ -2299,7 +2471,7 @@ function renderMonthTable(d){
   });
 
   if(rows.length===0){
-    return `<div style="color:var(--ink-soft); font-size:12.5px; padding:6px 0;">Tidak ada transaksi bulan ini.</div>`;
+    return `<div style="color:var(--ink-soft); font-size:15px; padding:6px 0;">Tidak ada transaksi bulan ini.</div>`;
   }
 
   return `<div class="month-tbl-wrap"><table>
@@ -2317,7 +2489,7 @@ function renderMonthTable(d){
         <td>${r.kategori}</td>
         <td>${fmtDate(r.tanggal)}</td>
         <td>${r.ket || '-'}</td>
-        <td class="num" style="color:var(--amber);">${r.masuk ? rpCell(r.masuk):''}</td>
+        <td class="num" style="color:#4A2F1B !important;">${r.masuk ? rpCell(r.masuk):''}</td>
         <td class="num" style="color:var(--coral);">${r.keluar ? rpCell(r.keluar):''}</td>
       </tr>`).join('')}
     </tbody>
@@ -3203,7 +3375,7 @@ function showAppNotice(text, ok=true){
   if(appNoticeTimer)clearTimeout(appNoticeTimer);
   tx.textContent=text; el.className='app-notice '+(ok?'ok':'error')+' show';
   const icon=el.querySelector('.notice-icon'); if(icon)icon.textContent=ok?'✓':'⚠︎';
-  appNoticeTimer=setTimeout(()=>el.classList.remove('show'),3600);
+  appNoticeTimer=setTimeout(()=>el.classList.remove('show'),4200);
 }
 async function refreshDatabaseConnection(){
   const oldText=document.querySelector('.landing-utility[aria-label="Refresh koneksi database"]');
@@ -3485,13 +3657,33 @@ async function shareClassPart(book,part,type){
     c.querySelectorAll('#tblSiswa,.siswa-table').forEach(t=>{
       t.classList.add('share-export-student-table');
       t.style.width='100%';t.style.maxWidth='100%';t.style.tableLayout='fixed';t.style.borderCollapse='collapse';
-      t.querySelectorAll('th:nth-child(1),td:nth-child(1)').forEach(x=>x.style.width='3.5%');
-      t.querySelectorAll('th:nth-child(2),td:nth-child(2)').forEach(x=>{x.style.width='25%';x.style.whiteSpace='normal';x.style.overflow='visible';x.style.wordBreak='normal';x.style.overflowWrap='anywhere';});
-      t.querySelectorAll('th:nth-child(3),td:nth-child(3)').forEach(x=>x.style.width='9.5%');
-      t.querySelectorAll('th:nth-child(n+4):not(:last-child),td:nth-child(n+4):not(:last-child)').forEach(x=>x.style.width='5.17%');
+      /* Setelah tombol Aksi (.no-print) dihapus, tabel memiliki 14 kolom: No, Nama, Total, dan 11 bulan.
+         Gunakan pembagian lebar eksplisit agar kolom bulan terakhir tidak melebar sendiri. */
+      const cols=t.querySelectorAll('thead th');
+      if(cols.length){
+        const widths=['4%','25%','10%',...Array(11).fill('5.5454545%')];
+        let cg=t.querySelector('colgroup');
+        if(!cg){ cg=document.createElement('colgroup'); t.insertBefore(cg,t.firstChild); }
+        cg.innerHTML=widths.map(w=>`<col style=\"width:${w}\">`).join('');
+      }
+      t.querySelectorAll('th,td').forEach(x=>{
+        x.style.whiteSpace='nowrap';
+        x.style.wordBreak='normal';
+        x.style.overflowWrap='normal';
+        x.style.boxSizing='border-box';
+        x.style.lineHeight='1.15';
+      });
+      t.querySelectorAll('th:nth-child(1),td:nth-child(1)').forEach(x=>x.style.width='4%');
+      t.querySelectorAll('th:nth-child(2),td:nth-child(2)').forEach(x=>{
+        x.style.width='25%';
+        x.style.overflow='hidden';
+        x.style.textOverflow='ellipsis';
+      });
+      t.querySelectorAll('th:nth-child(3),td:nth-child(3)').forEach(x=>x.style.width='10%');
+      t.querySelectorAll('th:nth-child(n+4),td:nth-child(n+4)').forEach(x=>x.style.width='5.5454545%');
     });
     c.querySelectorAll('.month-tbl-wrap table').forEach(t=>{
-      t.style.width='100%';t.style.maxWidth='100%';t.style.tableLayout='fixed';t.style.whiteSpace='normal';
+      t.style.width='100%';t.style.maxWidth='none';t.style.tableLayout='fixed';t.style.whiteSpace='nowrap';t.querySelectorAll('th,td').forEach(x=>{x.style.whiteSpace='nowrap';x.style.wordBreak='normal';x.style.overflowWrap='normal';});
     });
     wrap.appendChild(c);
   });
@@ -3582,7 +3774,7 @@ async function shareAllPeriods(type){
     const el=document.querySelector('#allPeriodsPage .all-periods-inner');
     if(!el) throw new Error('Area rekap tidak ditemukan');
     document.body.classList.add('capturing-share');
-    const canvas=await html2canvas(el,{backgroundColor:'#ffffff',scale:1.5,useCORS:true,logging:false});
+    const canvas=await html2canvas(el,{backgroundColor:'#ffffff',scale:1.5,useCORS:true,logging:false,width:el.scrollWidth,height:el.scrollHeight,windowWidth:el.scrollWidth,windowHeight:el.scrollHeight});
     document.body.classList.remove('capturing-share');
 
     if(type==='jpeg'){
@@ -3621,5 +3813,7 @@ function closeAllPeriodsRecap(){
 applyPeriod(currentPeriodIdx);
 updateHeaderLabels();
 </script>
+
+
 </body>
 </html>
