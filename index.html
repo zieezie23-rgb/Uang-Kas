@@ -176,6 +176,30 @@ body.capturing-share #allPeriodsPage td{color:var(--row-text)!important;backgrou
 body.capturing-share #allPeriodsPage tr.grand-total td{background:var(--paper-2)!important;color:var(--ink)!important}
 body.capturing-share #allPeriodsPage tr.current-period td:first-child{color:var(--amber)!important}
 
+
+/* Sembunyikan header + navigasi atas saat membuka halaman detail Kas/TIK. */
+body[data-active-panel="siswa"] header.top:not(.tik-top),
+body[data-active-panel="masuk"] header.top:not(.tik-top),
+body[data-active-panel="keluar"] header.top:not(.tik-top),
+body[data-active-panel="bulanan"] header.top:not(.tik-top),
+body[data-active-panel="tik-siswa"] #tikApp .tik-top,
+body[data-active-panel="tik-masuk"] #tikApp .tik-top,
+body[data-active-panel="tik-keluar"] #tikApp .tik-top,
+body[data-active-panel="siswa"] .home-action-row,
+body[data-active-panel="masuk"] .home-action-row,
+body[data-active-panel="keluar"] .home-action-row,
+body[data-active-panel="bulanan"] .home-action-row,
+body[data-active-panel="tik-siswa"] .home-action-row,
+body[data-active-panel="tik-masuk"] .home-action-row,
+body[data-active-panel="tik-keluar"] .home-action-row,
+body[data-active-panel="siswa"] .mode-switch,
+body[data-active-panel="masuk"] .mode-switch,
+body[data-active-panel="keluar"] .mode-switch,
+body[data-active-panel="bulanan"] .mode-switch,
+body[data-active-panel="tik-siswa"] .mode-switch,
+body[data-active-panel="tik-masuk"] .mode-switch,
+body[data-active-panel="tik-keluar"] .mode-switch{display:none!important}
+
 @media print {@page{ size: A4 portrait; margin: 8mm; }}
 @media (max-width: 640px){
 .top-stats{display:none}
@@ -1493,7 +1517,7 @@ function renderMasuk(){
         <td class="name-cell">${p.nama}</td>
         <td>${fmtDate(p.tanggalBayar)}</td>
         <td>${bulanKas}</td>
-        <td class="num" style="color:var(--amber); font-weight:700;">${rpCell(p.jumlah)}</td>
+        <td class="num" style="color:var(--row-text); font-weight:700;">${rpCell(p.jumlah)}</td>
         <td>${p.keterangan||''}</td>
         <td class="no-print">
           <button class="icon-btn" onclick="editPemasukan(${p.id})" title="Edit">✏️</button>
@@ -2099,6 +2123,7 @@ function saveTik(){
   cloudSave('tik', currentPeriodIdx, tikState);
 }
 function tikShow(which){
+  document.body.dataset.activePanel = 'tik-' + which;
   ['rekap','siswa','masuk','keluar'].forEach(k=>document.getElementById('tik-'+k).classList.remove('active','print-active'));
   document.getElementById('tik-'+which).classList.add('active','print-active');window.scrollTo({top:0,behavior:'smooth'});
 }
