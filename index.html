@@ -560,6 +560,16 @@ body{background:#4B3426!important}
 .central-action-choice .choice-main{display:block!important;font-weight:700!important}.central-action-choice .choice-sub{display:block!important;font-size:11px;color:var(--ink-soft);font-weight:500;margin-top:2px}
 .central-action-back{margin-top:12px;width:100%;justify-content:center}
 @media(max-width:420px){.landing-export-actions{grid-template-columns:40px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px}.landing-export-actions .btn{padding-left:6px;padding-right:6px;font-size:12px}.landing-utility{width:40px!important;height:40px!important;min-height:40px!important;font-size:18px}.central-action-grid{grid-template-columns:1fr}}
+
+/* ===== NOTIFIKASI TEMA DARK COKLAT / EMAS ===== */
+.app-notice{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:12000;min-width:min(380px,calc(100vw - 32px));max-width:calc(100vw - 32px);padding:13px 16px;border:1px solid rgba(212,175,55,.6);border-radius:12px;background:linear-gradient(145deg,#2b2118,#17120d);color:var(--ink);box-shadow:0 14px 45px rgba(0,0,0,.55);display:flex;align-items:center;gap:10px;font:600 13px Inter,sans-serif;opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
+.app-notice.show{opacity:1;transform:translate(-50%,0)}
+.app-notice.ok{border-color:rgba(212,175,55,.72)}
+.app-notice.error{border-color:rgba(180,55,55,.8)}
+.app-notice .notice-icon{font-size:20px;line-height:1}
+.app-notice.error .notice-icon{color:#ff6b6b}
+.app-notice.ok .notice-icon{color:var(--amber)}
+.database-access-box .btn.btn-amber{border:1px solid var(--amber)!important;box-shadow:0 5px 18px rgba(0,0,0,.28)}
 </style>
 <!-- ===================== HALAMAN UTAMA (BERANDA) ===================== -->
 <div class="landing-page" id="landingPage">
@@ -1059,11 +1069,24 @@ async function cloudMutate(kind, idx, req){
       localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
     }
     cloudOnline=true; placeSyncBadge();
+    const op=req && req.op ? req.op : '';
+    const successMessages={
+      addStudent:'Siswa berhasil ditambahkan.',
+      deleteStudent:'Siswa berhasil dihapus.',
+      addPemasukan:'Pemasukan berhasil disimpan.',
+      updatePemasukan:'Pemasukan berhasil diperbarui.',
+      deletePemasukan:'Pemasukan berhasil dihapus.',
+      addPengeluaran:'Pengeluaran berhasil disimpan.',
+      updatePengeluaran:'Pengeluaran berhasil diperbarui.',
+      deletePengeluaran:'Pengeluaran berhasil dihapus.'
+    };
+    if(typeof showAppNotice==='function') showAppNotice(successMessages[op] || 'Perubahan berhasil disimpan ke database.',true);
     return true;
   }catch(e){
     cloudOnline=false; placeSyncBadge();
     console.error(e);
-    alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
+    if(typeof showAppNotice==='function') showAppNotice('Perubahan gagal disimpan. '+(e.message||e),false);
+    else alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
     return false;
   }
 }
@@ -2505,9 +2528,19 @@ function openDatabaseSheet(){
   closeDatabaseSettings();
   window.open(DATABASE_SHEET_URL,'_blank','noopener');
 }
+let appNoticeTimer=null;
+function showAppNotice(text, ok=true){
+  const el=document.getElementById('appNotice'); const tx=document.getElementById('appNoticeText');
+  if(!el||!tx)return;
+  if(appNoticeTimer)clearTimeout(appNoticeTimer);
+  tx.textContent=text; el.className='app-notice '+(ok?'ok':'error')+' show';
+  const icon=el.querySelector('.notice-icon'); if(icon)icon.textContent=ok?'✓':'⚠︎';
+  appNoticeTimer=setTimeout(()=>el.classList.remove('show'),3600);
+}
 async function refreshDatabaseConnection(){
   const oldText=document.querySelector('.landing-utility[aria-label="Refresh koneksi database"]');
   if(oldText){oldText.textContent='⟳';oldText.disabled=true;}
+  showAppNotice('Menyegarkan koneksi database...',true);
   setSyncStatus('⟳ Menyegarkan koneksi database...',true);
   try{
     state=null;
@@ -2522,11 +2555,11 @@ async function refreshDatabaseConnection(){
     }
     cloudOnline=true;
     placeSyncBadge();
-    alert('Koneksi database berhasil diperbarui.');
+    showAppNotice('Koneksi database berhasil diperbarui.',true);
   }catch(e){
     cloudOnline=false;
     placeSyncBadge();
-    alert('Gagal refresh koneksi database.\n\n'+(e.message||e));
+    showAppNotice('Gagal refresh koneksi database. '+(e.message||e),false);
   }finally{
     if(oldText){oldText.textContent='↻';oldText.disabled=false;}
   }
