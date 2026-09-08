@@ -72,13 +72,13 @@ section.panel.active{display:block;animation:fadeIn .25s ease}
 .btn-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
 .btn-row-right{justify-content:flex-end}
 table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{background:var(--teal-tint);color:var(--amber);text-align:left;padding:8px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;font-weight:700;border-bottom:2px solid var(--amber);position:sticky;top:0}
+thead th{background:var(--teal-tint);color:var(--amber);text-align:left;padding:8px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;font-weight:700;border:1px solid var(--line);border-bottom:2px solid var(--amber);position:sticky;top:0}
 thead th.sortable{cursor:pointer;user-select:none;white-space:nowrap}
 thead th.sortable:hover{background:var(--teal-tint,#211B10)}
 thead th.sortable::after{content:'⇅';margin-left:5px;font-size:10px;opacity:.45}
 thead th.sortable.sort-asc::after{content:'▲';opacity:1}
 thead th.sortable.sort-desc::after{content:'▼';opacity:1}
-tbody td{padding:7px 9px;border-bottom:1px solid var(--line)}
+tbody td{padding:7px 9px;border:1px solid var(--line)}
 tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) td:not(.paid-cell){background:var(--row-bg);color:var(--row-text)}
 tbody tr:not(.total-row):not(.row-header-like):not(.grand-total):hover td:not(.paid-cell){background:var(--row-bg-hover)}
 tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) td .unpaid{color:var(--row-text-soft)}
@@ -410,7 +410,20 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
 .landing-card .lc-label{position:relative;z-index:1;font-size:clamp(28px,8vw,38px);font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.55)}
 .landing-card .lc-sub{position:relative;z-index:1}
 .landing-card .lc-arrow{position:absolute;z-index:2;right:12px;bottom:9px;color:var(--amber);font-size:22px;line-height:1;opacity:.7}
+.landing-card .lc-arrow.lc-arrow-locked{font-size:17px;filter:grayscale(1) sepia(1) saturate(4) brightness(.85) hue-rotate(-8deg);opacity:.6}
 .home-action-row{width:100%;margin:0 0 12px!important}
+.home-action-row.home-action-fixed{
+  position:fixed;left:0;right:0;bottom:0;z-index:400;
+  width:100%;max-width:none;
+  margin:0!important;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  background:#4B3426;
+  border-top:1px solid rgba(212,175,55,.35);
+  box-shadow:0 -6px 18px rgba(0,0,0,.35);
+}
+#allPeriodsPage .home-action-row.home-action-fixed{background:#4B3426}
+#mainApp{padding-bottom:76px}
+#allPeriodsPage{padding-bottom:76px}
 .home-full-btn{width:100%!important;justify-content:center!important}
 .rekap-ringkasan-table{table-layout:fixed}.rekap-ringkasan-table th,.rekap-ringkasan-table td{width:25%}
 @media (max-width:420px){.landing-card{min-height:135px;padding:14px 10px}.landing-card .lc-icon{width:44px;height:44px;font-size:22px;border-radius:14px}}
@@ -543,9 +556,7 @@ body{background:#4B3426!important}
 
 /* ===== PENYESUAIAN OUTLINE EMAS ===== */
 .home-full-btn{border:1.5px solid var(--amber)!important;min-height:46px!important;}
-.mode-switch{border:1.5px solid var(--amber)!important;}
-.mode-switch .mode-btn{border:1.5px solid var(--amber)!important;}
-.mode-switch .mode-btn.active{border-color:var(--amber)!important;}
+
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;0,900;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><script>/* Service worker dinonaktifkan agar kompatibel dengan Google Apps Script Web App. */</script>
@@ -829,21 +840,11 @@ body{background:#4B3426!important}
 
 
 <style id="navigation-buttons-card-style">
-/* Tombol navigasi Beranda + panel Kas/TIK di setiap kelas.
-   Hanya gaya yang disamakan dengan kartu kelas; ukuran tetap. */
-#mainApp .app-nav button,
-#tikApp .app-nav button,
-#mainApp .nav-tabs button,
-#tikApp .nav-tabs button,
-#mainApp button[onclick*="showPanel('panel-rekap')"],
-#mainApp button[onclick*="tikShow('rekap')"],
-#tikApp button[onclick*="tikShow('rekap')"],
-#mainApp .home-btn,
-#tikApp .home-btn,
-#mainApp .btn-home,
-#tikApp .btn-home{
+/* Tombol Beranda + panel Kas/TIK (mode-switch) di setiap kelas.
+   Disamakan dengan gaya tombol "Rekap Semua Periode"; ukuran tombol tetap. */
+.home-full-btn,
+#mainApp .mode-btn{
   background:linear-gradient(145deg,#17130d 0%,#0f0c08 58%,#21190c 100%) !important;
-  border:1px solid rgba(212,175,55,.42) !important;
   border-radius:18px !important;
   color:#f5d77a !important;
   font-weight:800 !important;
@@ -852,38 +853,62 @@ body{background:#4B3426!important}
   transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;
 }
 
-#mainApp .app-nav button:hover,
-#tikApp .app-nav button:hover,
-#mainApp .nav-tabs button:hover,
-#tikApp .nav-tabs button:hover,
-#mainApp button[onclick*="showPanel('panel-rekap')"]:hover,
-#mainApp button[onclick*="tikShow('rekap')"]:hover,
-#tikApp button[onclick*="tikShow('rekap')"]:hover,
-#mainApp .home-btn:hover,
-#tikApp .home-btn:hover,
-#mainApp .btn-home:hover,
-#tikApp .btn-home:hover{
-  transform:translateY(-2px);
+.home-full-btn{
+  border:1px solid rgba(212,175,55,.42) !important;
+}
+
+#mainApp .mode-btn{
+  border:none !important;
+  opacity:.55;
+}
+
+#mainApp .mode-btn.active{
+  opacity:1;
+  color:#fff !important;
+  background:linear-gradient(145deg,#2a1f0c 0%,#17130d 58%,#3a2c10 100%) !important;
+  box-shadow:9px 10px 28px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.08) !important;
+  border-bottom:3px solid #D4AF37 !important;
+}
+
+.home-full-btn:hover{
   border-color:rgba(212,175,55,.7) !important;
+}
+
+.home-full-btn:hover,
+#mainApp .mode-btn:hover{
+  transform:translateY(-2px);
   box-shadow:9px 10px 28px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.07) !important;
 }
 
-#mainApp .app-nav button:active,
-#tikApp .app-nav button:active,
-#mainApp .nav-tabs button:active,
-#tikApp .nav-tabs button:active,
-#mainApp button[onclick*="showPanel('panel-rekap')"]:active,
-#mainApp button[onclick*="tikShow('rekap')"]:active,
-#tikApp button[onclick*="tikShow('rekap')"]:active,
-#mainApp .home-btn:active,
-#tikApp .home-btn:active,
-#mainApp .btn-home:active,
-#tikApp .btn-home:active{
+.home-full-btn:active,
+#mainApp .mode-btn:active{
   transform:translateY(1px) scale(.99);
   box-shadow:3px 4px 12px rgba(0,0,0,.4),inset 0 2px 5px rgba(0,0,0,.18) !important;
 }
 </style>
 
+<style id="student-panel-fit-fix">
+@media screen {
+  /* Halaman Data Siswa mengikuti tinggi konten, bukan tinggi layar.
+     Padding bawah yang dipakai tombol Beranda disembunyikan pada halaman ini. */
+  body[data-active-panel="siswa"] #mainApp{height:auto!important;min-height:0!important;overflow:visible!important;padding-bottom:0!important;}
+  body[data-active-panel="siswa"] .app#mainApp{height:auto!important;min-height:0!important;overflow:visible!important;}
+  body[data-active-panel="siswa"] #panel-siswa{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;display:block!important;margin:0!important;padding:0!important;}
+  body[data-active-panel="siswa"] #panel-siswa > .card{height:auto!important;min-height:0!important;max-height:none!important;margin-bottom:0!important;}
+  body[data-active-panel="siswa"] #panel-siswa .tbl-wrap{height:auto!important;min-height:0!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important;}
+}
+</style>
+
+<style id="share-table-fit-fix">
+/* Khusus hasil Share JPEG/PDF: jangan biarkan kolom Nama Siswa terpotong. */
+.share-export-student-table{width:100%!important;max-width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
+.share-export-student-table th:nth-child(1),.share-export-student-table td:nth-child(1){width:3.5%!important;}
+.share-export-student-table th:nth-child(2),.share-export-student-table td:nth-child(2){width:25%!important;}
+.share-export-student-table th:nth-child(3),.share-export-student-table td:nth-child(3){width:9.5%!important;}
+.share-export-student-table th:nth-child(n+4):not(:last-child),.share-export-student-table td:nth-child(n+4):not(:last-child){width:5.17%!important;}
+.share-export-student-table .name-cell{white-space:normal!important;overflow:visible!important;word-break:normal!important;overflow-wrap:anywhere!important;}
+.share-export-student-table th,.share-export-student-table td{box-sizing:border-box!important;}
+</style>
 </head>
 <body>
 <div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
@@ -917,6 +942,11 @@ body{background:#4B3426!important}
 .central-action-choice{width:100%;min-height:48px;border:1px solid var(--line);background:var(--white);color:var(--ink);border-radius:12px;padding:10px 12px;font:600 14px Inter, sans-serif;cursor:pointer;text-align:left}
 .central-action-choice:hover{border-color:var(--amber);background:var(--paper-2)}
 .central-action-choice .choice-main{display:block!important;font-weight:700!important}.central-action-choice .choice-sub{display:block!important;font-size:11px;color:var(--ink-soft);font-weight:500;margin-top:2px}
+.central-action-choice.period-not-started{background:#e4ded2!important;border-color:var(--line)!important;opacity:.55;cursor:not-allowed}
+.central-action-choice.period-not-started:hover{background:#e4ded2!important;border-color:var(--line)!important}
+.central-action-choice.period-not-started .choice-main,.central-action-choice.period-not-started .choice-sub{color:var(--ink-soft)!important}
+.central-action-choice.period-active{background:var(--teal-tint)!important;border:1.5px solid var(--amber)!important;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.central-action-choice.period-active .choice-main{color:var(--amber)!important}
 .central-action-back{margin-top:12px;width:100%;justify-content:center}
 @media(max-width:420px){.landing-export-actions{grid-template-columns:40px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px}.landing-export-actions .btn{padding-left:6px;padding-right:6px;font-size:12px}.landing-utility{width:40px!important;height:40px!important;min-height:40px!important;font-size:18px}.central-action-grid{grid-template-columns:1fr}}
 
@@ -942,6 +972,26 @@ body{background:#4B3426!important}
     border-color:rgba(212,175,55,.28)!important;
     box-shadow:7px 7px 24px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.05)!important;
   }
+
+  /* Kartu periode belum dimulai: lebih gelap */
+  #landingPage .landing-card.period-not-started{
+    background:linear-gradient(145deg,#0c0906 0%,#060504 58%,#0f0b05 100%)!important;
+    border-color:rgba(212,175,55,.16)!important;
+    box-shadow:4px 4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.02)!important;
+  }
+  #landingPage .landing-card.period-not-started .lc-icon,
+  #landingPage .landing-card.period-not-started .lc-label,
+  #landingPage .landing-card.period-not-started .lc-sub,
+  #landingPage .landing-card.period-not-started .lc-arrow{
+    opacity:.55;
+  }
+
+  /* Kartu periode sedang aktif: lebih terang/menonjol */
+  #landingPage .landing-card.period-active{
+    background:linear-gradient(145deg,#2c2210 0%,#1a1509 58%,#382a11 100%)!important;
+    border-color:rgba(212,175,55,.85)!important;
+    box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(212,175,55,.3) inset!important;
+  }
 </style>
 <!-- ===================== HALAMAN UTAMA (BERANDA) ===================== -->
 <div class="landing-page" id="landingPage">
@@ -950,12 +1000,12 @@ body{background:#4B3426!important}
     <h1>BUKU KAS dan TIK</h1><div class="landing-subtitle">Periode 2024-2030</div>
   </header>
   <div class="landing-grid">
-    <button class="landing-card" type="button" onclick="enterClass(0)"><div class="lc-label">Kelas 1</div><div class="lc-sub">Agu 24 – Jun 25</div><div class="lc-count" id="landingCount0">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" type="button" onclick="enterClass(1)"><div class="lc-label">Kelas 2</div><div class="lc-sub">Agu 25 – Jun 26</div><div class="lc-count" id="landingCount1">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" type="button" onclick="enterClass(2)"><div class="lc-label">Kelas 3</div><div class="lc-sub">Agu 26 – Jun 27</div><div class="lc-count" id="landingCount2">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" type="button" onclick="enterClass(3)"><div class="lc-label">Kelas 4</div><div class="lc-sub">Agu 27 – Jun 28</div><div class="lc-count" id="landingCount3">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" type="button" onclick="enterClass(4)"><div class="lc-label">Kelas 5</div><div class="lc-sub">Agu 28 – Jun 29</div><div class="lc-count" id="landingCount4">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" type="button" onclick="enterClass(5)"><div class="lc-label">Kelas 6</div><div class="lc-sub">Agu 29 – Jun 30</div><div class="lc-count" id="landingCount5">Memuat...</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(0)"><div class="lc-label">Kelas 1</div><div class="lc-sub">Agu 24 – Jun 25</div><div class="lc-count" id="landingCount0">Memuat...</div><span class="lc-arrow" id="landingArrow0">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(1)"><div class="lc-label">Kelas 2</div><div class="lc-sub">Agu 25 – Jun 26</div><div class="lc-count" id="landingCount1">Memuat...</div><span class="lc-arrow" id="landingArrow1">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(2)"><div class="lc-label">Kelas 3</div><div class="lc-sub">Agu 26 – Jun 27</div><div class="lc-count" id="landingCount2">Memuat...</div><span class="lc-arrow" id="landingArrow2">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(3)"><div class="lc-label">Kelas 4</div><div class="lc-sub">Agu 27 – Jun 28</div><div class="lc-count" id="landingCount3">Memuat...</div><span class="lc-arrow" id="landingArrow3">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(4)"><div class="lc-label">Kelas 5</div><div class="lc-sub">Agu 28 – Jun 29</div><div class="lc-count" id="landingCount4">Memuat...</div><span class="lc-arrow" id="landingArrow4">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(5)"><div class="lc-label">Kelas 6</div><div class="lc-sub">Agu 29 – Jun 30</div><div class="lc-count" id="landingCount5">Memuat...</div><span class="lc-arrow" id="landingArrow5">›</span></button>
   </div>
   <footer class="landing-footer">
     <button class="btn btn-amber landing-recap-btn" onclick="openAllPeriodsRecap()">📊 Rekap Semua Periode</button>
@@ -991,9 +1041,36 @@ body{background:#4B3426!important}
   </div>
 </div>
 
+<!-- ===================== POPUP KONFIRMASI (pengganti confirm() bawaan) ===================== -->
+<div class="central-action-modal no-print" id="customConfirmModal" style="display:none;z-index:10500;">
+  <div class="central-action-backdrop" onclick="resolveCustomConfirm(false)"></div>
+  <div class="central-action-box database-access-box" style="max-width:360px;">
+    <div class="central-action-head"><h2 id="customConfirmTitle">⚠︎ Konfirmasi</h2><button class="central-action-close" onclick="resolveCustomConfirm(false)">×</button></div>
+    <div id="customConfirmBody" style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:16px;white-space:pre-line;"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="resolveCustomConfirm(false)">Batal</button>
+      <button class="btn btn-amber" id="customConfirmOkBtn" style="flex:1;justify-content:center;" onclick="resolveCustomConfirm(true)">Ya, Lanjutkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== POPUP INPUT (pengganti prompt() bawaan) ===================== -->
+<div class="central-action-modal no-print" id="customPromptModal" style="display:none;z-index:10500;">
+  <div class="central-action-backdrop" onclick="resolveCustomPrompt(null)"></div>
+  <div class="central-action-box database-access-box" style="max-width:360px;">
+    <div class="central-action-head"><h2 id="customPromptTitle">Input</h2><button class="central-action-close" onclick="resolveCustomPrompt(null)">×</button></div>
+    <div id="customPromptBody" style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:8px;"></div>
+    <textarea id="customPromptInput" class="database-access-input" style="letter-spacing:normal;text-align:left;min-height:38px;resize:vertical;"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-ghost" id="customPromptCancelBtn" style="flex:1;justify-content:center;" onclick="resolveCustomPrompt(null)">Batal</button>
+      <button class="btn btn-amber" id="customPromptOkBtn" style="flex:1;justify-content:center;" onclick="submitCustomPrompt()">OK</button>
+    </div>
+  </div>
+</div>
+
 <!-- HALAMAN: REKAP SEMUA PERIODE -->
 <div class="all-periods-page" id="allPeriodsPage" style="display:none;">
-  <div class="btn-row no-print home-action-row">
+  <div class="btn-row no-print home-action-row home-action-fixed">
     <button class="btn btn-ghost home-full-btn" onclick="closeAllPeriodsRecap()">🏠 Beranda</button>
   </div>
   <div class="all-periods-inner">
@@ -1004,9 +1081,9 @@ body{background:#4B3426!important}
   </div>
 </div>
 
-<div id="syncStatus" style="position:fixed;top:10px;left:14px;background:transparent;padding:0;border-radius:0;font-size:11px;font-weight:700;box-shadow:none;z-index:99999;display:none;align-items:center;gap:5px;letter-spacing:.02em;pointer-events:none;"></div>
+<div id="syncStatus" style="position:fixed;top:2px;left:14px;background:transparent;padding:0;border-radius:0;font-size:11px;font-weight:700;box-shadow:none;z-index:99999;display:none;align-items:center;gap:5px;letter-spacing:.02em;pointer-events:none;"></div>
 <div class="app" id="mainApp" style="display:none;">
-<div class="btn-row no-print home-action-row">
+<div class="btn-row no-print home-action-row home-action-fixed">
     <button class="btn btn-ghost home-full-btn" onclick="goToLanding()">🏠 Beranda</button>
   </div>
 
@@ -1809,12 +1886,12 @@ function initTabs(){
 
 // ===================== DATA SISWA: TAMBAH / HAPUS =====================
 async function tambahSiswa(){
-  const nama = prompt('Masukkan nama siswa:');
+  const nama = await customPrompt('Masukkan nama siswa:',{title:'Tambah Siswa'});
   if(nama === null) return;
   const clean = nama.trim().replace(/\s+/g,' ');
-  if(!clean){ alert('Nama siswa tidak boleh kosong.'); return; }
+  if(!clean){ showAppNotice('Nama siswa tidak boleh kosong.',false); return; }
   const exists = state.students.some(s => (s.nama||'').trim().toLowerCase() === clean.toLowerCase());
-  if(exists){ alert('Nama siswa tersebut sudah ada.'); return; }
+  if(exists){ showAppNotice('Nama siswa tersebut sudah ada.',false); return; }
   const nextNo = state.students.length ? Math.max(...state.students.map(s=>Number(s.no)||0)) + 1 : 1;
   if(await cloudMutate('kas',currentPeriodIdx,{op:'addStudent',item:{no:nextNo,nama:clean}})) renderAll();
 }
@@ -1822,7 +1899,7 @@ async function tambahSiswa(){
 async function hapusSiswa(index){
   const siswa = state.students[index];
   if(!siswa) return;
-  const ok = confirm(`Hapus data siswa "${siswa.nama}"?\n\nData transaksi/pembayaran yang sudah tercatat tidak akan dihapus.`);
+  const ok = await customConfirm(`Hapus data siswa "${siswa.nama}"?\n\nData transaksi/pembayaran yang sudah tercatat tidak akan dihapus.`,{title:'Hapus Siswa'});
   if(!ok) return;
   if(await cloudMutate('kas',currentPeriodIdx,{op:'deleteStudent',nama:siswa.nama})) renderAll();
 }
@@ -1926,8 +2003,8 @@ async function submitPemasukan(){
   const jumlahBulan = computeJumlahBulan();
   const jumlah = parseRibuan(document.getElementById('mJumlah').value);
   const keterangan = document.getElementById('mKeterangan').value.trim();
-  if(!nama || !tanggalBayar || !jumlah){ alert('Mohon lengkapi Nama Siswa, Tanggal Bayar, dan Jumlah.'); return; }
-  if(nama === 'LAIN-LAIN' && !keterangan){ alert('Mohon isi Keterangan untuk transaksi Lain-Lain.'); return; }
+  if(!nama || !tanggalBayar || !jumlah){ showAppNotice('Mohon lengkapi Nama Siswa, Tanggal Bayar, dan Jumlah.',false); return; }
+  if(nama === 'LAIN-LAIN' && !keterangan){ showAppNotice('Mohon isi Keterangan untuk transaksi Lain-Lain.',false); return; }
   const item={nama,tanggalBayar,bulanPembukuan,bulanDari,bulanSampai,jumlahBulan,jumlah,keterangan};
   const ok=await cloudMutate('kas',currentPeriodIdx,editMasukId ? {op:'updatePemasukan',id:editMasukId,item} : {op:'addPemasukan',item});
   if(!ok) return;
@@ -1974,7 +2051,7 @@ function editPemasukan(id){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 async function deletePemasukan(id){
-  if(!confirm('Hapus data pemasukan ini?')) return;
+  if(!await customConfirm('Hapus data pemasukan ini?',{title:'Hapus Pemasukan'})) return;
   if(await cloudMutate('kas',currentPeriodIdx,{op:'deletePemasukan',id})) renderAll();
 }
 
@@ -2050,7 +2127,7 @@ async function submitPengeluaran(){
   const bulanPembukuan = tanggal ? tanggal.slice(0,7) : '';
   const keterangan = document.getElementById('kKeterangan').value.trim();
   const jumlah = parseRibuan(document.getElementById('kJumlah').value);
-  if(!tanggal || !keterangan || !jumlah){ alert('Mohon lengkapi Tanggal, Keterangan, dan Jumlah.'); return; }
+  if(!tanggal || !keterangan || !jumlah){ showAppNotice('Mohon lengkapi Tanggal, Keterangan, dan Jumlah.',false); return; }
   const item={tanggal,bulanPembukuan,keterangan,jumlah};
   const ok=await cloudMutate('kas',currentPeriodIdx,editKeluarId ? {op:'updatePengeluaran',id:editKeluarId,item} : {op:'addPengeluaran',item});
   if(!ok) return;
@@ -2081,7 +2158,7 @@ function editPengeluaran(id){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 async function deletePengeluaran(id){
-  if(!confirm('Hapus data pengeluaran ini?')) return;
+  if(!await customConfirm('Hapus data pengeluaran ini?',{title:'Hapus Pengeluaran'})) return;
   if(await cloudMutate('kas',currentPeriodIdx,{op:'deletePengeluaran',id})) renderAll();
 }
 const KELUAR_COLS = [
@@ -2335,7 +2412,7 @@ function renderRekapKas(){
 // Export hanya database transaksi untuk kelas + jenis pembukuan yang dipilih.
 // Data siswa dan rekap bulanan tidak ikut diekspor.
 function exportExcel(){
-  if(typeof XLSX==='undefined'){alert('Library Excel belum tersedia.');return}
+  if(typeof XLSX==='undefined'){showAppNotice('Library Excel belum tersedia.',false);return}
   const wb = XLSX.utils.book_new();
   const kelas = PERIODS[currentPeriodIdx]?.kelas ?? (currentPeriodIdx+1);
 
@@ -2372,7 +2449,7 @@ function exportExcel(){
 }
 
 function tikExportExcel(){
-  if(typeof XLSX==='undefined'){alert('Library Excel belum tersedia.');return}
+  if(typeof XLSX==='undefined'){showAppNotice('Library Excel belum tersedia.',false);return}
   const wb = XLSX.utils.book_new();
   const kelas = PERIODS[currentPeriodIdx]?.kelas ?? (currentPeriodIdx+1);
 
@@ -2738,7 +2815,7 @@ function renderTik(){tikFillStudents();tikFillMonths();tikRenderSiswa();tikRende
 let tikEditMasukId=null;
 async function tikSimpanMasuk(){
   const nama=document.getElementById('tikNama').value,dari=document.getElementById('tikDari').value,sampai=document.getElementById('tikSampai').value||dari,jumlah=parseRibuan(document.getElementById('tikJumlah').value);
-  if(!nama||!dari||!jumlah){alert('Mohon lengkapi Nama, Bulan TIK, dan Jumlah.');return}
+  if(!nama||!dari||!jumlah){showAppNotice('Mohon lengkapi Nama, Bulan TIK, dan Jumlah.',false);return}
   const keterangan=document.getElementById('tikKet').value.trim()||'Iuran TIK';
   const item={nama,bulanDari:dari,bulanSampai:sampai,jumlahBulan:Math.abs(monthIndex(sampai)-monthIndex(dari))+1,jumlah,keterangan};
   if(!tikEditMasukId){const tgl=new Date().toISOString().slice(0,10);Object.assign(item,{tanggalBayar:tgl,bulanPembukuan:tgl.slice(0,7)});}
@@ -2774,14 +2851,14 @@ function tikEditMasuk(id){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 async function tikHapusMasuk(id){
-  if(!confirm('Hapus data pemasukan ini?'))return;
+  if(!await customConfirm('Hapus data pemasukan ini?',{title:'Hapus Pemasukan TIK'}))return;
   if(await cloudMutate('tik',currentPeriodIdx,{op:'deletePemasukan',id})) renderTik();
 }
 let tikEditKeluarId=null;
 async function tikSimpanKeluar(){
   const jumlah=parseRibuan(document.getElementById('tikKeluarJumlah').value);
   const keterangan=document.getElementById('tikKeluarKet').value.trim()||'Setoran';
-  if(!jumlah){alert('Mohon isi jumlah.');return}
+  if(!jumlah){showAppNotice('Mohon isi jumlah.',false);return}
   const existing=tikEditKeluarId?tikState.pengeluaran.find(p=>p.id===tikEditKeluarId):null;
   const tgl=existing?existing.tanggal:new Date().toISOString().slice(0,10);
   const item={tanggal:tgl,bulanPembukuan:tgl.slice(0,7),jumlah,keterangan};
@@ -2813,16 +2890,16 @@ function tikEditKeluar(id){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 async function tikHapusKeluar(id){
-  if(!confirm('Hapus data pengeluaran ini?'))return;
+  if(!await customConfirm('Hapus data pengeluaran ini?',{title:'Hapus Pengeluaran TIK'}))return;
   if(await cloudMutate('tik',currentPeriodIdx,{op:'deletePengeluaran',id})) renderTik();
 }
 async function tikHapusSiswa(index){
   const s=tikState.students[index];
   if(!s)return;
-  if(!confirm(`Hapus siswa ${s.nama}?`))return;
+  if(!await customConfirm(`Hapus siswa ${s.nama}?`,{title:'Hapus Siswa'}))return;
   if(await cloudMutate('tik',currentPeriodIdx,{op:'deleteStudent',nama:s.nama})) renderTik();
 }
-async function tikTambahSiswa(){const nama=prompt('Masukkan nama siswa:');if(nama===null)return;const clean=nama.trim().replace(/\s+/g,' ');if(!clean)return;if(tikState.students.some(s=>s.nama.toLowerCase()===clean.toLowerCase())){alert('Nama sudah ada.');return}if(await cloudMutate('tik',currentPeriodIdx,{op:'addStudent',item:{no:tikState.students.length+1,nama:clean}}))renderTik()}
+async function tikTambahSiswa(){const nama=await customPrompt('Masukkan nama siswa:',{title:'Tambah Siswa'});if(nama===null)return;const clean=nama.trim().replace(/\s+/g,' ');if(!clean)return;if(tikState.students.some(s=>s.nama.toLowerCase()===clean.toLowerCase())){showAppNotice('Nama sudah ada.',false);return}if(await cloudMutate('tik',currentPeriodIdx,{op:'addStudent',item:{no:tikState.students.length+1,nama:clean}}))renderTik()}
 function togglePrintMenu(id){document.querySelectorAll('.print-menu').forEach(x=>{if(x.id!==id)x.classList.remove('show')});document.getElementById(id).classList.toggle('show')}
 document.addEventListener('click',e=>{if(!e.target.closest('.print-menu-wrap'))document.querySelectorAll('.print-menu').forEach(x=>x.classList.remove('show'))});
 
@@ -2858,8 +2935,8 @@ async function shareRekap(mode,type){
     const text=buildShareText(mode);
     try{
       if(navigator.share){ await navigator.share({text}); return; }
-      if(navigator.clipboard){ await navigator.clipboard.writeText(text); alert('Teks rekap sudah disalin. Silakan tempel di WhatsApp atau aplikasi lain.'); return; }
-      prompt('Salin teks berikut:',text);
+      if(navigator.clipboard){ await navigator.clipboard.writeText(text); showAppNotice('Teks rekap sudah disalin. Silakan tempel di WhatsApp atau aplikasi lain.',true); return; }
+      await customPrompt('Salin teks berikut:',{title:'Salin Teks',defaultValue:text,readOnly:true,okText:'Tutup'});
     }catch(err){ if(err.name!=='AbortError') console.error(err); }
     return;
   }
@@ -2893,7 +2970,7 @@ async function shareRekap(mode,type){
   }catch(err){
     document.body.classList.remove('capturing-share');
     console.error(err);
-    alert('Gagal membuat file untuk dibagikan. Pastikan koneksi internet aktif, atau gunakan tombol Cetak sebagai alternatif.');
+    showAppNotice('Gagal membuat file untuk dibagikan. Pastikan koneksi internet aktif, atau gunakan tombol Cetak sebagai alternatif.',false);
   }
 }
 // Cetak Rekap TIK = tabel ringkasan + Data Siswa TIK
@@ -2989,6 +3066,8 @@ async function updateLandingStudentCounts(){
   const now=new Date();
   const currentYear=now.getFullYear();
   const currentMonth=now.getMonth()+1;
+  // Tahun ajaran berjalan dimulai Agustus; sebelum Agustus, tahun ajaran masih yang sebelumnya.
+  const currentSchoolYearStart = currentMonth >= 8 ? currentYear : currentYear - 1;
   await Promise.all(PERIODS.map(async (p,idx)=>{
     const el=document.getElementById('landingCount'+idx);
     if(!el)return;
@@ -2997,6 +3076,7 @@ async function updateLandingStudentCounts(){
     // yaitu mulai Agustus pada tahun ajaran tersebut.
     const periodStarted = (currentYear > p.startYear) ||
       (currentYear === p.startYear && currentMonth >= 8);
+    const isActivePeriod = p.startYear === currentSchoolYearStart;
 
     const card=el.closest('.landing-card');
     if(card){
@@ -3004,6 +3084,13 @@ async function updateLandingStudentCounts(){
       card.setAttribute('aria-disabled', periodStarted ? 'false' : 'true');
       card.style.pointerEvents=periodStarted ? 'auto' : 'none';
       card.style.cursor=periodStarted ? 'pointer' : 'default';
+      card.classList.toggle('period-not-started', !periodStarted);
+      card.classList.toggle('period-active', isActivePeriod);
+      const arrowEl=card.querySelector('.lc-arrow');
+      if(arrowEl){
+        arrowEl.textContent = periodStarted ? '›' : '🔒';
+        arrowEl.classList.toggle('lc-arrow-locked', !periodStarted);
+      }
     }
 
     if(!periodStarted){
@@ -3146,8 +3233,59 @@ async function refreshDatabaseConnection(){
   }
 }
 
+// ===================== POPUP KUSTOM: KONFIRMASI & INPUT (pengganti confirm()/prompt() bawaan) =====================
+let _customConfirmResolve=null;
+function customConfirm(message,opts={}){
+  return new Promise(resolve=>{
+    _customConfirmResolve=resolve;
+    document.getElementById('customConfirmTitle').textContent = opts.title || '⚠︎ Konfirmasi';
+    document.getElementById('customConfirmBody').textContent = message;
+    document.getElementById('customConfirmOkBtn').textContent = opts.okText || 'Ya, Lanjutkan';
+    document.getElementById('customConfirmModal').style.display='flex';
+  });
+}
+function resolveCustomConfirm(val){
+  document.getElementById('customConfirmModal').style.display='none';
+  if(_customConfirmResolve){ const r=_customConfirmResolve; _customConfirmResolve=null; r(val); }
+}
+
+let _customPromptResolve=null;
+function customPrompt(message,opts={}){
+  return new Promise(resolve=>{
+    _customPromptResolve=resolve;
+    document.getElementById('customPromptTitle').textContent = opts.title || 'Input';
+    document.getElementById('customPromptBody').textContent = message;
+    const input=document.getElementById('customPromptInput');
+    input.value = opts.defaultValue || '';
+    input.readOnly = !!opts.readOnly;
+    document.getElementById('customPromptCancelBtn').style.display = opts.readOnly?'none':'';
+    document.getElementById('customPromptOkBtn').textContent = opts.okText || 'OK';
+    document.getElementById('customPromptModal').style.display='flex';
+    setTimeout(()=>{ input.focus(); input.select(); },50);
+  });
+}
+function submitCustomPrompt(){
+  const input=document.getElementById('customPromptInput');
+  const val=input.value;
+  document.getElementById('customPromptModal').style.display='none';
+  if(_customPromptResolve){ const r=_customPromptResolve; _customPromptResolve=null; r(val); }
+}
+function resolveCustomPrompt(val){
+  document.getElementById('customPromptModal').style.display='none';
+  if(_customPromptResolve){ const r=_customPromptResolve; _customPromptResolve=null; r(val); }
+}
+
 const centralActionState={action:null,step:'destination',classIdx:null,book:null,part:null};
-document.addEventListener('keydown',e=>{ if(e.key==='Enter' && document.getElementById('databaseAccessModal')?.style.display==='flex') openDatabaseSheet(); if(e.key==='Escape') closeDatabaseSettings(); });
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && document.getElementById('databaseAccessModal')?.style.display==='flex') openDatabaseSheet();
+  if(e.key==='Enter' && document.getElementById('customConfirmModal')?.style.display==='flex') resolveCustomConfirm(true);
+  if(e.key==='Enter' && document.getElementById('customPromptModal')?.style.display==='flex' && document.activeElement?.id!=='customPromptInput') submitCustomPrompt();
+  if(e.key==='Escape'){
+    closeDatabaseSettings();
+    if(document.getElementById('customConfirmModal')?.style.display==='flex') resolveCustomConfirm(false);
+    if(document.getElementById('customPromptModal')?.style.display==='flex') resolveCustomPrompt(null);
+  }
+});
 function centralActionLabel(a){return a==='export'?'📥 Export':a==='print'?'🖨️ Cetak':'🔗 Share'}
 function openCentralAction(action){
   centralActionState.action=action; centralActionState.step='destination'; centralActionState.classIdx=null; centralActionState.book=null; centralActionState.part=null;
@@ -3155,15 +3293,29 @@ function openCentralAction(action){
   document.getElementById('centralActionModal').style.display='flex';
 }
 function closeCentralAction(){document.getElementById('centralActionModal').style.display='none'}
-function centralChoice(label,sub,onClick){return `<button class="central-action-choice" onclick="${onClick}"><span class="choice-main">${label}</span>${sub?`<span class="choice-sub">${sub}</span>`:''}</button>`}
+function centralChoice(label,sub,onClick,extraClass,disabled){
+  return `<button class="central-action-choice${extraClass?' '+extraClass:''}" ${disabled?'disabled aria-disabled="true"':''} onclick="${disabled?'return false':onClick}"><span class="choice-main">${label}</span>${sub?`<span class="choice-sub">${sub}</span>`:''}</button>`;
+}
 function renderCentralAction(){
   const a=centralActionState.action, step=centralActionState.step;
   document.getElementById('centralActionTitle').textContent=centralActionLabel(a);
   let body='';
   if(step==='destination'){
+    const now=new Date();
+    const currentYear=now.getFullYear();
+    const currentMonth=now.getMonth()+1;
+    // Tahun ajaran berjalan dimulai Agustus; sebelum Agustus, tahun ajaran masih yang sebelumnya.
+    const currentSchoolYearStart = currentMonth >= 8 ? currentYear : currentYear - 1;
     body='<div class="central-action-grid destination-grid">';
-    PERIODS.forEach((p,i)=>body+=centralChoice(`Kelas ${p.kelas}`,`${BULAN_ID_FULL[7]} ${p.startYear} – ${BULAN_ID_FULL[5]} ${p.startYear+1}`,`centralPickClass(${i})`));
-    body+=centralChoice('📊 Rekap Semua Periode','Gabungan Kelas 1–6',`centralPickAllPeriods()`);
+    PERIODS.forEach((p,i)=>{
+      const periodStarted = (currentYear > p.startYear) || (currentYear === p.startYear && currentMonth >= 8);
+      const isActivePeriod = p.startYear === currentSchoolYearStart;
+      const cls = !periodStarted ? 'period-not-started' : (isActivePeriod ? 'period-active' : '');
+      body+=centralChoice(`Kelas ${p.kelas}`,`${BULAN_ID_FULL[7]} ${p.startYear} – ${BULAN_ID_FULL[5]} ${p.startYear+1}`,`centralPickClass(${i})`,cls,!periodStarted);
+    });
+    const activePeriod = PERIODS.find(p=>p.startYear === currentSchoolYearStart);
+    const activeKelas = activePeriod ? activePeriod.kelas : PERIODS[PERIODS.length-1].kelas;
+    body+=centralChoice('📊 Rekap Semua Periode',`Gabungan Kelas 1–${activeKelas}`,`centralPickAllPeriods()`);
     body+='</div>';
   }else if(step==='book'){
     body='<div class="central-action-grid one">'+centralChoice('📒 Kas Bulanan','Pembukuan Kas',`centralPickBook('kas')`)+centralChoice('💻 TIK','Pembukuan TIK',`centralPickBook('tik')` )+'</div>';
@@ -3183,7 +3335,12 @@ function renderCentralAction(){
   document.getElementById('centralActionBody').innerHTML=body;
 }
 function centralBack(step){centralActionState.step=step;renderCentralAction()}
-function centralPickClass(i){centralActionState.classIdx=i;centralActionState.step='book';renderCentralAction()}
+function centralPickClass(i){
+  const p=PERIODS[i]; const now=new Date(); const currentYear=now.getFullYear(); const currentMonth=now.getMonth()+1;
+  const periodStarted = (currentYear > p.startYear) || (currentYear === p.startYear && currentMonth >= 8);
+  if(!periodStarted) return;
+  centralActionState.classIdx=i;centralActionState.step='book';renderCentralAction()
+}
 function centralPickBook(book){centralActionState.book=book;centralActionState.step='part';renderCentralAction()}
 function centralPickPart(part){centralActionState.part=part;if(centralActionState.action==='share'){centralActionState.step='sharetype';renderCentralAction();}else centralExecute()}
 function centralPickAllPeriods(){
@@ -3303,17 +3460,59 @@ async function centralDoShare(type){
 }
 async function shareClassPart(book,part,type){
   if(type==='text'){
-    const text=centralShareText(book,part);try{if(navigator.share){await navigator.share({title:`${book==='kas'?'Kas':'TIK'} Kelas ${PERIODS[currentPeriodIdx].kelas}B`,text});return}if(navigator.clipboard){await navigator.clipboard.writeText(text);alert('Teks rekap sudah disalin.');return}prompt('Salin teks berikut:',text)}catch(e){if(e.name!=='AbortError')console.error(e)}return;
+    const text=centralShareText(book,part);
+    try{
+      if(navigator.share){await navigator.share({title:`${book==='kas'?'Kas':'TIK'} Kelas ${PERIODS[currentPeriodIdx].kelas}B`,text});return}
+      if(navigator.clipboard){await navigator.clipboard.writeText(text);showAppNotice('Teks rekap sudah disalin.',true);return}
+      await customPrompt('Salin teks berikut:',{title:'Salin Teks',defaultValue:text,readOnly:true,okText:'Tutup'})
+    }catch(e){if(e.name!=='AbortError')console.error(e)}
+    return;
   }
   await loadShareLibs();
-  const ids=book==='kas'?(part==='all'?['panel-rekap','panel-siswa','panel-bulanan','panel-masuk','panel-keluar']:part==='rekap'?['panel-rekap','panel-siswa']:part==='rincian'?['panel-masuk','panel-keluar']:['panel-bulanan']):(part==='all'?['tik-rekap','tik-siswa','tik-masuk','tik-keluar']:part==='rekap'?['tik-rekap','tik-siswa']:['tik-masuk','tik-keluar']);
-  const wrap=document.createElement('div');wrap.style.cssText='position:absolute;left:-100000px;top:0;width:900px;background:#fff;padding:20px;';
-  ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const c=el.cloneNode(true);c.style.display='block';c.style.visibility='visible';c.querySelectorAll('.no-print').forEach(x=>x.remove());wrap.appendChild(c)});
-  document.body.appendChild(wrap);let canvas;try{canvas=await html2canvas(wrap,{backgroundColor:'#fff',scale:1.5,useCORS:true,logging:false})}finally{wrap.remove()}
+  const ids=book==='kas'
+    ?(part==='all'?['panel-rekap','panel-siswa','panel-bulanan','panel-masuk','panel-keluar']:part==='rekap'?['panel-rekap','panel-siswa']:part==='rincian'?['panel-masuk','panel-keluar']:['panel-bulanan'])
+    :(part==='all'?['tik-rekap','tik-siswa','tik-masuk','tik-keluar']:part==='rekap'?['tik-rekap','tik-siswa']:['tik-masuk','tik-keluar']);
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:absolute;left:-100000px;top:0;width:1200px;max-width:none;background:#fff;padding:24px;box-sizing:border-box;overflow:visible;';
+  ids.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const c=el.cloneNode(true);
+    c.style.display='block';c.style.visibility='visible';c.style.width='100%';c.style.maxWidth='none';c.style.height='auto';c.style.maxHeight='none';c.style.overflow='visible';
+    c.querySelectorAll('.no-print').forEach(x=>x.remove());
+    c.querySelectorAll('.tbl-wrap,.month-tbl-wrap,.list-wrap').forEach(x=>{
+      x.style.maxHeight='none';x.style.height='auto';x.style.overflow='visible';x.style.overflowX='visible';x.style.overflowY='visible';x.style.width='100%';x.style.maxWidth='none';
+    });
+    c.querySelectorAll('#tblSiswa,.siswa-table').forEach(t=>{
+      t.classList.add('share-export-student-table');
+      t.style.width='100%';t.style.maxWidth='100%';t.style.tableLayout='fixed';t.style.borderCollapse='collapse';
+      t.querySelectorAll('th:nth-child(1),td:nth-child(1)').forEach(x=>x.style.width='3.5%');
+      t.querySelectorAll('th:nth-child(2),td:nth-child(2)').forEach(x=>{x.style.width='25%';x.style.whiteSpace='normal';x.style.overflow='visible';x.style.wordBreak='normal';x.style.overflowWrap='anywhere';});
+      t.querySelectorAll('th:nth-child(3),td:nth-child(3)').forEach(x=>x.style.width='9.5%');
+      t.querySelectorAll('th:nth-child(n+4):not(:last-child),td:nth-child(n+4):not(:last-child)').forEach(x=>x.style.width='5.17%');
+    });
+    c.querySelectorAll('.month-tbl-wrap table').forEach(t=>{
+      t.style.width='100%';t.style.maxWidth='100%';t.style.tableLayout='fixed';t.style.whiteSpace='normal';
+    });
+    wrap.appendChild(c);
+  });
+  document.body.appendChild(wrap);
+  let canvas;
+  try{
+    canvas=await html2canvas(wrap,{backgroundColor:'#fff',scale:2,useCORS:true,logging:false,width:wrap.scrollWidth,height:wrap.scrollHeight,windowWidth:wrap.scrollWidth,windowHeight:wrap.scrollHeight});
+  }finally{wrap.remove()}
   if(type==='jpeg'){
-    const blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',.9));const file=new File([blob],`Kelas_${PERIODS[currentPeriodIdx].kelas}_${book}_${part}.jpg`,{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:file.name});return}catch(e){if(e.name==='AbortError')return}}downloadBlob(blob,file.name);alert('File JPEG sudah disimpan.');
+    const blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',.92));
+    const file=new File([blob],`Kelas_${PERIODS[currentPeriodIdx].kelas}_${book}_${part}.jpg`,{type:'image/jpeg'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:file.name});return}catch(e){if(e.name==='AbortError')return}}
+    downloadBlob(blob,file.name);showAppNotice('File JPEG sudah disimpan.',true);
   }else{
-    const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:canvas.width>canvas.height?'landscape':'portrait',unit:'px',format:[canvas.width,canvas.height],compress:true});pdf.addImage(canvas.toDataURL('image/jpeg',.9),'JPEG',0,0,canvas.width,canvas.height);const blob=pdf.output('blob');const file=new File([blob],`Kelas_${PERIODS[currentPeriodIdx].kelas}_${book}_${part}.pdf`,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:file.name});return}catch(e){if(e.name==='AbortError')return}}downloadBlob(blob,file.name);alert('File PDF sudah disimpan.');
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:canvas.width>canvas.height?'landscape':'portrait',unit:'px',format:[canvas.width,canvas.height],compress:true});
+    pdf.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',0,0,canvas.width,canvas.height);
+    const blob=pdf.output('blob');
+    const file=new File([blob],`Kelas_${PERIODS[currentPeriodIdx].kelas}_${book}_${part}.pdf`,{type:'application/pdf'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:file.name});return}catch(e){if(e.name==='AbortError')return}}
+    downloadBlob(blob,file.name);showAppNotice('File PDF sudah disimpan.',true);
   }
 }
 async function centralDoAllShare(type){closeCentralAction();await shareAllPeriods(type)}
@@ -3327,7 +3526,7 @@ function openAllPeriodsRecap(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function exportAllPeriodsExcel(){
-  if(typeof XLSX==='undefined'){alert('Library Excel belum tersedia.');return;}
+  if(typeof XLSX==='undefined'){showAppNotice('Library Excel belum tersedia.',false);return;}
   const wb=XLSX.utils.book_new();
   const aoa=[['REKAP SEMUA PERIODE'],[],['KAS BULANAN'],['PERIODE','MASUK','KELUAR','SALDO']];
   let tm=0,tk=0;
@@ -3373,8 +3572,8 @@ async function shareAllPeriods(type){
   if(type==='text'){
     try{
       if(navigator.share){await navigator.share({title:'Rekap Semua Periode',text});return;}
-      if(navigator.clipboard){await navigator.clipboard.writeText(text);alert('Teks rekap sudah disalin. Silakan tempel di WhatsApp atau aplikasi lain.');return;}
-      prompt('Salin teks berikut:',text);
+      if(navigator.clipboard){await navigator.clipboard.writeText(text);showAppNotice('Teks rekap sudah disalin. Silakan tempel di WhatsApp atau aplikasi lain.',true);return;}
+      await customPrompt('Salin teks berikut:',{title:'Salin Teks',defaultValue:text,readOnly:true,okText:'Tutup'});
     }catch(e){if(e.name!=='AbortError')console.error(e)}
     return;
   }
@@ -3394,7 +3593,7 @@ async function shareAllPeriods(type){
         try{ await navigator.share({files:[file],title:'Rekap Semua Periode'}); return; }catch(e){ if(e.name==='AbortError') return; }
       }
       downloadBlob(blob,file.name);
-      alert('File JPEG sudah disimpan. Silakan bagikan dari Galeri/File.');
+      showAppNotice('File JPEG sudah disimpan. Silakan bagikan dari Galeri/File.',true);
     }else if(type==='pdf'){
       const {jsPDF}=window.jspdf;
       const pdf=new jsPDF({orientation:canvas.width>canvas.height?'landscape':'portrait',unit:'px',format:[canvas.width,canvas.height],compress:true});
@@ -3405,12 +3604,12 @@ async function shareAllPeriods(type){
         try{ await navigator.share({files:[file],title:'Rekap Semua Periode'}); return; }catch(e){ if(e.name==='AbortError') return; }
       }
       downloadBlob(blob,file.name);
-      alert('File PDF sudah disimpan. Silakan bagikan dari File Manager.');
+      showAppNotice('File PDF sudah disimpan. Silakan bagikan dari File Manager.',true);
     }
   }catch(e){
     document.body.classList.remove('capturing-share');
     console.error(e);
-    alert('Gagal membuat file share. Pastikan koneksi internet aktif lalu coba lagi.');
+    showAppNotice('Gagal membuat file share. Pastikan koneksi internet aktif lalu coba lagi.',false);
   }
 }
 function closeAllPeriodsRecap(){
