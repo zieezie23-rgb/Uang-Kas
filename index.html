@@ -1002,6 +1002,34 @@ async function cloudSave(kind, idx, data){
   }
 }
 
+// Penyimpanan transaksi memakai operasi per-baris di server. Setelah server selesai,
+// state kelas dimuat ulang agar perubahan dari HP/laptop lain tetap ikut terlihat.
+async function cloudMutate(kind, idx, req){
+  try{
+    await apiPost(kind==='kas' ? 'mutateKas' : 'mutateTik', {
+      periodIdx:String(idx),
+      payload:JSON.stringify(req)
+    });
+    const fresh=await apiGet(kind==='kas' ? 'getKasState' : 'getTikState',{periodIdx:String(idx)});
+    if(!fresh) throw new Error('Data server kosong setelah perubahan.');
+    if(kind==='kas'){
+      state=fresh;
+      backfillKeterangan();
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    }else{
+      tikState=fresh;
+      localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
+    }
+    cloudOnline=true; placeSyncBadge();
+    return true;
+  }catch(e){
+    cloudOnline=false; placeSyncBadge();
+    console.error(e);
+    alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
+    return false;
+  }
+}
+
 // ===================== STATE =====================
 let STORAGE_KEY = kasStorageKeyFor(currentPeriodIdx);
 let state = null;
@@ -1182,7 +1210,7 @@ function initTabs(){
 }
 
 // ===================== DATA SISWA: TAMBAH / HAPUS =====================
-function tambahSiswa(){
+async function tambahSiswa(){
   const nama = prompt('Masukkan nama siswa:');
   if(nama === null) return;
   const clean = nama.trim().replace(/\s+/g,' ');
@@ -1190,20 +1218,15 @@ function tambahSiswa(){
   const exists = state.students.some(s => (s.nama||'').trim().toLowerCase() === clean.toLowerCase());
   if(exists){ alert('Nama siswa tersebut sudah ada.'); return; }
   const nextNo = state.students.length ? Math.max(...state.students.map(s=>Number(s.no)||0)) + 1 : 1;
-  state.students.push({no: nextNo, nama: clean});
-  saveState();
-  renderAll();
+  if(await cloudMutate('kas',currentPeriodIdx,{op:'addStudent',item:{no:nextNo,nama:clean}})) renderAll();
 }
 
-function hapusSiswa(index){
+async function hapusSiswa(index){
   const siswa = state.students[index];
   if(!siswa) return;
   const ok = confirm(`Hapus data siswa "${siswa.nama}"?\n\nData transaksi/pembayaran yang sudah tercatat tidak akan dihapus.`);
   if(!ok) return;
-  state.students.splice(index,1);
-  state.students.forEach((s,i)=>{ s.no = i+1; });
-  saveState();
-  renderAll();
+  if(await cloudMutate('kas',currentPeriodIdx,{op:'deleteStudent',nama:siswa.nama})) renderAll();
 }
 
 // ===================== RENDER: DATA SISWA =====================
@@ -1295,7 +1318,7 @@ function updateMasukReadout(){
   document.getElementById('mJumlah').value = (n * IURAN).toLocaleString('id-ID');
 }
 
-function submitPemasukan(){
+async function submitPemasukan(){
   const nama = document.getElementById('mNama').value;
   const existing = editMasukId ? state.pemasukan.find(p=>p.id===editMasukId) : null;
   const tanggalBayar = existing ? existing.tanggalBayar : new Date().toISOString().slice(0,10);
@@ -1305,29 +1328,14 @@ function submitPemasukan(){
   const jumlahBulan = computeJumlahBulan();
   const jumlah = parseRibuan(document.getElementById('mJumlah').value);
   const keterangan = document.getElementById('mKeterangan').value.trim();
-
-  if(!nama || !tanggalBayar || !jumlah){
-    alert('Mohon lengkapi Nama Siswa, Tanggal Bayar, dan Jumlah.');
-    return;
-  }
-  if(nama === 'LAIN-LAIN' && !keterangan){
-    alert('Mohon isi Keterangan untuk transaksi Lain-Lain.');
-    return;
-  }
-
-  if(editMasukId){
-    const item = state.pemasukan.find(p=>p.id===editMasukId);
-    Object.assign(item, {nama, tanggalBayar, bulanPembukuan, bulanDari, bulanSampai, jumlahBulan, jumlah, keterangan});
-    editMasukId = null;
-  } else {
-    state.pemasukan.push({
-      id: state.nextMasukId++, nama, tanggalBayar, bulanPembukuan, bulanDari, bulanSampai, jumlahBulan, jumlah, keterangan
-    });
-  }
-  saveState();
-  resetFormMasuk();
-  renderAll();
+  if(!nama || !tanggalBayar || !jumlah){ alert('Mohon lengkapi Nama Siswa, Tanggal Bayar, dan Jumlah.'); return; }
+  if(nama === 'LAIN-LAIN' && !keterangan){ alert('Mohon isi Keterangan untuk transaksi Lain-Lain.'); return; }
+  const item={nama,tanggalBayar,bulanPembukuan,bulanDari,bulanSampai,jumlahBulan,jumlah,keterangan};
+  const ok=await cloudMutate('kas',currentPeriodIdx,editMasukId ? {op:'updatePemasukan',id:editMasukId,item} : {op:'addPemasukan',item});
+  if(!ok) return;
+  editMasukId=null; resetFormMasuk(); renderAll();
 }
+
 function resetFormMasuk(){
   editMasukId = null;
   document.getElementById('formMasukTitle').textContent = 'Input Pemasukan';
@@ -1367,11 +1375,9 @@ function editPemasukan(id){
   document.querySelector('[data-tab="masuk"]').click();
   window.scrollTo({top:0, behavior:'smooth'});
 }
-function deletePemasukan(id){
+async function deletePemasukan(id){
   if(!confirm('Hapus data pemasukan ini?')) return;
-  state.pemasukan = state.pemasukan.filter(p=>p.id!==id);
-  saveState();
-  renderAll();
+  if(await cloudMutate('kas',currentPeriodIdx,{op:'deletePemasukan',id})) renderAll();
 }
 
 const MASUK_COLS = [
@@ -1440,27 +1446,19 @@ function renderMasuk(){
 
 // ===================== FORM: INPUT PENGELUARAN =====================
 let editKeluarId = null;
-function submitPengeluaran(){
+async function submitPengeluaran(){
   const existing = editKeluarId ? state.pengeluaran.find(p=>p.id===editKeluarId) : null;
   const tanggal = existing ? existing.tanggal : new Date().toISOString().slice(0,10);
   const bulanPembukuan = tanggal ? tanggal.slice(0,7) : '';
   const keterangan = document.getElementById('kKeterangan').value.trim();
   const jumlah = parseRibuan(document.getElementById('kJumlah').value);
-  if(!tanggal || !keterangan || !jumlah){
-    alert('Mohon lengkapi Tanggal, Keterangan, dan Jumlah.');
-    return;
-  }
-  if(editKeluarId){
-    const item = state.pengeluaran.find(p=>p.id===editKeluarId);
-    Object.assign(item, {tanggal, bulanPembukuan, keterangan, jumlah});
-    editKeluarId = null;
-  } else {
-    state.pengeluaran.push({ id: state.nextKeluarId++, tanggal, bulanPembukuan, keterangan, jumlah });
-  }
-  saveState();
-  resetFormKeluar();
-  renderAll();
+  if(!tanggal || !keterangan || !jumlah){ alert('Mohon lengkapi Tanggal, Keterangan, dan Jumlah.'); return; }
+  const item={tanggal,bulanPembukuan,keterangan,jumlah};
+  const ok=await cloudMutate('kas',currentPeriodIdx,editKeluarId ? {op:'updatePengeluaran',id:editKeluarId,item} : {op:'addPengeluaran',item});
+  if(!ok) return;
+  editKeluarId=null; resetFormKeluar(); renderAll();
 }
+
 function resetFormKeluar(){
   editKeluarId = null;
   document.getElementById('formKeluarTitle').textContent = 'Input Pengeluaran';
@@ -1484,11 +1482,9 @@ function editPengeluaran(id){
   document.querySelector('[data-tab="keluar"]').click();
   window.scrollTo({top:0, behavior:'smooth'});
 }
-function deletePengeluaran(id){
+async function deletePengeluaran(id){
   if(!confirm('Hapus data pengeluaran ini?')) return;
-  state.pengeluaran = state.pengeluaran.filter(p=>p.id!==id);
-  saveState();
-  renderAll();
+  if(await cloudMutate('kas',currentPeriodIdx,{op:'deletePengeluaran',id})) renderAll();
 }
 const KELUAR_COLS = [
   {key:'no', label:'No', style:'width:34px;'},
@@ -2115,20 +2111,17 @@ function tikRenderRekap(){
 }
 function renderTik(){tikFillStudents();tikFillMonths();tikRenderSiswa();tikRenderLists();tikRenderRekap();document.getElementById('tikTanggal').value=todayText();document.getElementById('tikKeluarTanggal').value=todayText();document.getElementById('tikJumlah').addEventListener('input',formatRibuanInput);document.getElementById('tikKeluarJumlah').addEventListener('input',formatRibuanInput)}
 let tikEditMasukId=null;
-function tikSimpanMasuk(){
+async function tikSimpanMasuk(){
   const nama=document.getElementById('tikNama').value,dari=document.getElementById('tikDari').value,sampai=document.getElementById('tikSampai').value||dari,jumlah=parseRibuan(document.getElementById('tikJumlah').value);
   if(!nama||!dari||!jumlah){alert('Mohon lengkapi Nama, Bulan TIK, dan Jumlah.');return}
   const keterangan=document.getElementById('tikKet').value.trim()||'Iuran TIK';
-  if(tikEditMasukId){
-    const item=tikState.pemasukan.find(p=>p.id===tikEditMasukId);
-    if(item){Object.assign(item,{nama,bulanDari:dari,bulanSampai:sampai,jumlahBulan:Math.abs(monthIndex(sampai)-monthIndex(dari))+1,jumlah,keterangan});}
-    tikEditMasukId=null;
-  } else {
-    const tgl=new Date().toISOString().slice(0,10);
-    tikState.pemasukan.push({id:tikState.nextMasukId++,nama,tanggalBayar:tgl,bulanPembukuan:tgl.slice(0,7),bulanDari:dari,bulanSampai:sampai,jumlahBulan:Math.abs(monthIndex(sampai)-monthIndex(dari))+1,jumlah,keterangan});
-  }
-  saveTik();tikResetFormMasuk();renderTik();tikShow('masuk')
+  const item={nama,bulanDari:dari,bulanSampai:sampai,jumlahBulan:Math.abs(monthIndex(sampai)-monthIndex(dari))+1,jumlah,keterangan};
+  if(!tikEditMasukId){const tgl=new Date().toISOString().slice(0,10);Object.assign(item,{tanggalBayar:tgl,bulanPembukuan:tgl.slice(0,7)});}
+  const ok=await cloudMutate('tik',currentPeriodIdx,tikEditMasukId?{op:'updatePemasukan',id:tikEditMasukId,item}:{op:'addPemasukan',item});
+  if(!ok)return;
+  tikEditMasukId=null;tikResetFormMasuk();renderTik();tikShow('masuk')
 }
+
 function tikResetFormMasuk(){
   tikEditMasukId=null;
   document.getElementById('tikMasukFormTitle').textContent='Input Pemasukan TIK';
@@ -2155,26 +2148,23 @@ function tikEditMasuk(id){
   tikShow('masuk');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function tikHapusMasuk(id){
+async function tikHapusMasuk(id){
   if(!confirm('Hapus data pemasukan ini?'))return;
-  tikState.pemasukan=tikState.pemasukan.filter(p=>p.id!==id);
-  saveTik();renderTik();
+  if(await cloudMutate('tik',currentPeriodIdx,{op:'deletePemasukan',id})) renderTik();
 }
 let tikEditKeluarId=null;
-function tikSimpanKeluar(){
+async function tikSimpanKeluar(){
   const jumlah=parseRibuan(document.getElementById('tikKeluarJumlah').value);
   const keterangan=document.getElementById('tikKeluarKet').value.trim()||'Setoran';
   if(!jumlah){alert('Mohon isi jumlah.');return}
-  if(tikEditKeluarId){
-    const item=tikState.pengeluaran.find(p=>p.id===tikEditKeluarId);
-    if(item){Object.assign(item,{jumlah,keterangan});}
-    tikEditKeluarId=null;
-  } else {
-    const tgl=new Date().toISOString().slice(0,10);
-    tikState.pengeluaran.push({id:tikState.nextKeluarId++,tanggal:tgl,bulanPembukuan:tgl.slice(0,7),jumlah,keterangan});
-  }
-  saveTik();tikResetFormKeluar();renderTik();tikShow('keluar')
+  const existing=tikEditKeluarId?tikState.pengeluaran.find(p=>p.id===tikEditKeluarId):null;
+  const tgl=existing?existing.tanggal:new Date().toISOString().slice(0,10);
+  const item={tanggal:tgl,bulanPembukuan:tgl.slice(0,7),jumlah,keterangan};
+  const ok=await cloudMutate('tik',currentPeriodIdx,tikEditKeluarId?{op:'updatePengeluaran',id:tikEditKeluarId,item}:{op:'addPengeluaran',item});
+  if(!ok)return;
+  tikEditKeluarId=null;tikResetFormKeluar();renderTik();tikShow('keluar')
 }
+
 function tikResetFormKeluar(){
   tikEditKeluarId=null;
   document.getElementById('tikKeluarFormTitle').textContent='Input Pengeluaran TIK';
@@ -2197,21 +2187,17 @@ function tikEditKeluar(id){
   tikShow('keluar');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function tikHapusKeluar(id){
+async function tikHapusKeluar(id){
   if(!confirm('Hapus data pengeluaran ini?'))return;
-  tikState.pengeluaran=tikState.pengeluaran.filter(p=>p.id!==id);
-  saveTik();renderTik();
+  if(await cloudMutate('tik',currentPeriodIdx,{op:'deletePengeluaran',id})) renderTik();
 }
-function tikHapusSiswa(index){
+async function tikHapusSiswa(index){
   const s=tikState.students[index];
   if(!s)return;
   if(!confirm(`Hapus siswa ${s.nama}?`))return;
-  tikState.students.splice(index,1);
-  tikState.students.forEach((x,i)=>x.no=i+1);
-  saveTik();
-  renderTik();
+  if(await cloudMutate('tik',currentPeriodIdx,{op:'deleteStudent',nama:s.nama})) renderTik();
 }
-function tikTambahSiswa(){const nama=prompt('Masukkan nama siswa:');if(nama===null)return;const clean=nama.trim().replace(/\s+/g,' ');if(!clean)return;if(tikState.students.some(s=>s.nama.toLowerCase()===clean.toLowerCase())){alert('Nama sudah ada.');return}tikState.students.push({no:tikState.students.length+1,nama:clean});saveTik();renderTik()}
+async function tikTambahSiswa(){const nama=prompt('Masukkan nama siswa:');if(nama===null)return;const clean=nama.trim().replace(/\s+/g,' ');if(!clean)return;if(tikState.students.some(s=>s.nama.toLowerCase()===clean.toLowerCase())){alert('Nama sudah ada.');return}if(await cloudMutate('tik',currentPeriodIdx,{op:'addStudent',item:{no:tikState.students.length+1,nama:clean}}))renderTik()}
 function togglePrintMenu(id){document.querySelectorAll('.print-menu').forEach(x=>{if(x.id!==id)x.classList.remove('show')});document.getElementById(id).classList.toggle('show')}
 document.addEventListener('click',e=>{if(!e.target.closest('.print-menu-wrap'))document.querySelectorAll('.print-menu').forEach(x=>x.classList.remove('show'))});
 
