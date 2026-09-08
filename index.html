@@ -1069,11 +1069,24 @@ async function cloudMutate(kind, idx, req){
       localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
     }
     cloudOnline=true; placeSyncBadge();
+    const op=req && req.op ? req.op : '';
+    const successMessages={
+      addStudent:'Siswa berhasil ditambahkan.',
+      deleteStudent:'Siswa berhasil dihapus.',
+      addPemasukan:'Pemasukan berhasil disimpan.',
+      updatePemasukan:'Pemasukan berhasil diperbarui.',
+      deletePemasukan:'Pemasukan berhasil dihapus.',
+      addPengeluaran:'Pengeluaran berhasil disimpan.',
+      updatePengeluaran:'Pengeluaran berhasil diperbarui.',
+      deletePengeluaran:'Pengeluaran berhasil dihapus.'
+    };
+    if(typeof showAppNotice==='function') showAppNotice(successMessages[op] || 'Perubahan berhasil disimpan ke database.',true);
     return true;
   }catch(e){
     cloudOnline=false; placeSyncBadge();
     console.error(e);
-    alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
+    if(typeof showAppNotice==='function') showAppNotice('Perubahan gagal disimpan. '+(e.message||e),false);
+    else alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
     return false;
   }
 }
@@ -2044,8 +2057,21 @@ async function loadTik(){
     if(saved){ try{ x=JSON.parse(saved); }catch(err){ x=null; } }
   }
   if(x&&Array.isArray(x.students)&&x.students.length){
+    // Kelas 3: daftar siswa TIK mengikuti daftar siswa Kas pada periode yang sama.
+    // Ini mencegah data lama/test di state TIK (mis. hanya 1 siswa) menimpa 32 siswa Kelas 3.
+    let studentsSynced=false;
+    if(currentPeriodIdx===KELAS3_PERIOD_IDX && state && Array.isArray(state.students) && state.students.length){
+      const kasStudents=state.students.map(s=>({no:s.no,nama:s.nama}));
+      studentsSynced=JSON.stringify(x.students)!==JSON.stringify(kasStudents);
+      x.students=kasStudents;
+    }
     const needMasuk=!Array.isArray(x.pemasukan) || x.pemasukan.length===0;
     const needKeluar=!Array.isArray(x.pengeluaran) || x.pengeluaran.length===0;
+    if(studentsSynced){
+      // Simpan kembali agar state TIK di database juga memakai daftar 32 siswa yang benar.
+      tikState=x;
+      saveTik();
+    }
     if(needMasuk || needKeluar){
       const seeded=tikSeed();
       if(needMasuk){ x.pemasukan=seeded.pemasukan; x.nextMasukId=seeded.nextMasukId; }
