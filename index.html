@@ -1069,24 +1069,11 @@ async function cloudMutate(kind, idx, req){
       localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
     }
     cloudOnline=true; placeSyncBadge();
-    const op=req && req.op ? req.op : '';
-    const successMessages={
-      addStudent:'Siswa berhasil ditambahkan.',
-      deleteStudent:'Siswa berhasil dihapus.',
-      addPemasukan:'Pemasukan berhasil disimpan.',
-      updatePemasukan:'Pemasukan berhasil diperbarui.',
-      deletePemasukan:'Pemasukan berhasil dihapus.',
-      addPengeluaran:'Pengeluaran berhasil disimpan.',
-      updatePengeluaran:'Pengeluaran berhasil diperbarui.',
-      deletePengeluaran:'Pengeluaran berhasil dihapus.'
-    };
-    if(typeof showAppNotice==='function') showAppNotice(successMessages[op] || 'Perubahan berhasil disimpan ke database.',true);
     return true;
   }catch(e){
     cloudOnline=false; placeSyncBadge();
     console.error(e);
-    if(typeof showAppNotice==='function') showAppNotice('Perubahan gagal disimpan. '+(e.message||e),false);
-    else alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
+    alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
     return false;
   }
 }
