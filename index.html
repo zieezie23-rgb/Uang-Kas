@@ -510,11 +510,7 @@ button[onclick*="pemasukan"] span, button[onclick*="pengeluaran"] span, button[o
 @media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;0,900;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));
-}
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;0,900;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><script>/* Service worker dinonaktifkan agar kompatibel dengan Google Apps Script Web App. */</script>
 </head>
 <body>
 <div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
@@ -913,14 +909,47 @@ function monthLabel(k){ const m = MONTHS.find(x=>x.key===k); return m? m.label :
 function monthIndex(k){ return MONTHS.findIndex(x=>x.key===k); }
 function yr2(label){ return formatBulanKasSingkat(label||'').replace(/(\d{4})/g, y=>y.slice(2)); }
 
-// ===================== PENYIMPANAN LOKAL (TANPA CLOUD/DATABASE) =====================
-// Versi ini sengaja TIDAK menyinkronkan data ke server/database mana pun.
-// Semua data hanya disimpan di localStorage browser yang sedang dipakai.
-function placeSyncBadge(){ /* badge status cloud dinonaktifkan pada versi lokal */ }
-function setSyncStatus(){ /* tidak ada status sinkronisasi pada versi lokal */ }
+// ===================== PENYIMPANAN GOOGLE SHEETS + APPS SCRIPT =====================
+// Data utama disimpan di Google Spreadsheet melalui google.script.run.
+// localStorage tetap dipakai sebagai fallback/migrasi jika data cloud belum tersedia.
+let cloudOnline = false;
+function gasRun(fn, args=[]){
+  return new Promise((resolve,reject)=>{
+    if(!window.google || !google.script || !google.script.run){
+      reject(new Error('Google Apps Script tidak tersedia. Buka aplikasi dari URL Web App Apps Script.'));
+      return;
+    }
+    let runner = google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(err=>reject(err instanceof Error ? err : new Error(String(err))));
+    runner[fn](...args);
+  });
+}
+function placeSyncBadge(){
+  const el=document.getElementById('syncStatus');
+  if(!el) return;
+  el.style.display='flex';
+  el.innerHTML=cloudOnline ? '☁️ Tersinkron ke Google Sheets' : '⚠️ Mode lokal / belum terhubung';
+  el.style.color=cloudOnline ? 'var(--amber)' : 'var(--ink-soft)';
+}
+function setSyncStatus(text, ok=true){
+  const el=document.getElementById('syncStatus');
+  if(!el) return;
+  el.style.display='flex'; el.textContent=text; el.style.color=ok?'var(--amber)':'var(--coral)';
+}
 function hideCloudOverlay(){
   const el = document.getElementById('cloudLoadingOverlay');
   if(el) el.style.display = 'none';
+}
+async function cloudSave(kind, idx, data){
+  try{
+    await gasRun(kind==='kas' ? 'saveKasState' : 'saveTikState',[idx, data]);
+    cloudOnline=true; placeSyncBadge();
+    return true;
+  }catch(e){
+    cloudOnline=false; placeSyncBadge(); console.error(e);
+    return false;
+  }
 }
 
 // ===================== STATE =====================
@@ -930,16 +959,7 @@ let state = null;
 // Data Kas Kelas 3B resmi dari file Excel "Uang Kas Kelas 3B.xlsx".
 // Versi ini menghapus cache data lama Kelas 3B sekali saja agar data Excel baru benar-benar dipakai.
 const KAS3B_SEED_VERSION = '2026-09-07-excel-01';
-function resetOldKas3BDataIfNeeded(){
-  if(currentPeriodIdx !== KELAS3_PERIOD_IDX) return;
-  const markerKey = 'kas3b_seed_version';
-  const marker = localStorage.getItem(markerKey);
-  if(marker !== KAS3B_SEED_VERSION){
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.setItem(markerKey, KAS3B_SEED_VERSION);
-  }
-}
-resetOldKas3BDataIfNeeded();
+function resetOldKas3BDataIfNeeded(){ /* tidak diperlukan pada penyimpanan cloud */ }resetOldKas3BDataIfNeeded();
 
 function baseSeedStudents(){
   const seed = JSON.parse(document.getElementById('seed-data').textContent);
@@ -955,45 +975,64 @@ function periodSeedElId(idx){
 }
 async function loadState(){
   let candidate = null;
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if(saved){ try{ candidate = JSON.parse(saved); }catch(e){ candidate = null; } }
+  try{
+    candidate = await gasRun('getKasState',[currentPeriodIdx]);
+    cloudOnline = true;
+  }catch(e){
+    cloudOnline = false;
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved){ try{ candidate = JSON.parse(saved); }catch(err){ candidate = null; } }
+  }
   const valid = candidate && Array.isArray(candidate.students) && candidate.students.length > 0
     && Array.isArray(candidate.pemasukan) && Array.isArray(candidate.pengeluaran);
   if(valid){
     state = candidate;
     backfillKeterangan();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    return;
+    if(cloudOnline) return;
   }
-  const seedElId = periodSeedElId(currentPeriodIdx);
-  if(seedElId){
-    // Periode dengan data historis: gunakan data yang sudah ada sebelumnya.
-    const seed = JSON.parse(document.getElementById(seedElId).textContent);
-    state = {
-      students: seed.students,
-      pemasukan: seed.pemasukan,
-      pengeluaran: seed.pengeluaran,
-      nextMasukId: seed.pemasukan.length ? Math.max(...seed.pemasukan.map(p=>p.id))+1 : 1,
-      nextKeluarId: seed.pengeluaran.length ? Math.max(...seed.pengeluaran.map(p=>p.id))+1 : 1,
-    };
-  } else {
-    // Periode lain: mulai dari kas Rp0, daftar siswa sama dengan Kelas 3 sebagai titik awal.
-    state = {
-      students: baseSeedStudents().map(s=>({no:s.no, nama:s.nama})),
-      pemasukan: [],
-      pengeluaran: [],
-      nextMasukId: 1,
-      nextKeluarId: 1,
-    };
+  if(!valid){
+    const localSaved = localStorage.getItem(STORAGE_KEY);
+    if(localSaved){
+      try{
+        const localCandidate=JSON.parse(localSaved);
+        if(localCandidate && Array.isArray(localCandidate.students) && localCandidate.students.length>0 && Array.isArray(localCandidate.pemasukan) && Array.isArray(localCandidate.pengeluaran)){
+          state=localCandidate;
+          backfillKeterangan();
+          if(cloudOnline) await cloudSave('kas',currentPeriodIdx,state);
+          return;
+        }
+      }catch(e){}
+    }
+    const seedElId = periodSeedElId(currentPeriodIdx);
+    if(seedElId){
+      const seed = JSON.parse(document.getElementById(seedElId).textContent);
+      state = {
+        students: seed.students,
+        pemasukan: seed.pemasukan,
+        pengeluaran: seed.pengeluaran,
+        nextMasukId: seed.pemasukan.length ? Math.max(...seed.pemasukan.map(p=>p.id))+1 : 1,
+        nextKeluarId: seed.pengeluaran.length ? Math.max(...seed.pengeluaran.map(p=>p.id))+1 : 1,
+      };
+    } else {
+      state = {
+        students: baseSeedStudents().map(s=>({no:s.no, nama:s.nama})),
+        pemasukan: [],
+        pengeluaran: [],
+        nextMasukId: 1,
+        nextKeluarId: 1,
+      };
+    }
+    backfillKeterangan();
+    saveState();
   }
-  backfillKeterangan();
-  saveState();
 }
 function backfillKeterangan(){
   state.pemasukan.forEach(p=>{ if(!p.keterangan) p.keterangan = 'Kas Bulanan'; });
 }
 function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  cloudSave('kas', currentPeriodIdx, state);
 }
 
 // ===================== HELPERS =====================
@@ -1897,10 +1936,15 @@ async function loadTik(){
   if(tikLoaded) return;
   tikLoaded=true;
   let x = null;
-  const saved=localStorage.getItem(TIK_STORAGE_KEY);
-  if(saved){ try{ x=JSON.parse(saved); }catch(e){ x=null; } }
+  try{
+    x = await gasRun('getTikState',[currentPeriodIdx]);
+    cloudOnline = true;
+  }catch(e){
+    cloudOnline = false;
+    const saved=localStorage.getItem(TIK_STORAGE_KEY);
+    if(saved){ try{ x=JSON.parse(saved); }catch(err){ x=null; } }
+  }
   if(x&&Array.isArray(x.students)&&x.students.length){
-    /* Jika data TIK kosong (pemasukan dan/atau pengeluaran), pulihkan dari sumber Excel yang tertanam. */
     const needMasuk=!Array.isArray(x.pemasukan) || x.pemasukan.length===0;
     const needKeluar=!Array.isArray(x.pengeluaran) || x.pengeluaran.length===0;
     if(needMasuk || needKeluar){
@@ -1916,10 +1960,18 @@ async function loadTik(){
     localStorage.setItem(TIK_STORAGE_KEY, JSON.stringify(tikState));
     return;
   }
+  const localSaved=localStorage.getItem(TIK_STORAGE_KEY);
+  if(localSaved){
+    try{
+      x=JSON.parse(localSaved);
+      if(x&&Array.isArray(x.students)&&x.students.length){ tikState=x; if(cloudOnline) saveTik(); return; }
+    }catch(e){}
+  }
   tikState=tikSeed();saveTik();
 }
 function saveTik(){
   localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
+  cloudSave('tik', currentPeriodIdx, tikState);
 }
 function tikShow(which){
   ['rekap','siswa','masuk','keluar'].forEach(k=>document.getElementById('tik-'+k).classList.remove('active','print-active'));
