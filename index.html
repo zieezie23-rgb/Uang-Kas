@@ -517,12 +517,6 @@ if ("serviceWorker" in navigator) {
 </script>
 </head>
 <body>
-<!--
-  MULTI-PERANGKAT:
-  1. Deploy Code.gs sebagai Web App.
-  2. Masukkan URL /exec hasil deployment ke CLOUD_API_URL di bagian JS.
-  3. Samakan CLOUD_API_TOKEN di HTML dan Code.gs.
--->
 <div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
   <div style="width:38px;height:38px;border-radius:50%;border:3px solid #3A3220;border-top-color:#D4AF37;animation:cloudspin 0.8s linear infinite;"></div>
   <div style="font-family:'Inter',-apple-system,sans-serif;color:#A8987A;font-size:13.5px;font-weight:600;">Memuat data terbaru...</div>
@@ -919,92 +913,14 @@ function monthLabel(k){ const m = MONTHS.find(x=>x.key===k); return m? m.label :
 function monthIndex(k){ return MONTHS.findIndex(x=>x.key===k); }
 function yr2(label){ return formatBulanKasSingkat(label||'').replace(/(\d{4})/g, y=>y.slice(2)); }
 
-// ===================== PENYIMPANAN TERPUSAT (GOOGLE SHEETS + APPS SCRIPT) =====================
-// Isi CLOUD_API_URL setelah Web App Apps Script selesai di-deploy.
-// Jika kosong, aplikasi tetap bisa berjalan menggunakan localStorage seperti sebelumnya.
-const CLOUD_API_URL = 'https://script.google.com/macros/s/AKfycbxTGyMpHPQUcz3gAnNZW67NIFk-6paM6sMxoTGo5wYTQ774zP_UsfWlEmiXGSKFlg--/exec';
-const CLOUD_API_TOKEN = '00000';
-
-let cloudOnline = false;
-let cloudBusy = false;
-
-function placeSyncBadge(){
-  const ids = ['syncBadge','cloudSyncBadge'];
-  ids.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.textContent = cloudOnline ? '☁ Tersinkron' : '● Lokal';
-  });
-}
-function setSyncStatus(text, ok=null){
-  const ids = ['syncBadge','cloudSyncBadge'];
-  ids.forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el) return;
-    el.textContent = text || (cloudOnline ? '☁ Tersinkron' : '● Lokal');
-    if(ok===true) el.dataset.status='ok';
-    if(ok===false) el.dataset.status='error';
-  });
-}
+// ===================== PENYIMPANAN LOKAL (TANPA CLOUD/DATABASE) =====================
+// Versi ini sengaja TIDAK menyinkronkan data ke server/database mana pun.
+// Semua data hanya disimpan di localStorage browser yang sedang dipakai.
+function placeSyncBadge(){ /* badge status cloud dinonaktifkan pada versi lokal */ }
+function setSyncStatus(){ /* tidak ada status sinkronisasi pada versi lokal */ }
 function hideCloudOverlay(){
   const el = document.getElementById('cloudLoadingOverlay');
   if(el) el.style.display = 'none';
-}
-
-function cloudConfigured(){
-  return /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/i.test(CLOUD_API_URL)
-    && CLOUD_API_TOKEN
-    && CLOUD_API_TOKEN !== 'GANTI_TOKEN_ANDA';
-}
-
-async function cloudRequest(action, mode, periodIdx, payload=null){
-  if(!cloudConfigured()) return null;
-  const body = {action, mode, periodIdx, token:CLOUD_API_TOKEN};
-  if(payload !== null) body.data = payload;
-
-  const res = await fetch(CLOUD_API_URL, {
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body:JSON.stringify(body),
-    cache:'no-store'
-  });
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  const json = await res.json();
-  if(!json.ok) throw new Error(json.error || 'Server Apps Script menolak permintaan.');
-  return json.data;
-}
-
-async function cloudLoad(mode, periodIdx){
-  if(!cloudConfigured()) return null;
-  try{
-    const data = await cloudRequest('load', mode, periodIdx);
-    cloudOnline = true;
-    setSyncStatus('☁ Tersinkron', true);
-    return data || null;
-  }catch(err){
-    cloudOnline = false;
-    setSyncStatus('⚠ Offline', false);
-    console.warn('Cloud load gagal:', err);
-    return null;
-  }
-}
-
-async function cloudSave(mode, periodIdx, data){
-  if(!cloudConfigured()) return false;
-  if(cloudBusy) return false;
-  cloudBusy = true;
-  try{
-    await cloudRequest('save', mode, periodIdx, data);
-    cloudOnline = true;
-    setSyncStatus('☁ Tersinkron', true);
-    return true;
-  }catch(err){
-    cloudOnline = false;
-    setSyncStatus('⚠ Gagal sinkron', false);
-    console.error('Cloud save gagal:', err);
-    return false;
-  }finally{
-    cloudBusy = false;
-  }
 }
 
 // ===================== STATE =====================
@@ -1039,34 +955,19 @@ function periodSeedElId(idx){
 }
 async function loadState(){
   let candidate = null;
-
-  // Jika cloud aktif, baca cloud terlebih dahulu agar semua perangkat melihat data yang sama.
-  const cloud = await cloudLoad('kas', currentPeriodIdx);
-  if(cloud && Array.isArray(cloud.students) && cloud.students.length){
-    candidate = cloud;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(candidate));
-  }else{
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if(saved){ try{ candidate = JSON.parse(saved); }catch(e){ candidate = null; } }
-  }
-
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){ try{ candidate = JSON.parse(saved); }catch(e){ candidate = null; } }
   const valid = candidate && Array.isArray(candidate.students) && candidate.students.length > 0
     && Array.isArray(candidate.pemasukan) && Array.isArray(candidate.pengeluaran);
-
   if(valid){
     state = candidate;
     backfillKeterangan();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-
-    // Bila cloud belum punya data, data lokal/seed pertama kali dikirim ke cloud.
-    if(cloudConfigured() && !cloud){
-      await cloudSave('kas', currentPeriodIdx, state);
-    }
     return;
   }
-
   const seedElId = periodSeedElId(currentPeriodIdx);
   if(seedElId){
+    // Periode dengan data historis: gunakan data yang sudah ada sebelumnya.
     const seed = JSON.parse(document.getElementById(seedElId).textContent);
     state = {
       students: seed.students,
@@ -1076,6 +977,7 @@ async function loadState(){
       nextKeluarId: seed.pengeluaran.length ? Math.max(...seed.pengeluaran.map(p=>p.id))+1 : 1,
     };
   } else {
+    // Periode lain: mulai dari kas Rp0, daftar siswa sama dengan Kelas 3 sebagai titik awal.
     state = {
       students: baseSeedStudents().map(s=>({no:s.no, nama:s.nama})),
       pemasukan: [],
@@ -1085,16 +987,13 @@ async function loadState(){
     };
   }
   backfillKeterangan();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  if(cloudConfigured()) await cloudSave('kas', currentPeriodIdx, state);
+  saveState();
 }
 function backfillKeterangan(){
   state.pemasukan.forEach(p=>{ if(!p.keterangan) p.keterangan = 'Kas Bulanan'; });
 }
 function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  // Tidak memakai await agar seluruh handler lama tetap kompatibel.
-  cloudSave('kas', currentPeriodIdx, state);
 }
 
 // ===================== HELPERS =====================
@@ -1997,40 +1896,30 @@ let tikLoaded=false;
 async function loadTik(){
   if(tikLoaded) return;
   tikLoaded=true;
-
-  let x = await cloudLoad('tik', currentPeriodIdx);
-
-  if(!x){
-    const saved=localStorage.getItem(TIK_STORAGE_KEY);
-    if(saved){ try{ x=JSON.parse(saved); }catch(e){ x=null; } }
-  }
-
+  let x = null;
+  const saved=localStorage.getItem(TIK_STORAGE_KEY);
+  if(saved){ try{ x=JSON.parse(saved); }catch(e){ x=null; } }
   if(x&&Array.isArray(x.students)&&x.students.length){
+    /* Jika data TIK kosong (pemasukan dan/atau pengeluaran), pulihkan dari sumber Excel yang tertanam. */
     const needMasuk=!Array.isArray(x.pemasukan) || x.pemasukan.length===0;
     const needKeluar=!Array.isArray(x.pengeluaran) || x.pengeluaran.length===0;
-
     if(needMasuk || needKeluar){
       const seeded=tikSeed();
       if(needMasuk){ x.pemasukan=seeded.pemasukan; x.nextMasukId=seeded.nextMasukId; }
       if(needKeluar){ x.pengeluaran=seeded.pengeluaran; x.nextKeluarId=seeded.nextKeluarId; }
       else{ x.nextKeluarId=Math.max(1,Number(x.nextKeluarId)||1); }
+      tikState=x;
+      saveTik();
+      return;
     }
     tikState=x;
     localStorage.setItem(TIK_STORAGE_KEY, JSON.stringify(tikState));
-    if(cloudConfigured() && !await cloudLoad('tik', currentPeriodIdx)){
-      await cloudSave('tik', currentPeriodIdx, tikState);
-    }
     return;
   }
-
-  tikState=tikSeed();
-  localStorage.setItem(TIK_STORAGE_KEY, JSON.stringify(tikState));
-  if(cloudConfigured()) await cloudSave('tik', currentPeriodIdx, tikState);
+  tikState=tikSeed();saveTik();
 }
-
 function saveTik(){
   localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
-  cloudSave('tik', currentPeriodIdx, tikState);
 }
 function tikShow(which){
   ['rekap','siswa','masuk','keluar'].forEach(k=>document.getElementById('tik-'+k).classList.remove('active','print-active'));
