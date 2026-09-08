@@ -88,8 +88,8 @@ tbody tr:not(.total-row):not(.row-header-like):not(.grand-total) .rp-cell.rp-zer
 .tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--line);max-height:520px;overflow-y:auto}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .center{text-align:center}
-.paid{color:var(--amber);font-weight:700}
-.siswa-table td.paid-cell{background:var(--teal-tint)}
+.paid{color:var(--teal-tint);font-weight:700}
+.siswa-table td.paid-cell{background:var(--amber)}
 .unpaid{color:var(--ink-soft)}
 .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
 .pill-total{background:var(--amber-tint);color:var(--amber)}
@@ -327,9 +327,9 @@ body.printing-rekap-only #panel-rekap .btn-row, body.printing-bulanan #panel-bul
 #tblSiswa thead th{position:static;background:var(--teal-dark)!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa tbody tr.total-row{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa tbody tr.total-row td{background:var(--teal-dark)!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-#tblSiswa .paid{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color:#8a6416!important}
+#tblSiswa .paid{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color:var(--teal-tint)!important}
 #tblSiswa tbody td:nth-child(1), #tblSiswa tbody td:nth-child(2), #tblSiswa tbody td:nth-child(3){color:var(--teal-dark)!important}
-#tblSiswa td.paid-cell{background:#e8f4ee!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+#tblSiswa td.paid-cell{background:var(--amber)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tblSiswa th:nth-child(3), #tblSiswa td:nth-child(3){width:9.4%!important;min-width:0!important;max-width:none!important;white-space:normal!important;overflow:hidden}
 #tblSiswa td:nth-child(3) .rp-cell{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:2px!important;width:100%!important;min-width:0!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-align:right!important;line-height:1.1!important}
 #tblSiswa td:nth-child(3) .rp-label{font-size:6.5px!important;flex:0 0 auto!important}
@@ -346,7 +346,7 @@ header.top{background:#000000!important;-webkit-print-color-adjust:exact;print-c
 #panel-siswa .card .sub{font-size:9px;margin-bottom:5px}
 body.printing-kas-all section.panel.print-active{display:block!important}
 body.printing-kas-all section.panel:not(.print-active){display:none!important}
-.paid-cell, .total-row, thead th{background:var(--teal-tint)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+.paid-cell{background:var(--amber)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.total-row, thead th{background:var(--teal-tint)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 #tikApp .panel:not(.print-active){display:none!important}
 #tikApp .panel.print-active{display:block!important}
 .tik-top{display:flex!important}
@@ -546,9 +546,344 @@ body{background:#4B3426!important}
 .mode-switch{border:1.5px solid var(--amber)!important;}
 .mode-switch .mode-btn{border:1.5px solid var(--amber)!important;}
 .mode-switch .mode-btn.active{border-color:var(--amber)!important;}
-</style>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;0,900;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><script>/* Service worker dinonaktifkan agar kompatibel dengan Google Apps Script Web App. */</script>
+
+
+<style id="tik-layout-match-kas-v2">
+@media screen {
+  /* TIK harus memakai frame yang sama persis dengan halaman Kas. */
+  body[data-active-panel="tik-masuk"] #tikApp,
+  body[data-active-panel="tik-keluar"] #tikApp{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    width:100%!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  body[data-active-panel="tik-masuk"] #tikApp .panel.active,
+  body[data-active-panel="tik-keluar"] #tikApp .panel.active{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:12px!important;
+    margin:0!important;
+  }
+}
+</style>
+
+<style id="transaction-layout-clean-v42">
+@media screen {
+  /* Transaction pages: fixed page frame, no adaptive-height logic. */
+  body[data-active-panel="masuk"],
+  body[data-active-panel="keluar"],
+  body[data-active-panel="tik-masuk"],
+  body[data-active-panel="tik-keluar"]{
+    overflow:hidden!important;
+  }
+
+  body[data-active-panel="masuk"] #mainApp,
+  body[data-active-panel="keluar"] #mainApp,
+  body[data-active-panel="tik-masuk"] #mainApp,
+  body[data-active-panel="tik-keluar"] #mainApp{
+    height:100vh!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    box-sizing:border-box!important;
+    padding-top:18px!important;
+    padding-bottom:18px!important;
+  }
+
+  body[data-active-panel="masuk"] #panel-masuk,
+  body[data-active-panel="keluar"] #panel-keluar,
+  body[data-active-panel="tik-masuk"] #tik-masuk,
+  body[data-active-panel="tik-keluar"] #tik-keluar{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:12px!important;
+    margin:0!important;
+  }
+
+  /* LIST ABOVE, FORM BELOW. */
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child{
+    order:2!important;
+    flex:0 0 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    margin:0!important;
+  }
+
+  body[data-active-panel="masuk"] #panel-masuk > .card:last-child,
+  body[data-active-panel="keluar"] #panel-keluar > .card:last-child,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:last-child,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:last-child{
+    order:1!important;
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    margin:0!important;
+  }
+
+  /* The table viewport is the ONLY scrolling area. */
+  body[data-active-panel="masuk"] #panel-masuk > .card:last-child .month-tbl-wrap,
+  body[data-active-panel="keluar"] #panel-keluar > .card:last-child .month-tbl-wrap,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:last-child .month-tbl-wrap,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:last-child .month-tbl-wrap{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:auto!important;
+  }
+}
+</style>
+
+
+
+<style id="tik-transaction-frame-fix">
+@media screen {
+  /* TIK harus memakai frame yang sama dengan panel Kas.
+     #tik-keluar berada di dalam #tikApp, jadi #tikApp juga harus menjadi
+     container flex agar panel daftar dapat mengambil sisa tinggi layar. */
+  body[data-active-panel="tik-masuk"] #tikApp,
+  body[data-active-panel="tik-keluar"] #tikApp{
+    display:flex!important;
+    flex-direction:column!important;
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:100%!important;
+    margin:0!important;
+    overflow:hidden!important;
+  }
+
+  body[data-active-panel="tik-masuk"] #tikApp > .panel.active,
+  body[data-active-panel="tik-keluar"] #tikApp > .panel.active{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    margin:0!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+}
+</style>
+
+<style id="syncStatusBlinkStyle">
+@keyframes syncStatusBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .35; }
+}
+#syncStatus.sync-blink {
+  animation: syncStatusBlink 1s ease-in-out infinite;
+}
+</style>
+
+<style id="landing-page-height-text-update">
+@media screen {
+  html, body {
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  #landingPage {
+    height:100dvh;
+    min-height:0!important;
+    overflow:hidden;
+    padding-top:16px;
+    padding-bottom:calc(10px + env(safe-area-inset-bottom));
+  }
+  #landingPage .landing-header {
+    padding:28px 16px;
+    margin-bottom:10px;
+  }
+  #landingPage .landing-grid {
+    flex:1 1 0;
+    min-height:0;
+    height:auto;
+    grid-template-rows:repeat(3,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:10px;
+  }
+  #landingPage .landing-card {
+    min-height:0!important;
+    height:auto;
+  }
+  #landingPage .landing-recap-btn {
+    font-size:20px!important;
+    min-height:58px!important;
+    padding:14px 18px!important;
+  }
+  #landingPage .landing-export-actions .btn {
+    font-size:16px!important;
+    min-height:50px!important;
+    padding:10px 12px!important;
+  }
+}
+@media(max-width:420px){
+  #landingPage .landing-header {padding:24px 12px;}
+  #landingPage .landing-grid {gap:8px;}
+  #landingPage .landing-recap-btn {font-size:18px!important;min-height:54px!important;}
+  #landingPage .landing-export-actions .btn {font-size:15px!important;min-height:48px!important;}
+}
+</style>
+
+<style id="four-bottom-buttons-card-style">
+/* Samakan tampilan 4 tombol bawah dengan kartu periode,
+   tetapi JANGAN mengubah ukuran tombol. */
+#landingPage .landing-recap-btn,
+#landingPage .landing-export-actions .btn{
+  background:linear-gradient(145deg,#17130d 0%,#0f0c08 58%,#21190c 100%) !important;
+  border:1px solid rgba(212,175,55,.42) !important;
+  border-radius:18px !important;
+  color:#f5d77a !important;
+  font-weight:800 !important;
+  box-shadow:
+    7px 7px 24px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.05) !important;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease;
+}
+
+#landingPage .landing-recap-btn:hover,
+#landingPage .landing-export-actions .btn:hover{
+  transform:translateY(-2px);
+  border-color:rgba(212,175,55,.7) !important;
+  box-shadow:
+    9px 10px 28px rgba(0,0,0,.48),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+#landingPage .landing-recap-btn:active,
+#landingPage .landing-export-actions .btn:active{
+  transform:translateY(1px) scale(.99);
+  box-shadow:
+    3px 4px 12px rgba(0,0,0,.4),
+    inset 0 2px 5px rgba(0,0,0,.18) !important;
+}
+
+/* Hilangkan gaya warna tombol bawaan agar keempatnya konsisten */
+#landingPage .landing-export-actions .btn{
+  background:linear-gradient(145deg,#17130d 0%,#0f0c08 58%,#21190c 100%) !important;
+}
+</style>
+
+
+<style id="bottom-four-buttons-card-final">
+/* KEEMPAT tombol bawah: Pengaturan, Export, Share, Refresh.
+   Hanya tampilan yang disamakan dengan kartu kelas; ukuran/grid tetap. */
+#landingPage .landing-export-actions > .landing-utility,
+#landingPage .landing-export-actions > .btn{
+  box-sizing:border-box !important;
+  background:linear-gradient(145deg,#17130d 0%,#0f0c08 58%,#21190c 100%) !important;
+  border:1px solid rgba(212,175,55,.42) !important;
+  border-radius:18px !important;
+  color:#f5d77a !important;
+  font-weight:800 !important;
+  box-shadow:7px 7px 24px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.05) !important;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;
+}
+
+#landingPage .landing-export-actions > .landing-utility{
+  opacity:1 !important;
+  font-family:Arial,sans-serif !important;
+  color:#f5d77a !important;
+}
+
+#landingPage .landing-export-actions > .landing-utility:hover,
+#landingPage .landing-export-actions > .btn:hover{
+  opacity:1 !important;
+  transform:translateY(-2px);
+  background:linear-gradient(145deg,#21190c 0%,#120e09 58%,#2a1f0c 100%) !important;
+  border-color:rgba(212,175,55,.7) !important;
+  box-shadow:9px 10px 28px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+#landingPage .landing-export-actions > .landing-utility:active,
+#landingPage .landing-export-actions > .btn:active{
+  transform:translateY(1px) scale(.99);
+  box-shadow:3px 4px 12px rgba(0,0,0,.4),inset 0 2px 5px rgba(0,0,0,.18) !important;
+}
+</style>
+
+
+<style id="navigation-buttons-card-style">
+/* Tombol navigasi Beranda + panel Kas/TIK di setiap kelas.
+   Hanya gaya yang disamakan dengan kartu kelas; ukuran tetap. */
+#mainApp .app-nav button,
+#tikApp .app-nav button,
+#mainApp .nav-tabs button,
+#tikApp .nav-tabs button,
+#mainApp button[onclick*="showPanel('panel-rekap')"],
+#mainApp button[onclick*="tikShow('rekap')"],
+#tikApp button[onclick*="tikShow('rekap')"],
+#mainApp .home-btn,
+#tikApp .home-btn,
+#mainApp .btn-home,
+#tikApp .btn-home{
+  background:linear-gradient(145deg,#17130d 0%,#0f0c08 58%,#21190c 100%) !important;
+  border:1px solid rgba(212,175,55,.42) !important;
+  border-radius:18px !important;
+  color:#f5d77a !important;
+  font-weight:800 !important;
+  box-shadow:7px 7px 24px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.05) !important;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;
+}
+
+#mainApp .app-nav button:hover,
+#tikApp .app-nav button:hover,
+#mainApp .nav-tabs button:hover,
+#tikApp .nav-tabs button:hover,
+#mainApp button[onclick*="showPanel('panel-rekap')"]:hover,
+#mainApp button[onclick*="tikShow('rekap')"]:hover,
+#tikApp button[onclick*="tikShow('rekap')"]:hover,
+#mainApp .home-btn:hover,
+#tikApp .home-btn:hover,
+#mainApp .btn-home:hover,
+#tikApp .btn-home:hover{
+  transform:translateY(-2px);
+  border-color:rgba(212,175,55,.7) !important;
+  box-shadow:9px 10px 28px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+#mainApp .app-nav button:active,
+#tikApp .app-nav button:active,
+#mainApp .nav-tabs button:active,
+#tikApp .nav-tabs button:active,
+#mainApp button[onclick*="showPanel('panel-rekap')"]:active,
+#mainApp button[onclick*="tikShow('rekap')"]:active,
+#tikApp button[onclick*="tikShow('rekap')"]:active,
+#mainApp .home-btn:active,
+#tikApp .home-btn:active,
+#mainApp .btn-home:active,
+#tikApp .btn-home:active{
+  transform:translateY(1px) scale(.99);
+  box-shadow:3px 4px 12px rgba(0,0,0,.4),inset 0 2px 5px rgba(0,0,0,.18) !important;
+}
+</style>
+
 </head>
 <body>
 <div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
@@ -594,20 +929,33 @@ body{background:#4B3426!important}
 .app-notice.error .notice-icon{color:#ff6b6b}
 .app-notice.ok .notice-icon{color:var(--amber)}
 .database-access-box .btn.btn-amber{border:1px solid var(--amber)!important;box-shadow:0 5px 18px rgba(0,0,0,.28)}
+
+  #landingPage .landing-card:disabled{
+    cursor:default!important;
+    pointer-events:none!important;
+    opacity:1!important;
+  }
+  #landingPage .landing-card:disabled:hover,
+  #landingPage .landing-card:disabled:active{
+    transform:none!important;
+    background:linear-gradient(145deg,#17130d 0%,#0f0c08 58%,#21190c 100%)!important;
+    border-color:rgba(212,175,55,.28)!important;
+    box-shadow:7px 7px 24px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.05)!important;
+  }
 </style>
 <!-- ===================== HALAMAN UTAMA (BERANDA) ===================== -->
 <div class="landing-page" id="landingPage">
   <header class="landing-header">
     <div class="eyebrow">Sistem Pembukuan Kelas</div>
-    <h1>BUKU KAS dan TIK</h1><div class="landing-subtitle">Kelas 1-6</div>
+    <h1>BUKU KAS dan TIK</h1><div class="landing-subtitle">Periode 2024-2030</div>
   </header>
   <div class="landing-grid">
-    <button class="landing-card" onclick="enterClass(0)"><div class="lc-label">Kelas 1</div><div class="lc-sub">Agu 24 – Jun 25</div><div class="lc-count" id="landingCount0">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" onclick="enterClass(1)"><div class="lc-label">Kelas 2</div><div class="lc-sub">Agu 25 – Jun 26</div><div class="lc-count" id="landingCount1">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" onclick="enterClass(2)"><div class="lc-label">Kelas 3</div><div class="lc-sub">Agu 26 – Jun 27</div><div class="lc-count" id="landingCount2">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" onclick="enterClass(3)"><div class="lc-label">Kelas 4</div><div class="lc-sub">Agu 27 – Jun 28</div><div class="lc-count" id="landingCount3">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" onclick="enterClass(4)"><div class="lc-label">Kelas 5</div><div class="lc-sub">Agu 28 – Jun 29</div><div class="lc-count" id="landingCount4">Memuat...</div><span class="lc-arrow">›</span></button>
-    <button class="landing-card" onclick="enterClass(5)"><div class="lc-label">Kelas 6</div><div class="lc-sub">Agu 29 – Jun 30</div><div class="lc-count" id="landingCount5">Memuat...</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(0)"><div class="lc-label">Kelas 1</div><div class="lc-sub">Agu 24 – Jun 25</div><div class="lc-count" id="landingCount0">Memuat...</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(1)"><div class="lc-label">Kelas 2</div><div class="lc-sub">Agu 25 – Jun 26</div><div class="lc-count" id="landingCount1">Memuat...</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(2)"><div class="lc-label">Kelas 3</div><div class="lc-sub">Agu 26 – Jun 27</div><div class="lc-count" id="landingCount2">Memuat...</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(3)"><div class="lc-label">Kelas 4</div><div class="lc-sub">Agu 27 – Jun 28</div><div class="lc-count" id="landingCount3">Memuat...</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(4)"><div class="lc-label">Kelas 5</div><div class="lc-sub">Agu 28 – Jun 29</div><div class="lc-count" id="landingCount4">Memuat...</div><span class="lc-arrow">›</span></button>
+    <button class="landing-card" type="button" onclick="enterClass(5)"><div class="lc-label">Kelas 6</div><div class="lc-sub">Agu 29 – Jun 30</div><div class="lc-count" id="landingCount5">Memuat...</div><span class="lc-arrow">›</span></button>
   </div>
   <footer class="landing-footer">
     <button class="btn btn-amber landing-recap-btn" onclick="openAllPeriodsRecap()">📊 Rekap Semua Periode</button>
@@ -656,9 +1004,9 @@ body{background:#4B3426!important}
   </div>
 </div>
 
+<div id="syncStatus" style="position:fixed;top:10px;left:14px;background:transparent;padding:0;border-radius:0;font-size:11px;font-weight:700;box-shadow:none;z-index:99999;display:none;align-items:center;gap:5px;letter-spacing:.02em;pointer-events:none;"></div>
 <div class="app" id="mainApp" style="display:none;">
-<div id="syncStatus" style="position:absolute;bottom:10px;right:14px;background:transparent;padding:0;border-radius:0;font-size:11px;font-weight:600;box-shadow:none;z-index:5;display:none;align-items:center;gap:5px;letter-spacing:.02em;"></div>
-  <div class="btn-row no-print home-action-row">
+<div class="btn-row no-print home-action-row">
     <button class="btn btn-ghost home-full-btn" onclick="goToLanding()">🏠 Beranda</button>
   </div>
 
@@ -986,6 +1334,7 @@ function yr2(label){ return formatBulanKasSingkat(label||'').replace(/(\d{4})/g,
 // GANTI URL di bawah dengan URL Web App Apps Script setelah deployment.
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2q04sdN8X9965v8eQM9EKR1JuK3JjXClgQPIIik-IJngSBDF9Sv8uQcD0I2pWIUaUUA/exec';
 let cloudOnline = false;
+let initialSyncLoading = false;
 
 function apiReady(){
   return /^https:\/\//.test(APPS_SCRIPT_URL) && !APPS_SCRIPT_URL.includes('PASTE_URL');
@@ -1009,52 +1358,75 @@ function apiGet(action, params={}){
 async function apiPost(action, params={}){
   if(!apiReady()) throw new Error('URL Web App Apps Script belum diisi di APPS_SCRIPT_URL.');
 
-  // Google Apps Script Web App dapat melakukan redirect lintas-domain.
-  // POST dengan fetch/no-cors kadang terlihat berhasil di browser tetapi
-  // tidak sampai ke doPost(). Karena itu penyimpanan memakai HTML form POST
-  // ke iframe tersembunyi: metode ini tidak membutuhkan CORS dan payload JSON
-  // tetap bisa dikirim utuh.
   return new Promise((resolve,reject)=>{
     const token='gas_post_'+Date.now()+'_'+Math.random().toString(36).slice(2);
     const iframe=document.createElement('iframe');
-    iframe.name=token; iframe.style.display='none';
+    iframe.name=token;
+    iframe.style.display='none';
+
     const form=document.createElement('form');
-    form.method='POST'; form.action=APPS_SCRIPT_URL; form.target=token; form.style.display='none';
+    form.method='POST';
+    form.action=APPS_SCRIPT_URL;
+    form.target=token;
+    form.style.display='none';
 
     const fields={action, ...params};
     Object.keys(fields).forEach(k=>{
       const input=document.createElement('input');
-      input.type='hidden'; input.name=k; input.value=String(fields[k] ?? '');
+      input.type='hidden';
+      input.name=k;
+      input.value=String(fields[k] ?? '');
       form.appendChild(input);
     });
 
-    let done=false;
+    let finished=false;
     const finish=(ok,err)=>{
-      if(done) return; done=true;
-      setTimeout(()=>{ iframe.remove(); form.remove(); },1000);
-      if(ok) resolve(true); else reject(err||new Error('Gagal mengirim data ke Google Apps Script.'));
+      if(finished) return;
+      finished=true;
+      setTimeout(()=>{ iframe.remove(); form.remove(); },300);
+      if(ok) resolve(true);
+      else reject(err||new Error('Gagal mengirim data ke Google Apps Script.'));
     };
+
     iframe.onload=()=>finish(true);
     iframe.onerror=()=>finish(false,new Error('Gagal mengirim data ke Google Apps Script.'));
+
     document.body.appendChild(iframe);
     document.body.appendChild(form);
-    try{ form.submit(); }catch(err){ finish(false,err); return; }
-    // Jangan menunggu terlalu lama; form sudah diterima browser untuk dikirim.
-    setTimeout(()=>finish(true),10000);
+
+    try{
+      form.submit();
+      // Request sudah diserahkan ke browser. Jangan menahan UI.
+      setTimeout(()=>finish(true),1500);
+    }catch(err){
+      finish(false,err);
+    }
   });
 }
-
 function placeSyncBadge(){
   const el=document.getElementById('syncStatus');
   if(!el) return;
   el.style.display='flex';
-  el.innerHTML=cloudOnline ? '☁️ Tersinkron ke Google Sheets' : '⚠️ Mode lokal / belum terhubung';
-  el.style.color=cloudOnline ? 'var(--amber)' : 'var(--ink-soft)';
+  el.textContent=cloudOnline ? '😻 Tersinkron' : '⚠️ Mode lokal / belum terhubung';
+  el.style.color=cloudOnline ? 'var(--green, #22c55e)' : 'var(--coral)';
+  el.classList.remove('sync-blink');
+}
+function beginSectionSync(){
+  if(typeof setBackgroundSyncStatus==='function'){
+    setBackgroundSyncStatus('syncing','Mengambil data terbaru dari database.');
+  }
+}
+function setUnifiedSyncStatus(state){
+  if(state==='pending') return setBackgroundSyncStatus('syncing');
+  if(state==='syncing') return setBackgroundSyncStatus('syncing');
+  if(state==='synced') return setBackgroundSyncStatus('synced');
+  if(state==='failed') return setBackgroundSyncStatus('failed');
 }
 function setSyncStatus(text, ok=true){
   const el=document.getElementById('syncStatus');
   if(!el) return;
   el.style.display='flex'; el.textContent=text; el.style.color=ok?'var(--amber)':'var(--coral)';
+  el.classList.remove('sync-blink');
 }
 function hideCloudOverlay(){
   const el = document.getElementById('cloudLoadingOverlay');
@@ -1066,34 +1438,172 @@ async function cloudSave(kind, idx, data){
       periodIdx: String(idx),
       payload: JSON.stringify(data)
     });
-    cloudOnline=true; placeSyncBadge();
+    cloudOnline=true;
+    if(!initialSyncLoading) placeSyncBadge();
     return true;
   }catch(e){
-    cloudOnline=false; placeSyncBadge(); console.error(e);
+    cloudOnline=false;
+    if(!initialSyncLoading) placeSyncBadge();
+    console.error(e);
     return false;
   }
 }
 
 // Penyimpanan transaksi memakai operasi per-baris di server. Setelah server selesai,
 // state kelas dimuat ulang agar perubahan dari HP/laptop lain tetap ikut terlihat.
-async function cloudMutate(kind, idx, req){
+let bgSyncTimers = {kas:null, tik:null};
+let bgSyncRunning = {kas:false, tik:false};
+
+function setBackgroundSyncStatus(status, message){
+  // Gunakan indikator sinkronisasi yang memang sudah ada di aplikasi.
+  const el=document.getElementById('syncStatus');
+  if(!el) return;
+
+  const labels={
+    pending:'⏳ Menyinkronkan…',
+    syncing:'⏳ Menyinkronkan…',
+    synced:'😻 Tersinkron',
+    failed:'⚠️ Gagal sinkron'
+  };
+
+  el.style.display='flex';
+  el.textContent=labels[status] || status;
+  el.title=message || labels[status] || '';
+  el.dataset.syncStatus=status;
+  el.style.color =
+    status==='synced' ? 'var(--green, #22c55e)' :
+    status==='failed' ? 'var(--coral)' :
+    'var(--amber)';
+  el.classList.toggle('sync-blink', status==='syncing' || status==='pending');
+}
+
+function scheduleBackgroundSync(kind, delay=400){
+  clearTimeout(bgSyncTimers[kind]);
+  bgSyncTimers[kind] = setTimeout(()=>processBackgroundSync(kind), delay);
+}
+
+async function processBackgroundSync(kind){
+  if(bgSyncRunning[kind] || !apiReady()) return;
+  bgSyncRunning[kind] = true;
+  setBackgroundSyncStatus('syncing','Sedang mengirim perubahan ke database.');
+
+  const queueKey = kind === 'kas' ? 'KAS_SYNC_QUEUE' : 'TIK_SYNC_QUEUE';
+
   try{
-    await apiPost(kind==='kas' ? 'mutateKas' : 'mutateTik', {
-      periodIdx:String(idx),
-      payload:JSON.stringify(req)
-    });
-    const fresh=await apiGet(kind==='kas' ? 'getKasState' : 'getTikState',{periodIdx:String(idx)});
-    if(!fresh) throw new Error('Data server kosong setelah perubahan.');
-    if(kind==='kas'){
-      state=fresh;
+    let queue=[];
+    try{ queue=JSON.parse(localStorage.getItem(queueKey)||'[]'); }catch(e){ queue=[]; }
+
+    while(queue.length){
+      const item=queue[0];
+
+      await apiPost(kind==='kas' ? 'saveKasState' : 'saveTikState',{
+        periodIdx:String(item.periodIdx),
+        payload:JSON.stringify(item.payload)
+      });
+
+      queue.shift();
+      localStorage.setItem(queueKey,JSON.stringify(queue));
+    }
+
+    cloudOnline=true;
+    placeSyncBadge();
+    setBackgroundSyncStatus('synced','Semua perubahan sudah tersinkron ke database.');
+  }catch(e){
+    console.error('Background sync:',e);
+    cloudOnline=false;
+    placeSyncBadge();
+    setBackgroundSyncStatus('failed','Sinkronisasi gagal. Akan dicoba lagi otomatis.');
+    // Coba lagi nanti tanpa mengganggu UI.
+    scheduleBackgroundSync(kind,3000);
+  }finally{
+    bgSyncRunning[kind]=false;
+  }
+}
+
+window.addEventListener('online',()=>{
+  scheduleBackgroundSync('kas',100);
+  scheduleBackgroundSync('tik',100);
+});
+
+async function cloudMutate(kind, idx, req){
+  // OPTIMISTIC UPDATE: ubah data lokal terlebih dahulu agar UI langsung berubah.
+  try{
+    if(kind === 'kas'){
+      if(!state) throw new Error('State kas belum siap.');
+      const op=req && req.op;
+
+      if(op === 'addStudent'){
+        const item={...(req.item||{})};
+        if(!item.no){
+          item.no = state.students.length
+            ? Math.max(...state.students.map(s=>Number(s.no)||0))+1 : 1;
+        }
+        state.students.push(item);
+      }else if(op === 'deleteStudent'){
+        state.students = state.students.filter(s =>
+          (s.nama||'').trim().toLowerCase() !== String(req.nama||'').trim().toLowerCase()
+        );
+      }else if(op === 'addPemasukan'){
+        const item={...(req.item||{})};
+        if(item.id==null){
+          item.id = Number(state.nextMasukId||1);
+          state.nextMasukId = item.id + 1;
+        }
+        state.pemasukan.push(item);
+      }else if(op === 'updatePemasukan'){
+        const i=state.pemasukan.findIndex(p=>String(p.id)===String(req.id));
+        if(i>=0) state.pemasukan[i]={...state.pemasukan[i],...(req.item||{}),id:state.pemasukan[i].id};
+      }else if(op === 'deletePemasukan'){
+        state.pemasukan=state.pemasukan.filter(p=>String(p.id)!==String(req.id));
+      }else if(op === 'addPengeluaran'){
+        const item={...(req.item||{})};
+        if(item.id==null){
+          item.id = Number(state.nextKeluarId||1);
+          state.nextKeluarId = item.id + 1;
+        }
+        state.pengeluaran.push(item);
+      }else if(op === 'updatePengeluaran'){
+        const i=state.pengeluaran.findIndex(p=>String(p.id)===String(req.id));
+        if(i>=0) state.pengeluaran[i]={...state.pengeluaran[i],...(req.item||{}),id:state.pengeluaran[i].id};
+      }else if(op === 'deletePengeluaran'){
+        state.pengeluaran=state.pengeluaran.filter(p=>String(p.id)!==String(req.id));
+      }
+
       backfillKeterangan();
       localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-    }else{
-      tikState=fresh;
-      localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
     }
-    cloudOnline=true; placeSyncBadge();
-    const op=req && req.op ? req.op : '';
+
+    // Masukkan snapshot TERBARU ke antrean. Tidak menunggu server.
+    const snapshot = kind === 'kas'
+      ? JSON.parse(JSON.stringify(state))
+      : JSON.parse(JSON.stringify(tikState));
+
+    const queueKey = kind === 'kas' ? 'KAS_SYNC_QUEUE' : 'TIK_SYNC_QUEUE';
+    let queue=[];
+    try{ queue=JSON.parse(localStorage.getItem(queueKey)||'[]'); }catch(e){ queue=[]; }
+
+    queue.push({
+      periodIdx:String(idx),
+      payload:snapshot,
+      createdAt:Date.now()
+    });
+
+    // Semua snapshot lama untuk periode yang sama tidak perlu dikirim lagi.
+    // Simpan hanya snapshot paling baru per periode.
+    const latestByPeriod={};
+    queue.forEach(x=>{ latestByPeriod[String(x.periodIdx)]=x; });
+    queue=Object.values(latestByPeriod);
+    localStorage.setItem(queueKey,JSON.stringify(queue));
+
+    // Beri tahu pengguna bahwa data lokal sudah berubah dan sedang menunggu sinkronisasi.
+    setBackgroundSyncStatus('pending','Perubahan tersimpan di perangkat dan menunggu dikirim ke database.');
+
+    // Jadwalkan sinkronisasi tanpa menahan UI.
+    scheduleBackgroundSync(kind,400);
+
+    cloudOnline=true;
+    placeSyncBadge();
+
     const successMessages={
       addStudent:'Siswa berhasil ditambahkan.',
       deleteStudent:'Siswa berhasil dihapus.',
@@ -1104,18 +1614,19 @@ async function cloudMutate(kind, idx, req){
       updatePengeluaran:'Pengeluaran berhasil diperbarui.',
       deletePengeluaran:'Pengeluaran berhasil dihapus.'
     };
-    if(typeof showAppNotice==='function') showAppNotice(successMessages[op] || 'Perubahan berhasil disimpan ke database.',true);
+    if(typeof showAppNotice==='function'){
+      showAppNotice(successMessages[op]||'Perubahan berhasil disimpan.',true);
+    }
     return true;
   }catch(e){
-    cloudOnline=false; placeSyncBadge();
     console.error(e);
-    if(typeof showAppNotice==='function') showAppNotice('Perubahan gagal disimpan. '+(e.message||e),false);
-    else alert('Perubahan belum tersimpan ke Google Sheets. Silakan coba lagi.\n\n'+(e.message||e));
-    return false;
+    // Jangan membuat input gagal hanya karena sync background.
+    if(typeof showAppNotice==='function'){
+      showAppNotice('Data tersimpan di perangkat. Sinkronisasi akan dicoba lagi.',true);
+    }
+    return true;
   }
-}
-
-// ===================== STATE =====================
+}// ===================== STATE =====================
 let STORAGE_KEY = kasStorageKeyFor(currentPeriodIdx);
 let state = null;
 
@@ -1137,6 +1648,7 @@ function periodSeedElId(idx){
   return null;
 }
 async function loadState(){
+  if(initialSyncLoading) setBackgroundSyncStatus('syncing','Sedang mengambil data terbaru dari database.');
   let candidate = null;
   try{
     candidate = await apiGet('getKasState',{periodIdx:String(currentPeriodIdx)});
@@ -1195,6 +1707,7 @@ function backfillKeterangan(){
 }
 function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  // Sinkronisasi cloud berjalan di belakang layar.
   cloudSave('kas', currentPeriodIdx, state);
 }
 
@@ -1475,7 +1988,7 @@ const MASUK_COLS = [
   {key:'aksi', label:'Aksi', cls:'no-print'},
 ];
 let sortMasukField = 'tanggalBayar';
-let sortMasukDir = 'desc';
+let sortMasukDir = 'asc';
 function sortMasukBy(field){
   if(sortMasukField === field){
     sortMasukDir = sortMasukDir === 'asc' ? 'desc' : 'asc';
@@ -1579,7 +2092,7 @@ const KELUAR_COLS = [
   {key:'aksi', label:'Aksi', cls:'no-print'},
 ];
 let sortKeluarField = 'tanggal';
-let sortKeluarDir = 'desc';
+let sortKeluarDir = 'asc';
 function sortKeluarBy(field){
   if(sortKeluarField === field){
     sortKeluarDir = sortKeluarDir === 'asc' ? 'desc' : 'asc';
@@ -1964,8 +2477,16 @@ function renderAll(){
 }
 
 document.addEventListener('DOMContentLoaded', async ()=>{
+  initialSyncLoading = true;
+  setBackgroundSyncStatus('syncing','Sedang mengambil data terbaru dari database.');
   await loadState();
-  updateLandingStudentCounts();
+  await updateLandingStudentCounts();
+  initialSyncLoading = false;
+  if(cloudOnline){
+    setBackgroundSyncStatus('synced','Data terbaru selesai diunduh dan sudah tersinkron.');
+  }else{
+    setBackgroundSyncStatus('failed','Gagal mengambil data terbaru dari database. Mode lokal digunakan.');
+  }
   initTabs();
   initCustomSelects();
   fillMonthSelects();
@@ -1983,7 +2504,6 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('kTanggal').value = formatTanggalPendek(new Date());
   document.getElementById('kTanggal').readOnly = true;
   renderAll();
-  placeSyncBadge();
   hideCloudOverlay();
 });
 
@@ -2069,6 +2589,7 @@ function tikSeed(){
 }
 let tikLoaded=false;
 async function loadTik(){
+  if(typeof setBackgroundSyncStatus==='function') setBackgroundSyncStatus('syncing','Mengambil data terbaru.');
   if(tikLoaded) return;
   tikLoaded=true;
   let x = null;
@@ -2465,9 +2986,31 @@ async function getLandingStudentCount(idx){
   return 0;
 }
 async function updateLandingStudentCounts(){
+  const now=new Date();
+  const currentYear=now.getFullYear();
+  const currentMonth=now.getMonth()+1;
   await Promise.all(PERIODS.map(async (p,idx)=>{
     const el=document.getElementById('landingCount'+idx);
     if(!el)return;
+
+    // Jumlah siswa hanya ditampilkan jika periode kelas sudah dimulai,
+    // yaitu mulai Agustus pada tahun ajaran tersebut.
+    const periodStarted = (currentYear > p.startYear) ||
+      (currentYear === p.startYear && currentMonth >= 8);
+
+    const card=el.closest('.landing-card');
+    if(card){
+      card.disabled=!periodStarted;
+      card.setAttribute('aria-disabled', periodStarted ? 'false' : 'true');
+      card.style.pointerEvents=periodStarted ? 'auto' : 'none';
+      card.style.cursor=periodStarted ? 'pointer' : 'default';
+    }
+
+    if(!periodStarted){
+      el.textContent='';
+      return;
+    }
+
     const n=await getLandingStudentCount(idx);
     el.textContent=`${n} siswa`;
   }));
@@ -2878,5 +3421,6 @@ function closeAllPeriodsRecap(){
 
 applyPeriod(currentPeriodIdx);
 updateHeaderLabels();
-</script></body>
+</script>
+</body>
 </html>
