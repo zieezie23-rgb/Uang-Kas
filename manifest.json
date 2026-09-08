@@ -1,0 +1,20 @@
+{
+  "name": "Buku Kas dan TIK — Kelas 1-6",
+  "short_name": "Buku Kas & TIK",
+  "description": "Sistem pembukuan kas dan TIK kelas.",
+  "lang": "id-ID",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "assets/icon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
