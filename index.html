@@ -1818,6 +1818,39 @@ async function cloudMutate(kind, idx, req){
 
       backfillKeterangan();
       localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    }else if(kind === 'tik'){
+      if(!tikState) throw new Error('State TIK belum siap.');
+      const op=req && req.op;
+
+      if(op === 'addPemasukan'){
+        const item={...(req.item||{})};
+        if(item.id==null){
+          item.id = Number(tikState.nextMasukId||1);
+          tikState.nextMasukId = item.id + 1;
+        }
+        tikState.pemasukan.push(item);
+      }else if(op === 'updatePemasukan'){
+        const i=tikState.pemasukan.findIndex(p=>String(p.id)===String(req.id));
+        if(i<0) throw new Error('Data pemasukan TIK yang akan diperbarui tidak ditemukan.');
+        tikState.pemasukan[i]={...tikState.pemasukan[i],...(req.item||{}),id:tikState.pemasukan[i].id};
+      }else if(op === 'deletePemasukan'){
+        tikState.pemasukan=tikState.pemasukan.filter(p=>String(p.id)!==String(req.id));
+      }else if(op === 'addPengeluaran'){
+        const item={...(req.item||{})};
+        if(item.id==null){
+          item.id = Number(tikState.nextKeluarId||1);
+          tikState.nextKeluarId = item.id + 1;
+        }
+        tikState.pengeluaran.push(item);
+      }else if(op === 'updatePengeluaran'){
+        const i=tikState.pengeluaran.findIndex(p=>String(p.id)===String(req.id));
+        if(i<0) throw new Error('Data pengeluaran TIK yang akan diperbarui tidak ditemukan.');
+        tikState.pengeluaran[i]={...tikState.pengeluaran[i],...(req.item||{}),id:tikState.pengeluaran[i].id};
+      }else if(op === 'deletePengeluaran'){
+        tikState.pengeluaran=tikState.pengeluaran.filter(p=>String(p.id)!==String(req.id));
+      }
+
+      localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
     }
 
     // Masukkan snapshot TERBARU ke antrean. Tidak menunggu server.
