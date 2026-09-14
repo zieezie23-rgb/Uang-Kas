@@ -1076,6 +1076,37 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
 .landing-export-actions .landing-utility .gear-outline{width:26px;height:26px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 @media(max-width:420px){.landing-export-actions .landing-utility .gear-outline{width:22px;height:22px;}}
 </style>
+
+<style id="zie-footer-style">
+html, body {
+  min-height: 100%;
+}
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+body > *:not(.zie-footer) {
+  /* keep existing layout/function intact */
+}
+.zie-footer {
+  margin-top: auto;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+@media print {
+  .zie-footer {
+    display: none;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
@@ -3847,6 +3878,9 @@ applyPeriod(currentPeriodIdx);
 updateHeaderLabels();
 </script>
 
+
+
+<footer class="zie-footer">Zie Project - Pembukuan Uang Kas dan TIK V 1.0 - @2026</footer>
 
 </body>
 </html>
