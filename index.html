@@ -153,7 +153,7 @@ th.sortable-th .sort-arrow{font-size:12.96px;margin-left:3px;opacity:.85}
 .saldo-akhir{font-weight:700;color:var(--amber)}
 .saldo-akhir.minus{color:var(--coral)}
 .badge-edit{cursor:pointer;color:var(--amber);font-weight:600;font-size:17.28px;margin-right:8px}
-footer.app-footer{text-align:center;color:var(--ink-soft);font-size:16.56px;margin-top:24px;padding-top:14px;border-top:1px solid var(--line)}
+footer.app-footer{text-align:center;color:var(--ink-soft);font-size:13.5px;margin-top:24px;padding:14px 8px 4px;border-top:1px solid var(--line);line-height:1.4;letter-spacing:.01em}
 .kpi-grid .kpi{text-align:center}
 .kpi-link{cursor:pointer;transition:transform .12s ease}
 .kpi-link:active{transform:scale(.98)}
@@ -256,6 +256,11 @@ nav.tabs button[data-tab="rekap"]{order:0}
 .ap-modal tr.current-period td:first-child{color:var(--amber);font-weight:700}
 .ap-modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}.ap-modal-actions .btn{flex:1;min-width:150px;justify-content:center}
 .mode-switch{display:flex;gap:10px;padding:6px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;margin:0 0 12px}
+/* ===== FOOTER APLIKASI ===== */
+.site-footer{flex:0 0 auto;text-align:center;color:var(--ink-soft);font-size:13.5px;line-height:1.4;letter-spacing:.01em;padding:12px 8px 2px;margin-top:10px;border-top:1px solid rgba(212,175,55,.22)}
+.all-periods-footer{max-width:900px;width:100%;margin:10px auto 0;padding-bottom:4px}
+@media(max-width:420px){.site-footer{font-size:12px;padding-left:4px;padding-right:4px}}
+
 /* ===================== LANDING PAGE (BERANDA) ===================== */
 .landing-page{min-height:100dvh;min-height:100vh;display:flex;flex-direction:column;padding:22px 16px calc(16px + env(safe-area-inset-bottom));max-width:900px;margin:0 auto;box-sizing:border-box}
 .landing-header{position:relative;text-align:center;padding:58px 16px;border-radius:var(--radius);background:linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);border-bottom:2px solid var(--amber);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;flex:0 0 auto}
@@ -588,9 +593,6 @@ body{background:#4B3426!important}
   }
 }
 
-
-.app-footer{position:fixed;left:0;right:0;bottom:0;text-align:center;padding:7px 10px;font-size:12px;line-height:1.2;color:var(--ink-soft);background:rgba(10,9,8,.94);border-top:1px solid rgba(212,175,55,.25);z-index:9998;pointer-events:none}
-@media print{.app-footer{position:static;background:transparent;border:0;color:#666;padding:6px 0;font-size:10px}}
 </style>
 
 <style id="transaction-layout-clean-v42">
@@ -1185,6 +1187,7 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
       <button class="btn btn-ghost" onclick="openCentralAction('share')">🔗 Share</button>
       <button class="landing-utility" onclick="refreshDatabaseConnection()" aria-label="Refresh koneksi database" title="Refresh koneksi database">↻</button>
     </div>
+    <div class="site-footer" aria-label="Informasi aplikasi">Zie Project - Pembukuan Uang Kas dan TIK V 1.0 - @2026</div>
   </footer>
 </div>
 
@@ -1249,6 +1252,7 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
     </div>
     <div id="allPeriodsBody"></div>
   </div>
+  <div class="site-footer all-periods-footer" aria-label="Informasi aplikasi">Zie Project - Pembukuan Uang Kas dan TIK V 1.0 - @2026</div>
 </div>
 
 <div class="app-notice" id="appNotice" role="status" aria-live="polite" aria-atomic="true">
@@ -1488,7 +1492,7 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
     </section>
   </div>
 
-  <footer class="app-footer no-print"></footer>
+  <footer class="app-footer no-print">Zie Project - Pembukuan Uang Kas dan TIK V 1.0 - @2026</footer>
 </div>
 
 <script id="seed-data" type="application/json">{"students":[{"no":1,"nama":"ALFARUQ ZIKRI"},{"no":2,"nama":"ALIKA NAYYA A"},{"no":3,"nama":"ALVAN SHATA A"},{"no":4,"nama":"ARA TRIA UTOMO"},{"no":5,"nama":"ATHAR AL FATIH"},{"no":6,"nama":"AYNINDIRRA PUTRI M"},{"no":7,"nama":"AZRIL WAZZA P"},{"no":8,"nama":"CHERLY MARCELIN"},{"no":9,"nama":"FADIL AL PATIH"},{"no":10,"nama":"FAHIR AFDAL"},{"no":11,"nama":"GALANG ARJITYA"},{"no":12,"nama":"HAFIKA MAKAILA"},{"no":13,"nama":"HISYAM AL FARIZKI"},{"no":14,"nama":"HAIDAR SHAQIL F"},{"no":15,"nama":"INARA SAKHI A"},{"no":16,"nama":"KALA NAIRA ZAIDA"},{"no":17,"nama":"KEANU ALTHAF SYABIL"},{"no":18,"nama":"KIRANA MAHARANI F"},{"no":19,"nama":"MUHAMMAD ALIF FAREZA"},{"no":20,"nama":"M RASYA RAMADHAN"},{"no":21,"nama":"M RIZKI RAMADHAN"},{"no":22,"nama":"NUR AZIZAH AL WAISY"},{"no":23,"nama":"PRIYA ABDI KURNIAWAN"},{"no":24,"nama":"RADEYA PUTRI HARIANATA"},{"no":25,"nama":"RAFFA FEBRIAN PRATAMA"},{"no":26,"nama":"RAFFASYA BYANZA N"},{"no":27,"nama":"RAFFASYA FATIH AL FIRDAUS"},{"no":28,"nama":"SITI AYRA FARZANA"},{"no":29,"nama":"SITI KHALISA NATHIFA"},{"no":30,"nama":"YUMNA FARIHA"},{"no":31,"nama":"KEEANU ATHALLAH RIO"},{"no":32,"nama":"KEENAN ARSHAKA RIO"}],"pemasukan":[{"id":1,"bulanPembukuan":"2026-08","tanggalBayar":"2026-07-16","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"ARA TRIA UTOMO","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":2,"bulanPembukuan":"2026-08","tanggalBayar":"2026-07-28","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"ALVAN SHATA A","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":3,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-01","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10.0,"nama":"RADEYA PUTRI HARIANATA","jumlah":100000,"keterangan":"Kas Bulanan"},{"id":4,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"KEANU ALTHAF SYABIL","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":5,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"ALFARUQ ZIKRI","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":6,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-10","jumlahBulan":3.0,"nama":"ATHAR AL FATIH","jumlah":30000,"keterangan":"Kas Bulanan"},{"id":7,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"AZRIL WAZZA P","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":8,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"FADIL AL PATIH","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":9,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"KEEANU ATHALLAH RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":10,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"KEENAN ARSHAKA RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":11,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-03","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2.0,"nama":"RAFFASYA FATIH AL FIRDAUS","jumlah":20000,"keterangan":"Kas Bulanan"},{"id":12,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-04","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"SITI KHALISA NATHIFA","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":13,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-05","bulanDari":"2026-08","bulanSampai":"2026-10","jumlahBulan":3.0,"nama":"GALANG ARJITYA","jumlah":30000,"keterangan":"Kas Bulanan"},{"id":14,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-05","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"HISYAM AL FARIZKI","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":15,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-06","bulanDari":"2026-08","bulanSampai":"2026-10","jumlahBulan":3.0,"nama":"HAIDAR SHAQIL F","jumlah":30000,"keterangan":"Kas Bulanan"},{"id":16,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-06","bulanDari":"2027-06","bulanSampai":"2027-06","jumlahBulan":1.0,"nama":"RADEYA PUTRI HARIANATA","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":17,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-07","bulanDari":"2026-08","bulanSampai":"2026-12","jumlahBulan":5.0,"nama":"M RASYA RAMADHAN","jumlah":50000,"keterangan":"Kas Bulanan"},{"id":18,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-07","bulanDari":"2026-08","bulanSampai":"2027-05","jumlahBulan":10.0,"nama":"FAHIR AFDAL","jumlah":100000,"keterangan":"Kas Bulanan"},{"id":19,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-11","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2.0,"nama":"ALIKA NAYYA A","jumlah":20000,"keterangan":"Kas Bulanan"},{"id":20,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-20","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"RAFFASYA BYANZA N","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":21,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-20","bulanDari":"2026-11","bulanSampai":"2027-06","jumlahBulan":8.0,"nama":"ATHAR AL FATIH","jumlah":80000,"keterangan":"Kas Bulanan"},{"id":22,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-28","bulanDari":"2026-09","bulanSampai":"2026-09","jumlahBulan":1.0,"nama":"KEEANU ATHALLAH RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":23,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-28","bulanDari":"2026-09","bulanSampai":"2026-09","jumlahBulan":1.0,"nama":"KEENAN ARSHAKA RIO","jumlah":10000,"keterangan":"Kas Bulanan"},{"id":24,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-29","bulanDari":"2026-08","bulanSampai":"2026-08","jumlahBulan":1.0,"nama":"HAFIKA MAKAILA","jumlah":10000,"keterangan":"Bendahara 2"},{"id":25,"bulanPembukuan":"2026-08","tanggalBayar":"2026-08-31","bulanDari":"2026-08","bulanSampai":"2027-06","jumlahBulan":11.0,"nama":"KALA NAIRA ZAIDA","jumlah":110000,"keterangan":"Kas Bulanan"},{"id":26,"bulanPembukuan":"2026-08","tanggalBayar":"2026-09-01","bulanDari":"2026-08","bulanSampai":"2026-09","jumlahBulan":2.0,"nama":null,"jumlah":20000,"keterangan":"Kas Bulanan"}],"pengeluaran":[{"id":1,"bulanPembukuan":"2026-08","tanggal":"2026-07-27","keterangan":"Kenang-kenangan Faeyza Al Ghifari","jumlah":120000},{"id":2,"bulanPembukuan":"2026-08","tanggal":"2026-07-31","keterangan":"Membeli Gantungan Map","jumlah":50000},{"id":3,"bulanPembukuan":"2026-08","tanggal":"2026-08-03","keterangan":"Menjenguk Khitan Hisyam Al Farizki","jumlah":100000},{"id":4,"bulanPembukuan":"2026-08","tanggal":"2026-08-03","keterangan":"Menjenguk Khitan Fahir Afdal","jumlah":100000},{"id":5,"bulanPembukuan":"2026-08","tanggal":"2026-08-27","keterangan":"Kas Komite Semester 1","jumlah":50000}]}</script>
@@ -3851,6 +3855,5 @@ updateHeaderLabels();
 </script>
 
 
-<footer class="app-footer">Zie Project - Pembukuan Uang Kas dan TIK V 1.0 - @2026</footer>
 </body>
 </html>
