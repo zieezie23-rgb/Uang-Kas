@@ -53,6 +53,8 @@ section.panel.active{display:block;animation:fadeIn .25s ease}
 .csel-trigger.disabled{background:var(--paper-2);color:var(--ink-soft);cursor:not-allowed;opacity:.7}
 .csel-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:30;background:var(--white);border:1.5px solid var(--amber);border-radius:8px;box-shadow:var(--shadow);max-height:230px;overflow-y:auto;padding:4px}
 .csel-menu.show{display:block}
+/* Dropdown Bulan Kas Dari/Sampai dibuka ke atas agar tidak terpotong di bagian bawah layar */
+.csel.csel-up .csel-menu{top:auto;bottom:calc(100% + 4px)}
 .csel-opt{padding:8px 10px;border-radius:6px;font-size:19.44px;cursor:pointer;color:var(--ink)}
 .csel-opt:hover{background:var(--teal-tint)}
 .csel-opt.sel{background:var(--teal);color:#fff;font-weight:600}
@@ -153,7 +155,7 @@ th.sortable-th .sort-arrow{font-size:12.96px;margin-left:3px;opacity:.85}
 .saldo-akhir{font-weight:700;color:var(--amber)}
 .saldo-akhir.minus{color:var(--coral)}
 .badge-edit{cursor:pointer;color:var(--amber);font-weight:600;font-size:17.28px;margin-right:8px}
-footer.app-footer{text-align:center;color:var(--ink-soft);font-size:13.5px;margin-top:24px;padding:14px 8px 4px;border-top:1px solid var(--line);line-height:1.4;letter-spacing:.01em}
+footer.app-footer{text-align:center;color:var(--ink-soft);font-size:12px;margin:8px auto 0;padding:5px 8px 2px;width:min(360px,calc(100% - 24px));background:transparent;border-top:none;line-height:1.25;letter-spacing:.01em;box-sizing:border-box}
 .kpi-grid .kpi{text-align:center}
 .kpi-link{cursor:pointer;transition:transform .12s ease}
 .kpi-link:active{transform:scale(.98)}
@@ -219,7 +221,7 @@ body[data-active-panel="rekap"] nav.tabs button[data-tab="masuk"], body[data-act
 #panel-siswa .tambah-siswa-row{display:flex;align-items:center;justify-content:flex-end}
 #panel-siswa .tambah-siswa-row .back-to-rekap{margin-right:10px}
 .rekap-actions .btn{width:100%;min-width:0;box-sizing:border-box;flex:1 1 0;white-space:nowrap}
-nav.tabs{display:flex;gap:6px;flex-wrap:wrap;background:var(--paper-2);padding:6px;border-radius:var(--radius);margin-bottom:18px;box-shadow:inset 0 0 0 1px var(--line);align-items:center}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;background:transparent;padding:6px;border-radius:var(--radius);margin-bottom:18px;box-shadow:none;align-items:center}
 nav.tabs button[data-tab="masuk"]{order:1}
 nav.tabs button[data-tab="keluar"]{order:2}
 nav.tabs button[data-tab="bulanan"]{order:3}
@@ -257,7 +259,7 @@ nav.tabs button[data-tab="rekap"]{order:0}
 .ap-modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}.ap-modal-actions .btn{flex:1;min-width:150px;justify-content:center}
 .mode-switch{display:flex;gap:10px;padding:6px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;margin:0 0 12px}
 /* ===== FOOTER APLIKASI ===== */
-.site-footer{flex:0 0 auto;text-align:center;color:var(--ink-soft);font-size:13.5px;line-height:1.4;letter-spacing:.01em;padding:12px 8px 2px;margin-top:10px;border-top:1px solid rgba(212,175,55,.22)}
+.site-footer{flex:0 0 auto;text-align:center;color:var(--ink-soft);font-size:12px;line-height:1.25;letter-spacing:.01em;padding:5px 8px 2px;margin:8px auto 0;width:min(360px,calc(100% - 24px));background:transparent;border-top:none;box-sizing:border-box}
 .all-periods-footer{max-width:900px;width:100%;margin:10px auto 0;padding-bottom:4px}
 @media(max-width:420px){.site-footer{font-size:12px;padding-left:4px;padding-right:4px}}
 
@@ -1123,7 +1125,7 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
 @media(max-width:420px){.landing-export-actions{grid-template-columns:40px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px}.landing-export-actions .btn{padding-left:6px;padding-right:6px;font-size:17.28px}.landing-utility{width:40px!important;height:40px!important;min-height:40px!important;font-size:25.92px}.central-action-grid{grid-template-columns:1fr}}
 
 /* ===== NOTIFIKASI TEMA DARK COKLAT / EMAS ===== */
-.app-notice{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:12000;min-width:min(380px,calc(100vw - 32px));max-width:calc(100vw - 32px);padding:13px 16px;border:1px solid rgba(212,175,55,.6);border-radius:12px;background:linear-gradient(145deg,#2b2118,#17120d);color:var(--ink);box-shadow:0 14px 45px rgba(0,0,0,.55);display:flex;align-items:center;gap:10px;font:600 13px Inter,sans-serif;opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
+.app-notice{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:12000;min-width:min(380px,calc(100vw - 32px));max-width:calc(100vw - 32px);padding:13px 16px;border:1px solid rgba(212,175,55,.6);border-radius:12px;background:transparent;color:var(--ink);box-shadow:none;display:flex;align-items:center;gap:10px;font:600 13px Inter,sans-serif;opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
 .app-notice.show{opacity:1;transform:translate(-50%,0)}
 .app-notice.ok{border-color:rgba(212,175,55,.72)}
 .app-notice.error{border-color:rgba(180,55,55,.8)}
@@ -2698,6 +2700,7 @@ function buildCustomSelect(selectEl){
   selectEl.classList.add('csel-native');
   const wrap = document.createElement('div');
   wrap.className = 'csel';
+  if(['mBulanDari','mBulanSampai','tikDari','tikSampai'].includes(selectEl.id)) wrap.classList.add('csel-up');
   selectEl.parentNode.insertBefore(wrap, selectEl);
   wrap.appendChild(selectEl);
   const trigger = document.createElement('button');
