@@ -1687,14 +1687,18 @@ function apiReady(){
   return /^https:\/\//.test(APPS_SCRIPT_URL) && !APPS_SCRIPT_URL.includes('PASTE_URL');
 }
 
+// GET ke Apps Script: timeout 12 dtk + 1x ulang otomatis (Apps Script sering lambat saat "bangun" / banyak permintaan bersamaan).
 function apiGet(action, params={}){
+  return apiGetOnce(action, params).catch(()=>new Promise(r=>setTimeout(r,800)).then(()=>apiGetOnce(action, params)));
+}
+function apiGetOnce(action, params={}){
   return new Promise((resolve,reject)=>{
     if(!apiReady()) return reject(new Error('URL Web App Apps Script belum diisi di APPS_SCRIPT_URL.'));
     const cb='__gs_cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
     const script=document.createElement('script');
     const q=new URLSearchParams({action, callback:cb, ...params});
     const cleanup=()=>{ clearTimeout(timer); delete window[cb]; script.remove(); };
-    const timer=setTimeout(()=>{cleanup();reject(new Error('Koneksi ke Google Apps Script timeout.'));},7000);
+    const timer=setTimeout(()=>{cleanup();reject(new Error('Koneksi ke Google Apps Script timeout.'));},12000);
     window[cb]=(data)=>{cleanup(); if(data&&data.ok===false) reject(new Error(data.error||'Gagal mengambil data.')); else resolve(data&&Object.prototype.hasOwnProperty.call(data,'data')?data.data:data);};
     script.onerror=()=>{cleanup();reject(new Error('Gagal terhubung ke Google Apps Script.'));};
     script.src=APPS_SCRIPT_URL+(APPS_SCRIPT_URL.includes('?')?'&':'?')+q.toString();
@@ -1730,7 +1734,7 @@ async function apiPost(action, params={}){
     const finish=(ok,err)=>{
       if(finished) return;
       finished=true;
-      setTimeout(()=>{ iframe.remove(); form.remove(); },300);
+      setTimeout(()=>{ iframe.remove(); form.remove(); },20000);
       if(ok) resolve(true);
       else reject(err||new Error('Gagal mengirim data ke Google Apps Script.'));
     };
@@ -1806,6 +1810,18 @@ async function cloudSave(kind, idx, data){
 // state kelas dimuat ulang agar perubahan dari HP/laptop lain tetap ikut terlihat.
 let bgSyncTimers = {kas:null, tik:null};
 let bgSyncRunning = {kas:false, tik:false};
+let bgSyncFailCount = {kas:0, tik:0};
+// Tanda tangan data untuk membandingkan apa yang dikirim dengan apa yang tercatat di database.
+function dataSignature(d){
+  d=d||{};
+  const rows=(arr)=>(Array.isArray(arr)?arr:[]).map(x=>String(x&&x.id)+':'+(Number(x&&x.jumlah)||0)).sort();
+  return JSON.stringify({
+    s:(Array.isArray(d.students)?d.students:[]).map(x=>String(x&&x.nama||'').trim().toLowerCase()).sort(),
+    m:rows(d.pemasukan),
+    k:rows(d.pengeluaran)
+  });
+}
+function sameSavedData(sent, server){ return !!server && dataSignature(sent)===dataSignature(server); }
 
 function setBackgroundSyncStatus(status, message){
   // Gunakan indikator sinkronisasi yang memang sudah ada di aplikasi.
@@ -1849,15 +1865,30 @@ async function processBackgroundSync(kind){
     while(queue.length){
       const item=queue[0];
 
-      await apiPost(kind==='kas' ? 'saveKasState' : 'saveTikState',{
-        periodIdx:String(item.periodIdx),
-        payload:JSON.stringify(item.payload)
-      });
+      // Kirim, lalu BACA ULANG dari database untuk memastikan data benar-benar tercatat.
+      // (Pengiriman lewat form tidak memberi tahu apakah server menerima atau menolak.)
+      let verified=false;
+      for(let attempt=0; attempt<3 && !verified; attempt++){
+        await apiPost(kind==='kas' ? 'saveKasState' : 'saveTikState',{
+          periodIdx:String(item.periodIdx),
+          payload:JSON.stringify(item.payload)
+        });
+        for(let chk=0; chk<3 && !verified; chk++){
+          await new Promise(r=>setTimeout(r, chk===0?1500:2500));
+          const server=await apiGet(kind==='kas' ? 'getKasState' : 'getTikState',{periodIdx:String(item.periodIdx)});
+          verified=sameSavedData(item.payload, server);
+        }
+      }
+      if(!verified) throw new Error('Data belum terbaca di database setelah dikirim.');
 
-      queue.shift();
-      localStorage.setItem(queueKey,JSON.stringify(queue));
+      // Ambil ulang antrean (mungkin ada perubahan baru saat menunggu), buang hanya item yang sudah terverifikasi.
+      let latest=[]; try{ latest=JSON.parse(localStorage.getItem(queueKey)||'[]'); }catch(e){ latest=[]; }
+      latest=latest.filter(x=>!(String(x.periodIdx)===String(item.periodIdx) && x.createdAt===item.createdAt));
+      localStorage.setItem(queueKey,JSON.stringify(latest));
+      queue=latest;
     }
 
+    bgSyncFailCount[kind]=0;
     cloudOnline=true;
     placeSyncBadge();
     setBackgroundSyncStatus('synced','Semua perubahan sudah tersinkron ke database.');
@@ -1865,9 +1896,10 @@ async function processBackgroundSync(kind){
     console.error('Background sync:',e);
     cloudOnline=false;
     placeSyncBadge();
-    setBackgroundSyncStatus('failed','Sinkronisasi gagal. Akan dicoba lagi otomatis.');
-    // Coba lagi nanti tanpa mengganggu UI.
-    scheduleBackgroundSync(kind,3000);
+    setBackgroundSyncStatus('failed','Sinkronisasi gagal. Data aman di perangkat dan akan dicoba lagi otomatis.');
+    // Coba lagi dengan jeda bertahap (3 dtk, 6, 12, ... maks 60 dtk) tanpa mengganggu UI.
+    bgSyncFailCount[kind]=(bgSyncFailCount[kind]||0)+1;
+    scheduleBackgroundSync(kind,Math.min(60000,3000*Math.pow(2,bgSyncFailCount[kind]-1)));
   }finally{
     bgSyncRunning[kind]=false;
   }
@@ -2967,7 +2999,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   renderAll();
   hideCloudOverlay();
   // Muat data TIK di latar belakang agar siap saat tombol TIK ditekan.
-  setTimeout(()=>{ loadTik().catch(e=>console.error('Preload TIK:',e)); }, 0);
+  setTimeout(()=>{ loadTik().catch(e=>console.error('Preload TIK:',e)); }, 3000);
   // Mode cepat: loadState() sudah menampilkan data lokal; pemeriksaan server berjalan di belakang layar.
   // Jika belum ada data lokal (pertama kali dibuka), loadState() menunggu server seperti biasa.
   if(cloudOnline && !hasPendingQueue('kas')) setBackgroundSyncStatus('synced','Data terbaru selesai diunduh dan sudah tersinkron.');
@@ -3058,7 +3090,8 @@ let tikLoaded=false;
 const validTik=d=>d&&Array.isArray(d.students)&&d.students.length&&Array.isArray(d.pemasukan)&&Array.isArray(d.pengeluaran);
 function revalidateTikInBackground(){
   const idx=currentPeriodIdx;
-  setBackgroundSyncStatus('syncing','Memeriksa data TIK terbaru di database.');
+  const tikVisible=()=>document.getElementById('tikApp').style.display!=='none';
+  if(tikVisible()) setBackgroundSyncStatus('syncing','Memeriksa data TIK terbaru di database.');
   apiGet('getTikState',{periodIdx:String(idx)}).then(x=>{
     cloudOnline=true;
     if(idx!==currentPeriodIdx || !tikState) return;
@@ -3073,9 +3106,9 @@ function revalidateTikInBackground(){
         if(document.getElementById('tikApp').style.display!=='none' && !anyInputModalOpen()){ try{ renderTik(); }catch(e){ console.error(e); } }
       }
     }
-    setBackgroundSyncStatus('synced','Data TIK sudah tersinkron.');
+    if(tikVisible()) setBackgroundSyncStatus('synced','Data TIK sudah tersinkron.');
     placeSyncBadge();
-  }).catch(e=>{ cloudOnline=false; console.error('Revalidate TIK:',e); setBackgroundSyncStatus('failed','Gagal memeriksa data TIK terbaru. Mode lokal digunakan.'); });
+  }).catch(e=>{ console.error('Revalidate TIK:',e); if(tikVisible()) cloudOnline=false; if(tikVisible()) setBackgroundSyncStatus('failed','Gagal memeriksa data TIK terbaru. Mode lokal digunakan.'); });
 }
 let tikLoadPromise=null;
 function loadTik(opts){
