@@ -1,8 +1,11 @@
-const CACHE = "buku-kas-tik-v18";
+const CACHE = "buku-kas-tik-v19";
 const APP_SHELL = ["./", "./index.html", "./manifest.json", "./assets/icon.png"];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP_SHELL)));
+  // cache:'reload' = selalu ambil dari jaringan (lewati cache HTTP GitHub Pages yang bisa bertahan ~10 menit).
+  event.waitUntil(caches.open(CACHE).then(cache => Promise.all(APP_SHELL.map(u =>
+    fetch(new Request(u, {cache: "reload"})).then(res => { if (res && res.ok) return cache.put(u, res); }).catch(() => null)
+  ))));
   self.skipWaiting();
 });
 
@@ -32,7 +35,7 @@ self.addEventListener("fetch", event => {
     event.respondWith(
       caches.open(CACHE).then(cache =>
         cache.match(req, { ignoreSearch: true }).then(cached => {
-          const network = fetch(req).then(res => {
+          const network = fetch(req, { cache: "no-cache" }).then(res => {
             if (res && res.ok) cache.put(req, res.clone());
             return res;
           }).catch(() => null);

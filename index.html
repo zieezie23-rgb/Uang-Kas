@@ -4177,7 +4177,15 @@ updateHeaderLabels();
 <script>
 // Service worker: cache aplikasi agar cepat & bisa dibuka offline. Aman bila gagal (mis. file:// atau sandbox).
 if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
-  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW tidak aktif:',e)); });
+  // Bila versi baru aktif (service worker diganti), muat ulang SEKALI agar tampilan & teks terbaru langsung dipakai.
+  const hadController=!!navigator.serviceWorker.controller; let reloadedForSW=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!hadController || reloadedForSW) return;
+    reloadedForSW=true;
+    if(typeof mutateBusy!=='undefined' && mutateBusy) return;   // jangan memotong proses simpan
+    location.reload();
+  });
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(e=>console.warn('SW tidak aktif:',e)); });
 }
 </script>
 
