@@ -1,4 +1,4 @@
-const CACHE = "buku-kas-tik-v9";
+const CACHE = "buku-kas-tik-v10";
 const APP_SHELL = ["./", "./index.html", "./manifest.json", "./assets/icon.png"];
 
 self.addEventListener("install", event => {
