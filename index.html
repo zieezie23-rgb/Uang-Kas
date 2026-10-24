@@ -1603,7 +1603,7 @@ function apiGet(action, params={}){
     const script=document.createElement('script');
     const q=new URLSearchParams({action, callback:cb, ...params});
     const cleanup=()=>{ clearTimeout(timer); delete window[cb]; script.remove(); };
-    const timer=setTimeout(()=>{cleanup();reject(new Error('Koneksi ke Google Apps Script timeout.'));},15000);
+    const timer=setTimeout(()=>{cleanup();reject(new Error('Koneksi ke Google Apps Script timeout.'));},7000);
     window[cb]=(data)=>{cleanup(); if(data&&data.ok===false) reject(new Error(data.error||'Gagal mengambil data.')); else resolve(data&&Object.prototype.hasOwnProperty.call(data,'data')?data.data:data);};
     script.onerror=()=>{cleanup();reject(new Error('Gagal terhubung ke Google Apps Script.'));};
     script.src=APPS_SCRIPT_URL+(APPS_SCRIPT_URL.includes('?')?'&':'?')+q.toString();
@@ -1936,7 +1936,53 @@ function periodSeedElId(idx){
   if(idx === KELAS3_PERIOD_IDX) return 'seed-data';
   return null;
 }
-async function loadState(){
+// ---- Muat cepat: tampilkan data lokal dulu, sinkron ke server di belakang layar ----
+function hasPendingQueue(kind){
+  try{ return JSON.parse(localStorage.getItem(kind==='kas'?'KAS_SYNC_QUEUE':'TIK_SYNC_QUEUE')||'[]').length>0; }catch(e){ return false; }
+}
+function readLocalJSON(key, valid){
+  try{
+    const raw=localStorage.getItem(key); if(!raw) return null;
+    const d=JSON.parse(raw);
+    return valid(d) ? d : null;
+  }catch(e){ return null; }
+}
+const validKas=d=>d&&Array.isArray(d.students)&&d.students.length>0&&Array.isArray(d.pemasukan)&&Array.isArray(d.pengeluaran);
+function revalidateKasInBackground(){
+  const idx=currentPeriodIdx;
+  setBackgroundSyncStatus('syncing','Memeriksa data terbaru di database.');
+  apiGet('getKasState',{periodIdx:String(idx)}).then(d=>{
+    cloudOnline=true;
+    if(idx!==currentPeriodIdx || !state) return;
+    if(hasPendingQueue('kas') || bgSyncRunning.kas){ setBackgroundSyncStatus('pending'); scheduleBackgroundSync('kas',100); return; }
+    if(validKas(d) && JSON.stringify(d)!==JSON.stringify(state)){
+      state=d; backfillKeterangan();
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      try{ fillStudentSelect(); renderAll(); }catch(e){ console.error(e); }
+    }
+    setBackgroundSyncStatus('synced','Data sudah tersinkron.');
+    placeSyncBadge();
+  }).catch(e=>{
+    cloudOnline=false;
+    console.error('Revalidate kas:',e);
+    setBackgroundSyncStatus('failed','Gagal memeriksa data terbaru. Mode lokal digunakan.');
+  });
+}
+// Simpan ke server ditunda & digabung: perubahan beruntun hanya mengirim snapshot terakhir.
+const _cloudSaveTimers={};
+function cloudSaveDebounced(kind, idx, data, delay=1200){
+  clearTimeout(_cloudSaveTimers[kind]);
+  _cloudSaveTimers[kind]=setTimeout(()=>cloudSave(kind, idx, data), delay);
+}
+async function loadState(opts){
+  if(!(opts && opts.force)){
+    const local=readLocalJSON(STORAGE_KEY, validKas);
+    if(local){
+      state=local; backfillKeterangan();
+      revalidateKasInBackground();
+      return;
+    }
+  }
   if(initialSyncLoading) setBackgroundSyncStatus('syncing','Sedang mengambil data terbaru dari database.');
   let candidate = null;
   try{
@@ -1996,8 +2042,8 @@ function backfillKeterangan(){
 }
 function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  // Sinkronisasi cloud berjalan di belakang layar.
-  cloudSave('kas', currentPeriodIdx, state);
+  // Sinkronisasi cloud berjalan di belakang layar (ditunda & digabung).
+  cloudSaveDebounced('kas', currentPeriodIdx, state);
 }
 
 // ===================== HELPERS =====================
@@ -2772,13 +2818,8 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   initialSyncLoading = true;
   setBackgroundSyncStatus('syncing','Sedang mengambil data terbaru dari database.');
   await loadState();
-  await updateLandingStudentCounts();
   initialSyncLoading = false;
-  if(cloudOnline){
-    setBackgroundSyncStatus('synced','Data terbaru selesai diunduh dan sudah tersinkron.');
-  }else{
-    setBackgroundSyncStatus('failed','Gagal mengambil data terbaru dari database. Mode lokal digunakan.');
-  }
+  updateLandingStudentCounts();
   initTabs();
   initCustomSelects();
   fillMonthSelects();
@@ -2797,6 +2838,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('kTanggal').readOnly = true;
   renderAll();
   hideCloudOverlay();
+  // Mode cepat: loadState() sudah menampilkan data lokal; pemeriksaan server berjalan di belakang layar.
+  // Jika belum ada data lokal (pertama kali dibuka), loadState() menunggu server seperti biasa.
+  if(cloudOnline && !hasPendingQueue('kas')) setBackgroundSyncStatus('synced','Data terbaru selesai diunduh dan sudah tersinkron.');
 });
 
 </script>
@@ -2880,10 +2924,34 @@ function tikSeed(){
   };
 }
 let tikLoaded=false;
-async function loadTik(){
-  if(typeof setBackgroundSyncStatus==='function') setBackgroundSyncStatus('syncing','Mengambil data terbaru.');
+const validTik=d=>d&&Array.isArray(d.students)&&d.students.length&&Array.isArray(d.pemasukan)&&Array.isArray(d.pengeluaran);
+function revalidateTikInBackground(){
+  const idx=currentPeriodIdx;
+  apiGet('getTikState',{periodIdx:String(idx)}).then(x=>{
+    cloudOnline=true;
+    if(idx!==currentPeriodIdx || !tikState) return;
+    if(hasPendingQueue('tik') || bgSyncRunning.tik){ scheduleBackgroundSync('tik',100); return; }
+    if(validTik(x)){
+      if(idx===KELAS3_PERIOD_IDX && state && Array.isArray(state.students) && state.students.length){
+        x.students=state.students.map(s=>({no:s.no,nama:s.nama}));
+      }
+      if(JSON.stringify(x)!==JSON.stringify(tikState)){
+        tikState=x;
+        localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
+        if(document.getElementById('tikApp').style.display!=='none'){ try{ renderTik(); }catch(e){ console.error(e); } }
+      }
+    }
+    placeSyncBadge();
+  }).catch(e=>{ cloudOnline=false; console.error('Revalidate TIK:',e); });
+}
+async function loadTik(opts){
   if(tikLoaded) return;
   tikLoaded=true;
+  if(!(opts && opts.force)){
+    const local=readLocalJSON(TIK_STORAGE_KEY, validTik);
+    if(local){ tikState=local; revalidateTikInBackground(); return; }
+  }
+  if(typeof setBackgroundSyncStatus==='function') setBackgroundSyncStatus('syncing','Mengambil data terbaru.');
   let x = null;
   try{
     x = await apiGet('getTikState',{periodIdx:String(currentPeriodIdx)});
@@ -2933,7 +3001,7 @@ async function loadTik(){
 }
 function saveTik(){
   localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
-  cloudSave('tik', currentPeriodIdx, tikState);
+  cloudSaveDebounced('tik', currentPeriodIdx, tikState);
 }
 function tikShow(which){
   document.body.dataset.activePanel = 'tik-' + which;
@@ -3266,14 +3334,15 @@ async function switchPeriod(idx){
 // ---- Jumlah siswa pada kartu periode beranda ----
 async function getLandingStudentCount(idx){
   if(idx===currentPeriodIdx && state && Array.isArray(state.students)) return state.students.length;
-  try{
-    const d=await apiGet('getKasState',{periodIdx:String(idx)});
-    if(d && Array.isArray(d.students)) return d.students.length;
-  }catch(e){}
+  // Lokal dulu (instan). Server hanya dipanggil jika periode ini belum pernah disimpan di perangkat.
   const key=kasStorageKeyFor(idx);
   try{
     const saved=localStorage.getItem(key);
     if(saved){ const d=JSON.parse(saved); if(d && Array.isArray(d.students)) return d.students.length; }
+  }catch(e){}
+  try{
+    const d=await apiGet('getKasState',{periodIdx:String(idx)});
+    if(d && Array.isArray(d.students)) return d.students.length;
   }catch(e){}
   return 0;
 }
@@ -3427,13 +3496,13 @@ async function refreshDatabaseConnection(){
   setSyncStatus('⟳ Menyegarkan koneksi database...',true);
   try{
     state=null;
-    await loadState();
+    await loadState({force:true});
     fillMonthSelects();
     fillStudentSelect();
     renderAll();
     if(document.getElementById('tikApp').style.display!=='none'){
       tikLoaded=false;
-      await loadTik();
+      await loadTik({force:true});
       renderTik();
     }
     cloudOnline=true;
@@ -3858,5 +3927,11 @@ updateHeaderLabels();
 </script>
 
 
+<script>
+// Service worker: cache aplikasi agar cepat & bisa dibuka offline. Aman bila gagal (mis. file:// atau sandbox).
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW tidak aktif:',e)); });
+}
+</script>
 </body>
 </html>
