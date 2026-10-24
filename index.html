@@ -4139,5 +4139,110 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   #tik-keluar .card.edit-on .month-tbl-wrap td.no-print{display:table-cell!important;}
 }
 </style>
+<style id="list-compact-fullpage-v1">
+@media screen{
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child{flex:1 1 auto!important;height:100%!important;max-height:100%!important;}
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child .month-tbl-wrap,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child .month-tbl-wrap,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child .month-tbl-wrap,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child .month-tbl-wrap{flex:1 1 0!important;}
+  #panel-masuk .month-tbl-wrap table td,
+  #panel-keluar .month-tbl-wrap table td,
+  #tik-masuk .month-tbl-wrap table td,
+  #tik-keluar .month-tbl-wrap table td,
+  #panel-masuk .month-tbl-wrap table td *:not(svg):not(.icon-btn),
+  #panel-keluar .month-tbl-wrap table td *:not(svg):not(.icon-btn),
+  #tik-masuk .month-tbl-wrap table td *:not(svg):not(.icon-btn),
+  #tik-keluar .month-tbl-wrap table td *:not(svg):not(.icon-btn){font-size:12.5px!important;line-height:1.25!important;}
+  #panel-masuk .month-tbl-wrap table td,
+  #panel-keluar .month-tbl-wrap table td,
+  #tik-masuk .month-tbl-wrap table td,
+  #tik-keluar .month-tbl-wrap table td{padding:5px 6px!important;}
+  #panel-masuk .month-tbl-wrap table th,
+  #panel-keluar .month-tbl-wrap table th,
+  #tik-masuk .month-tbl-wrap table th,
+  #tik-keluar .month-tbl-wrap table th{font-size:11px!important;padding:6px 6px!important;line-height:1.2!important;}
+  #panel-masuk .month-tbl-wrap table .icon-btn,
+  #panel-keluar .month-tbl-wrap table .icon-btn,
+  #tik-masuk .month-tbl-wrap table .icon-btn,
+  #tik-keluar .month-tbl-wrap table .icon-btn{font-size:14px!important;padding:2px 3px!important;}
+}
+</style>
+<style id="list-fill-compact-v1">
+@media screen{
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child{flex:1 1 auto!important;}
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child .month-tbl-wrap td,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child .month-tbl-wrap td,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child .month-tbl-wrap td,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child .month-tbl-wrap td{font-size:10.5px!important;padding:3px 5px!important;line-height:1.25!important;}
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child .month-tbl-wrap th,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child .month-tbl-wrap th,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child .month-tbl-wrap th,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child .month-tbl-wrap th{font-size:9px!important;padding:4px 5px!important;line-height:1.2!important;}
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child .month-tbl-wrap .icon-btn,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child .month-tbl-wrap .icon-btn,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child .month-tbl-wrap .icon-btn,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child .month-tbl-wrap .icon-btn{font-size:12px!important;padding:1px 3px!important;}
+}
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child .month-tbl-wrap td .rp-cell,
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child .month-tbl-wrap td .rp-cell span,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child .month-tbl-wrap td .rp-cell,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child .month-tbl-wrap td .rp-cell span,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child .month-tbl-wrap td .rp-cell,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child .month-tbl-wrap td .rp-cell span,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child .month-tbl-wrap td .rp-cell,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child .month-tbl-wrap td .rp-cell span{font-size:10.5px!important;}
+</style>
+<style id="siswa-fill-compact-v1">
+@media screen{
+  body[data-active-panel="siswa"],
+  body[data-active-panel="tik-siswa"]{overflow:hidden!important;}
+  body[data-active-panel="siswa"] .app#mainApp,
+  body[data-active-panel="tik-siswa"] .app#mainApp{height:100vh!important;height:100dvh!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;box-sizing:border-box!important;padding-top:18px!important;padding-bottom:18px!important;}
+  body[data-active-panel="tik-siswa"] #tikApp{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;width:100%!important;margin:0!important;overflow:hidden!important;}
+  body[data-active-panel="tik-siswa"] #tikApp > .panel.active{flex:1 1 auto!important;min-height:0!important;height:auto!important;margin:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;}
+  body[data-active-panel="siswa"] #panel-siswa{flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;margin:0!important;padding:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;}
+  body[data-active-panel="siswa"] #panel-siswa > .card:first-child,
+  body[data-active-panel="tik-siswa"] #tik-siswa > .card:first-child{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;margin:0!important;overflow:hidden!important;}
+  body[data-active-panel="siswa"] #panel-siswa > .card:first-child > h2,
+  body[data-active-panel="tik-siswa"] #tik-siswa > .card:first-child > h2{flex:0 0 auto;font-size:19px!important;margin-bottom:8px!important;}
+  body[data-active-panel="siswa"] #panel-siswa .tbl-wrap,
+  body[data-active-panel="tik-siswa"] #tik-siswa .tbl-wrap{flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;overflow-x:auto!important;overflow-y:auto!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-action-row,
+  body[data-active-panel="siswa"] #panel-siswa .form-action-row,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-action-row,
+  body[data-active-panel="tik-siswa"] #tik-siswa .form-action-row{flex:0 0 auto!important;display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;flex-wrap:nowrap!important;margin-top:10px!important;padding:0!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-action-row .btn,
+  body[data-active-panel="siswa"] #panel-siswa .form-action-row .btn,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-action-row .btn,
+  body[data-active-panel="tik-siswa"] #tik-siswa .form-action-row .btn{padding:7px 14px!important;font-size:14px!important;min-height:0!important;line-height:1.2!important;white-space:nowrap!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-action-row .back-to-rekap,
+  body[data-active-panel="siswa"] #panel-siswa .form-action-row .back-to-rekap,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-action-row .back-to-rekap,
+  body[data-active-panel="tik-siswa"] #tik-siswa .form-action-row .back-to-rekap{margin:0!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-table td,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-table td{font-size:10.5px!important;padding:3px 5px!important;line-height:1.25!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-table th,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-table th{font-size:9px!important;padding:4px 5px!important;line-height:1.2!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-table td .rp-cell,
+  body[data-active-panel="siswa"] #panel-siswa .siswa-table td .rp-cell span,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-table td .rp-cell,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-table td .rp-cell span{font-size:10.5px!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-table td .paid,
+  body[data-active-panel="siswa"] #panel-siswa .siswa-table td .unpaid,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-table td .paid,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-table td .unpaid{font-size:9px!important;line-height:1!important;}
+  body[data-active-panel="siswa"] #panel-siswa .siswa-table .icon-btn,
+  body[data-active-panel="tik-siswa"] #tik-siswa .siswa-table .icon-btn{font-size:12px!important;padding:1px 3px!important;}
+  body[data-active-panel="siswa"] .app-footer,
+  body[data-active-panel="tik-siswa"] .app-footer{display:block!important;flex:0 0 auto!important;margin:8px auto 0!important;}
+}
+</style>
 </body>
 </html>
