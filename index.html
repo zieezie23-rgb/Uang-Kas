@@ -1124,7 +1124,7 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
 <body>
 <div id="cloudLoadingOverlay" style="position:fixed;inset:0;background:#0A0908;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
   <div style="width:38px;height:38px;border-radius:50%;border:3px solid #3A3220;border-top-color:#D4AF37;animation:cloudspin 0.8s linear infinite;"></div>
-  <div style="font-family:'Inter',-apple-system,sans-serif;color:#A8987A;font-size:16.2px;font-weight:600;">Memuat data terbaru...</div>
+  <div style="font-family:'Inter',-apple-system,sans-serif;color:#A8987A;font-size:16.2px;font-weight:600;" id="cloudLoadingText">Memuat data terbaru...</div>
 </div>
 <style>@keyframes cloudspin{to{transform:rotate(360deg)}}
 /* ===== AKSI EXPORT / CETAK / SHARE TERPUSAT ===== */
@@ -1366,18 +1366,16 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
 
     <div class="card">
       <h2>Daftar Pemasukan <span class="pill pill-total" id="countMasuk"></span></h2>
-      <div class="month-tbl-wrap" style="max-height:calc(100dvh - 250px); min-height:240px; overflow-y:auto;">
+      <div class="month-tbl-wrap">
         <table>
           <thead><tr id="theadMasuk"></tr></thead>
           <tbody id="tbodyMasuk"></tbody>
         </table>
       </div>
-    </div>
-
-    <!-- Tombol melayang: Home (kiri bawah) & Input (kanan bawah) -->
-    <div class="fab-bar no-print">
-      <button class="btn btn-ghost fab-home" onclick="showPanel('panel-rekap')">🏠 Home</button>
-      <button class="btn btn-primary fab-add" onclick="openInputModal('masuk')">＋ Input</button>
+      <div class="list-actions-bar no-print">
+        <button class="btn btn-ghost" type="button" onclick="showPanel('panel-rekap')">← Kembali ke Rekap</button>
+        <button class="btn btn-primary" type="button" onclick="openInputModal('masuk')">＋ Input</button>
+      </div>
     </div>
 
     <!-- Popup input -->
@@ -1427,18 +1425,16 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
 
     <div class="card">
       <h2>Daftar Pengeluaran <span class="pill pill-total" id="countKeluar"></span></h2>
-      <div class="month-tbl-wrap" style="max-height:calc(100dvh - 250px); min-height:240px; overflow-y:auto;">
+      <div class="month-tbl-wrap">
         <table>
           <thead><tr id="theadKeluar"></tr></thead>
           <tbody id="tbodyKeluar"></tbody>
         </table>
       </div>
-    </div>
-
-    <!-- Tombol melayang: Home (kiri bawah) & Input (kanan bawah) -->
-    <div class="fab-bar no-print">
-      <button class="btn btn-ghost fab-home" onclick="showPanel('panel-rekap')">🏠 Home</button>
-      <button class="btn btn-primary fab-add" onclick="openInputModal('keluar')">＋ Input</button>
+      <div class="list-actions-bar no-print">
+        <button class="btn btn-ghost" type="button" onclick="showPanel('panel-rekap')">← Kembali ke Rekap</button>
+        <button class="btn btn-primary" type="button" onclick="openInputModal('keluar')">＋ Input</button>
+      </div>
     </div>
 
     <!-- Popup input -->
@@ -1540,11 +1536,12 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
       <div class="card"><h2>Data Siswa &amp; Status TIK per Bulan</h2><div class="tbl-wrap"><table class="siswa-table" id="tblSiswaTik"><thead><tr id="tikSiswaHead"></tr></thead><tbody id="tikSiswaBody"></tbody></table></div><div class="form-action-row no-print"><div class="no-print back-to-rekap"><button class="btn btn-ghost" onclick="tikShow('rekap')">🏠 Kembali ke Rekap</button></div><div class="btn-row btn-row-right"><button class="btn btn-primary" onclick="tikTambahSiswa()">＋ Tambah Siswa</button></div></div></div>
     </section>
     <section class="panel" id="tik-masuk">
-      <div class="card"><h2>Daftar Pemasukan TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th class="sortable" data-sort="nama">Nama</th><th class="sortable" data-sort="tanggalBayar">Tanggal</th><th class="sortable" data-sort="bulan">Bulan</th><th class="num sortable" data-sort="jumlah">Jumlah</th><th class="sortable" data-sort="keterangan">Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikMasukBody"></tbody></table></div></div>
-      <div class="fab-bar no-print">
-        <button class="btn btn-ghost fab-home" onclick="tikShow('rekap')">🏠 Home</button>
-        <button class="btn btn-primary fab-add" onclick="openInputModal('tikMasuk')">＋ Input</button>
+      <div class="card"><h2>Daftar Pemasukan TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th class="sortable" data-sort="nama">Nama</th><th class="sortable" data-sort="tanggalBayar">Tanggal</th><th class="sortable" data-sort="bulan">Bulan</th><th class="num sortable" data-sort="jumlah">Jumlah</th><th class="sortable" data-sort="keterangan">Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikMasukBody"></tbody></table></div>
+      <div class="list-actions-bar no-print">
+        <button class="btn btn-ghost" type="button" onclick="tikShow('rekap')">← Kembali ke Rekap</button>
+        <button class="btn btn-primary" type="button" onclick="openInputModal('tikMasuk')">＋ Input</button>
       </div>
+</div>
       <div class="input-modal no-print" id="modalTikMasuk" hidden>
         <div class="input-modal-backdrop" onclick="closeInputModal('tikMasuk')"></div>
         <div class="input-modal-box" role="dialog" aria-modal="true" aria-labelledby="tikMasukFormTitle">
@@ -1558,11 +1555,12 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
       </div>
     </section>
     <section class="panel" id="tik-keluar">
-      <div class="card"><h2>Daftar Pengeluaran TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th>Tanggal</th><th class="num">Jumlah</th><th>Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikKeluarBody"></tbody></table></div></div>
-      <div class="fab-bar no-print">
-        <button class="btn btn-ghost fab-home" onclick="tikShow('rekap')">🏠 Home</button>
-        <button class="btn btn-primary fab-add" onclick="openInputModal('tikKeluar')">＋ Input</button>
+      <div class="card"><h2>Daftar Pengeluaran TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th>Tanggal</th><th class="num">Jumlah</th><th>Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikKeluarBody"></tbody></table></div>
+      <div class="list-actions-bar no-print">
+        <button class="btn btn-ghost" type="button" onclick="tikShow('rekap')">← Kembali ke Rekap</button>
+        <button class="btn btn-primary" type="button" onclick="openInputModal('tikKeluar')">＋ Input</button>
       </div>
+</div>
       <div class="input-modal no-print" id="modalTikKeluar" hidden>
         <div class="input-modal-backdrop" onclick="closeInputModal('tikKeluar')"></div>
         <div class="input-modal-box" role="dialog" aria-modal="true" aria-labelledby="tikKeluarFormTitle">
@@ -1771,6 +1769,12 @@ function setSyncStatus(text, ok=true){
   if(!el) return;
   el.style.display='flex'; el.textContent=text; el.style.color=ok?'var(--amber)':'var(--coral)';
   el.classList.remove('sync-blink');
+}
+function showCloudOverlay(text){
+  const el = document.getElementById('cloudLoadingOverlay');
+  const t = document.getElementById('cloudLoadingText');
+  if(t) t.textContent = text || 'Memuat data terbaru...';
+  if(el) el.style.display = 'flex';
 }
 function hideCloudOverlay(){
   const el = document.getElementById('cloudLoadingOverlay');
@@ -2948,6 +2952,8 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('kTanggal').value = todayISO();
   renderAll();
   hideCloudOverlay();
+  // Muat data TIK di latar belakang agar siap saat tombol TIK ditekan.
+  setTimeout(()=>{ loadTik().catch(e=>console.error('Preload TIK:',e)); }, 0);
   // Mode cepat: loadState() sudah menampilkan data lokal; pemeriksaan server berjalan di belakang layar.
   // Jika belum ada data lokal (pertama kali dibuka), loadState() menunggu server seperti biasa.
   if(cloudOnline && !hasPendingQueue('kas')) setBackgroundSyncStatus('synced','Data terbaru selesai diunduh dan sudah tersinkron.');
@@ -2989,8 +2995,9 @@ async function switchBook(mode){
   const kasMode=document.getElementById('modeKasBtn'), tikMode=document.getElementById('modeTikBtn');
   if(mode==='tik'){
     kasPanels.forEach(p=>p.style.display='none'); if(kasHeader)kasHeader.style.display='none'; tik.style.display='block'; kasMode.classList.remove('active'); tikMode.classList.add('active');
-    if(!tikLoaded){
-      await loadTik();
+    if(!tikState){
+      showCloudOverlay('Memuat data TIK...');
+      try{ await loadTik(); }finally{ hideCloudOverlay(); }
     }
     renderTik(); tikShow('rekap'); placeSyncBadge();
   }else{
@@ -3037,6 +3044,7 @@ let tikLoaded=false;
 const validTik=d=>d&&Array.isArray(d.students)&&d.students.length&&Array.isArray(d.pemasukan)&&Array.isArray(d.pengeluaran);
 function revalidateTikInBackground(){
   const idx=currentPeriodIdx;
+  setBackgroundSyncStatus('syncing','Memeriksa data TIK terbaru di database.');
   apiGet('getTikState',{periodIdx:String(idx)}).then(x=>{
     cloudOnline=true;
     if(idx!==currentPeriodIdx || !tikState) return;
@@ -3051,12 +3059,19 @@ function revalidateTikInBackground(){
         if(document.getElementById('tikApp').style.display!=='none' && !anyInputModalOpen()){ try{ renderTik(); }catch(e){ console.error(e); } }
       }
     }
+    setBackgroundSyncStatus('synced','Data TIK sudah tersinkron.');
     placeSyncBadge();
-  }).catch(e=>{ cloudOnline=false; console.error('Revalidate TIK:',e); });
+  }).catch(e=>{ cloudOnline=false; console.error('Revalidate TIK:',e); setBackgroundSyncStatus('failed','Gagal memeriksa data TIK terbaru. Mode lokal digunakan.'); });
 }
-async function loadTik(opts){
-  if(tikLoaded) return;
+let tikLoadPromise=null;
+function loadTik(opts){
+  // Pemanggilan ganda (preload + klik tombol TIK) memakai promise yang sama, jadi tidak ada data setengah jadi.
+  if(tikLoaded && tikLoadPromise) return tikLoadPromise;
   tikLoaded=true;
+  tikLoadPromise=_loadTikImpl(opts).catch(e=>{ tikLoaded=false; tikLoadPromise=null; throw e; });
+  return tikLoadPromise;
+}
+async function _loadTikImpl(opts){
   if(!(opts && opts.force)){
     const local=readLocalJSON(TIK_STORAGE_KEY, validTik);
     if(local){ tikState=local; revalidateTikInBackground(); return; }
@@ -3418,7 +3433,7 @@ async function switchPeriod(idx){
   if(idx===currentPeriodIdx) return;
   applyPeriod(idx);
   updateHeaderLabels();
-  state = null; tikState = null; tikLoaded = false;
+  state = null; tikState = null; tikLoaded = false; tikLoadPromise = null;
   await loadState();
   fillMonthSelects();
   fillStudentSelect();
@@ -3427,7 +3442,8 @@ async function switchPeriod(idx){
   renderAll();
   const tikVisible = document.getElementById('tikApp').style.display !== 'none';
   if(tikVisible){
-    await loadTik();
+    showCloudOverlay('Memuat data TIK...');
+    try{ await loadTik(); }finally{ hideCloudOverlay(); }
     renderTik();
     tikShow('rekap');
   } else {
@@ -3607,7 +3623,7 @@ async function refreshDatabaseConnection(){
     fillStudentSelect();
     renderAll();
     if(document.getElementById('tikApp').style.display!=='none'){
-      tikLoaded=false;
+      tikLoaded=false; tikLoadPromise=null;
       await loadTik({force:true});
       renderTik();
     }
@@ -3753,6 +3769,7 @@ async function centralWithClass(idx,book,fn){
   const oldState=state;
   const oldTikState=tikState;
   const oldTikLoaded=tikLoaded;
+  const oldTikLoadPromise=tikLoadPromise;
   const oldStorageKey=STORAGE_KEY;
   const oldTikStorageKey=TIK_STORAGE_KEY;
   const oldMonths=MONTHS;
@@ -3775,6 +3792,7 @@ async function centralWithClass(idx,book,fn){
     state=oldState;
     tikState=oldTikState;
     tikLoaded=oldTikLoaded;
+    tikLoadPromise=oldTikLoadPromise;
     updateHeaderLabels();
     await switchBook(oldBook);
     renderAll();
@@ -4039,5 +4057,49 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW tidak aktif:',e)); });
 }
 </script>
+
+<style id="list-panel-actions-v1">
+@media screen{
+  /* Panel daftar Pemasukan/Pengeluaran (Kas & TIK): tinggi maksimal 1 layar, hanya tabel yang scroll,
+     tombol berada di dalam panel di bawah tabel, footer tetap di dasar halaman. */
+  body[data-active-panel="masuk"] #mainApp,
+  body[data-active-panel="keluar"] #mainApp,
+  body[data-active-panel="tik-masuk"] #mainApp,
+  body[data-active-panel="tik-keluar"] #mainApp{height:100vh!important;height:100dvh!important;}
+
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child{
+    display:flex!important;flex-direction:column!important;
+    flex:0 1 auto!important;min-height:0!important;height:auto!important;max-height:100%!important;
+    overflow:hidden!important;
+  }
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child > h2,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child > h2,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child > h2,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child > h2{flex:0 0 auto;}
+
+  body[data-active-panel="masuk"] #panel-masuk > .card:first-child .month-tbl-wrap,
+  body[data-active-panel="keluar"] #panel-keluar > .card:first-child .month-tbl-wrap,
+  body[data-active-panel="tik-masuk"] #tik-masuk > .card:first-child .month-tbl-wrap,
+  body[data-active-panel="tik-keluar"] #tik-keluar > .card:first-child .month-tbl-wrap{
+    flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;
+    overflow-x:auto!important;overflow-y:auto!important;
+  }
+  .list-actions-bar{flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:12px;}
+  .list-actions-bar .btn{padding:12px 18px;border-radius:999px;white-space:nowrap;}
+  .list-actions-bar .btn-ghost{background:var(--paper-2);color:var(--amber);border:1.5px solid var(--amber);}
+  .list-actions-bar .btn-primary{background:var(--amber);color:#1a1405;}
+
+  /* Footer tetap terlihat di dasar halaman pada panel daftar. */
+  body[data-active-panel="masuk"] .app-footer,
+  body[data-active-panel="keluar"] .app-footer,
+  body[data-active-panel="tik-masuk"] .app-footer,
+  body[data-active-panel="tik-keluar"] .app-footer{
+    display:block!important;flex:0 0 auto!important;margin:8px auto 0!important;
+  }
+}
+</style>
 </body>
 </html>
