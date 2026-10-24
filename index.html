@@ -1238,7 +1238,8 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
     <div class="central-action-head"><h2>⚙︎ Pengaturan Database</h2><button class="central-action-close" onclick="closeDatabaseSettings()">×</button></div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="font-size:15.6px;color:var(--ink-soft);line-height:1.5;">Masukkan kode akses untuk membuka Google Sheets database.</div>
-      <input id="databaseAccessCode" class="database-access-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" name="akses-db-kode" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" data-lpignore="true" data-1p-ignore="true" data-form-type="other" placeholder="Kode akses">
+      <input id="databaseAccessCode" class="database-access-input" type="text" inputmode="none" readonly maxlength="5" name="akses-db-kode" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" placeholder="Kode akses">
+      <div class="dbk-pad" aria-label="Tombol angka"><button type="button" class="dbk-key" onclick="dbKeypad('1')">1</button><button type="button" class="dbk-key" onclick="dbKeypad('2')">2</button><button type="button" class="dbk-key" onclick="dbKeypad('3')">3</button><button type="button" class="dbk-key" onclick="dbKeypad('4')">4</button><button type="button" class="dbk-key" onclick="dbKeypad('5')">5</button><button type="button" class="dbk-key" onclick="dbKeypad('6')">6</button><button type="button" class="dbk-key" onclick="dbKeypad('7')">7</button><button type="button" class="dbk-key" onclick="dbKeypad('8')">8</button><button type="button" class="dbk-key" onclick="dbKeypad('9')">9</button><button type="button" class="dbk-key dbk-fn" onclick="dbKeypad('clear')" aria-label="Hapus semua">C</button><button type="button" class="dbk-key" onclick="dbKeypad('0')">0</button><button type="button" class="dbk-key dbk-fn" onclick="dbKeypad('back')" aria-label="Hapus">⌫</button></div>
       <div id="databaseAccessError" class="database-access-error">⚠︎ Kode akses salah. Silakan coba lagi.</div>
       <button class="btn btn-amber" onclick="openDatabaseSheet()" style="width:100%;justify-content:center;">Buka Database</button>
     </div>
@@ -3598,18 +3599,32 @@ function openDatabaseSettings(){
   if(!modal)return;
   modal.style.display='flex';
   if(err) err.style.display='none';
-  if(input){ input.value=''; input.removeAttribute('aria-invalid'); setTimeout(()=>input.focus(),50); }
+  if(input){ input.value=''; input.removeAttribute('aria-invalid'); }
 }
 function closeDatabaseSettings(){
   const modal=document.getElementById('databaseAccessModal');
   if(modal) modal.style.display='none';
 }
+function dbKeypad(k){
+  const input=document.getElementById('databaseAccessCode'); if(!input) return;
+  const err=document.getElementById('databaseAccessError');
+  if(k==='back') input.value=input.value.slice(0,-1);
+  else if(k==='clear') input.value='';
+  else if(/^[0-9]$/.test(k) && input.value.length<5) input.value+=k;
+  input.removeAttribute('aria-invalid');
+  if(err) err.style.display='none';
+}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('databaseAccessModal')?.style.display!=='flex') return;
+  if(/^[0-9]$/.test(e.key)) dbKeypad(e.key);
+  else if(e.key==='Backspace') dbKeypad('back');
+});
 function openDatabaseSheet(){
   const input=document.getElementById('databaseAccessCode');
   const err=document.getElementById('databaseAccessError');
   if(!input || input.value!==DATABASE_ACCESS_CODE){
     if(err) err.style.display='block';
-    if(input){ input.setAttribute('aria-invalid','true'); input.select(); input.focus(); }
+    if(input){ input.setAttribute('aria-invalid','true'); }
     return;
   }
   if(err) err.style.display='none';
@@ -4283,6 +4298,13 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   #allPeriodsPage{position:relative!important;min-height:100vh!important;min-height:100dvh!important;box-sizing:border-box!important;padding-bottom:110px!important;}
   #allPeriodsPage > .all-periods-footer{position:absolute!important;left:0!important;right:0!important;bottom:76px!important;margin:0 auto!important;}
 }
+</style>
+<style id="db-keypad-v1">
+.dbk-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.dbk-key{font:600 20px Inter,sans-serif;padding:11px 0;border-radius:12px;border:1px solid rgba(212,175,55,.35);background:var(--paper);color:var(--ink);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.dbk-key:active{background:rgba(212,175,55,.25);}
+.dbk-fn{color:var(--amber);}
+#databaseAccessCode{caret-color:transparent;}
 </style>
 </body>
 </html>
