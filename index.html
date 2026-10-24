@@ -33,6 +33,43 @@ nav.tabs button{flex:1 1 auto;min-width:120px;border:none;background:transparent
 nav.tabs button:hover{background:rgba(212,175,55,0.12);color:var(--amber)}
 nav.tabs button.active{background:var(--teal);color:#fff;box-shadow:var(--shadow)}
 section.panel{display:none}
+
+/* ---- Popup input + tombol melayang ---- */
+.fab-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(1180px,100%);z-index:900;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));pointer-events:none}
+.fab-bar .btn{pointer-events:auto;box-shadow:0 6px 18px rgba(0,0,0,.55);padding:12px 20px;border-radius:999px}
+.fab-bar .btn-ghost{background:var(--paper-2);color:var(--amber);border:1.5px solid var(--amber)}
+.fab-bar .btn-primary{background:var(--amber);color:#1a1405}
+section.panel#panel-masuk, section.panel#panel-keluar, section.panel#tik-masuk, section.panel#tik-keluar{padding-bottom:90px}
+.input-modal[hidden]{display:none!important}
+.input-modal{position:fixed;inset:0;z-index:10000;display:flex;padding:16px;overflow-y:auto}
+.input-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}
+.input-modal-box{position:relative;z-index:1;margin:auto;width:min(520px,100%);background:var(--paper);border:1px solid rgba(212,175,55,.45);border-top:3px solid var(--amber);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);padding:18px 18px 16px;animation:fadeIn .2s ease}
+.input-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.input-modal-head h2{margin:0;font-size:25.92px;color:var(--amber);font-weight:600}
+.input-modal-close{border:0;background:var(--paper-2);color:var(--ink);width:36px;height:36px;border-radius:12px;font-size:28px;line-height:1;cursor:pointer}
+.input-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.input-modal-actions .btn{flex:1 1 0;justify-content:center}
+.input-modal-actions .btn-primary{background:var(--amber);color:#1a1405}
+body.input-modal-open{overflow:hidden}
+.input-modal .field label{font-size:14px;letter-spacing:.03em}
+.input-modal .field input,.input-modal .field select,.input-modal .csel-trigger{font-size:17.5px;padding:9px 8px}
+.input-modal .csel-trigger{padding-right:26px}
+.input-modal .field input[type=date]{color-scheme:dark;min-height:42px}
+.input-modal .form-grid{gap:12px 10px}
+body[data-active-panel="masuk"] .site-footer,body[data-active-panel="keluar"] .site-footer,body[data-active-panel="tik-masuk"] .app-footer,body[data-active-panel="tik-keluar"] .app-footer,body[data-active-panel="masuk"] .app-footer,body[data-active-panel="keluar"] .app-footer{display:none}
+@media print{.fab-bar,.input-modal{display:none!important}}
+/* ---- Teks tabel diperkecil (±82%), proporsional: isi, judul kolom, ikon, padding ---- */
+@media screen{
+  table:not(#_){font-size:15.4px!important}
+  table th:not(#_){font-size:13.6px!important;padding:6px 7px!important;line-height:1.25!important}
+  table td:not(#_){font-size:15.4px!important;padding:5px 7px!important;line-height:1.3!important}
+  table td.row-no:not(#_){font-size:14.2px!important}
+  table .icon-btn:not(#_){font-size:16.5px!important;padding:3px 4px!important}
+  table .sort-arrow:not(#_){font-size:10.6px!important}
+  table th.sortable:not(#_)::after{font-size:11.8px!important;margin-left:4px!important}
+  table .pill:not(#_){font-size:13px!important}
+  table .rp-cell:not(#_){gap:4px!important}
+}
 section.panel.active{display:block;animation:fadeIn .25s ease}
 @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
 .card{background:var(--white);border-radius:var(--radius);border:1px solid var(--line);border-top:3px solid var(--amber);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
@@ -1326,17 +1363,39 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
 
   <!-- ===================== TAB: INPUT PEMASUKAN ===================== -->
   <section class="panel" id="panel-masuk">
-    
-    <div class="card no-print">
-      <h2 id="formMasukTitle">Input Pemasukan</h2>
-      <div class="form-grid">
+
+    <div class="card">
+      <h2>Daftar Pemasukan <span class="pill pill-total" id="countMasuk"></span></h2>
+      <div class="month-tbl-wrap" style="max-height:calc(100dvh - 250px); min-height:240px; overflow-y:auto;">
+        <table>
+          <thead><tr id="theadMasuk"></tr></thead>
+          <tbody id="tbodyMasuk"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tombol melayang: Home (kiri bawah) & Input (kanan bawah) -->
+    <div class="fab-bar no-print">
+      <button class="btn btn-ghost fab-home" onclick="showPanel('panel-rekap')">🏠 Home</button>
+      <button class="btn btn-primary fab-add" onclick="openInputModal('masuk')">＋ Input</button>
+    </div>
+
+    <!-- Popup input -->
+    <div class="input-modal no-print" id="modalMasuk" hidden>
+      <div class="input-modal-backdrop" onclick="closeInputModal('masuk')"></div>
+      <div class="input-modal-box" role="dialog" aria-modal="true" aria-labelledby="formMasukTitle">
+        <div class="input-modal-head">
+          <h2 id="formMasukTitle">Input Pemasukan</h2>
+          <button type="button" class="input-modal-close" onclick="closeInputModal('masuk')" aria-label="Tutup">×</button>
+        </div>
+        <div class="form-grid">
         <div class="field">
           <label>Nama Siswa</label>
           <select id="mNama"><option value="">Pilih nama siswa...</option></select>
         </div>
         <div class="field">
           <label>Tanggal Bayar</label>
-          <input type="text" id="mTanggalBayar" placeholder="29 Agu 26" readonly>
+          <input type="date" id="mTanggalBayar">
         </div>
         <div class="field">
           <label>Bulan Kas Dari</label>
@@ -1355,37 +1414,45 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
           <input type="text" id="mKeterangan" placeholder="mis. bayar tunai" value="Kas Bulanan">
         </div>
       </div>
-      <div class="form-action-row no-print">
-        <div class="no-print back-to-rekap"><button class="btn btn-ghost" onclick="showPanel('panel-rekap')">🏠 Kembali ke Rekap</button></div>
-        <div class="btn-row btn-row-right">
-        <button class="btn btn-primary" onclick="submitPemasukan()" id="btnSubmitMasuk">+ Simpan</button>
-        <button class="btn btn-ghost" onclick="resetFormMasuk()" id="btnCancelMasuk" style="display:none;">Batal Edit</button>
-      </div>
-      </div>
-      
-
-    </div>
-
-    <div class="card">
-      <h2>Daftar Pemasukan <span class="pill pill-total" id="countMasuk"></span></h2>
-      <div class="month-tbl-wrap" style="max-height:560px; overflow-y:auto;">
-        <table>
-          <thead><tr id="theadMasuk"></tr></thead>
-          <tbody id="tbodyMasuk"></tbody>
-        </table>
+        <div class="input-modal-actions">
+          <button class="btn btn-ghost" id="btnCancelMasuk" onclick="closeInputModal('masuk')">Batal</button>
+          <button class="btn btn-primary" id="btnSubmitMasuk" onclick="submitPemasukan()">+ Simpan</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ===================== TAB: INPUT PENGELUARAN ===================== -->
   <section class="panel" id="panel-keluar">
-    
-    <div class="card no-print">
-      <h2 id="formKeluarTitle">Input Pengeluaran</h2>
-      <div class="form-grid">
+
+    <div class="card">
+      <h2>Daftar Pengeluaran <span class="pill pill-total" id="countKeluar"></span></h2>
+      <div class="month-tbl-wrap" style="max-height:calc(100dvh - 250px); min-height:240px; overflow-y:auto;">
+        <table>
+          <thead><tr id="theadKeluar"></tr></thead>
+          <tbody id="tbodyKeluar"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tombol melayang: Home (kiri bawah) & Input (kanan bawah) -->
+    <div class="fab-bar no-print">
+      <button class="btn btn-ghost fab-home" onclick="showPanel('panel-rekap')">🏠 Home</button>
+      <button class="btn btn-primary fab-add" onclick="openInputModal('keluar')">＋ Input</button>
+    </div>
+
+    <!-- Popup input -->
+    <div class="input-modal no-print" id="modalKeluar" hidden>
+      <div class="input-modal-backdrop" onclick="closeInputModal('keluar')"></div>
+      <div class="input-modal-box" role="dialog" aria-modal="true" aria-labelledby="formKeluarTitle">
+        <div class="input-modal-head">
+          <h2 id="formKeluarTitle">Input Pengeluaran</h2>
+          <button type="button" class="input-modal-close" onclick="closeInputModal('keluar')" aria-label="Tutup">×</button>
+        </div>
+        <div class="form-grid">
         <div class="field">
           <label>Tanggal</label>
-          <input type="text" id="kTanggal" placeholder="29 Agustus 2026" readonly>
+          <input type="date" id="kTanggal">
         </div>
         <div class="field">
           <label>Jumlah (Rp)</label>
@@ -1396,24 +1463,10 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
           <input type="text" id="kKeterangan" placeholder="mis. beli spidol whiteboard">
         </div>
       </div>
-      <div class="form-action-row no-print">
-        <div class="no-print back-to-rekap"><button class="btn btn-ghost" onclick="showPanel('panel-rekap')">🏠 Kembali ke Rekap</button></div>
-        <div class="btn-row btn-row-right">
-        <button class="btn btn-primary" onclick="submitPengeluaran()" id="btnSubmitKeluar">+ Simpan</button>
-        <button class="btn btn-ghost" onclick="resetFormKeluar()" id="btnCancelKeluar" style="display:none;">Batal Edit</button>
-      </div>
-      </div>
-      
-
-    </div>
-
-    <div class="card">
-      <h2>Daftar Pengeluaran <span class="pill pill-total" id="countKeluar"></span></h2>
-      <div class="month-tbl-wrap" style="max-height:560px; overflow-y:auto;">
-        <table>
-          <thead><tr id="theadKeluar"></tr></thead>
-          <tbody id="tbodyKeluar"></tbody>
-        </table>
+        <div class="input-modal-actions">
+          <button class="btn btn-ghost" id="btnCancelKeluar" onclick="closeInputModal('keluar')">Batal</button>
+          <button class="btn btn-primary" id="btnSubmitKeluar" onclick="submitPengeluaran()">+ Simpan</button>
+        </div>
       </div>
     </div>
   </section>
@@ -1487,10 +1540,40 @@ body.capturing-share #allPeriodsPage td:not(:first-child){width:18%!important;}
       <div class="card"><h2>Data Siswa &amp; Status TIK per Bulan</h2><div class="tbl-wrap"><table class="siswa-table" id="tblSiswaTik"><thead><tr id="tikSiswaHead"></tr></thead><tbody id="tikSiswaBody"></tbody></table></div><div class="form-action-row no-print"><div class="no-print back-to-rekap"><button class="btn btn-ghost" onclick="tikShow('rekap')">🏠 Kembali ke Rekap</button></div><div class="btn-row btn-row-right"><button class="btn btn-primary" onclick="tikTambahSiswa()">＋ Tambah Siswa</button></div></div></div>
     </section>
     <section class="panel" id="tik-masuk">
-      <div class="card no-print"><h2 id="tikMasukFormTitle">Input Pemasukan TIK</h2><div class="form-grid"><div class="field"><label>Nama Siswa</label><select id="tikNama"></select></div><div class="field"><label>Tanggal Bayar</label><input id="tikTanggal" type="text" readonly></div><div class="field"><label>Bulan TIK Dari</label><select id="tikDari"></select></div><div class="field"><label>Bulan TIK Sampai</label><select id="tikSampai"></select></div><div class="field"><label>Jumlah (Rp)</label><input id="tikJumlah" type="text" inputmode="numeric"></div><div class="field"><label>Keterangan</label><input id="tikKet" type="text" value="Iuran TIK"></div></div><div class="form-action-row no-print"><div class="no-print back-to-rekap"><button class="btn btn-ghost" onclick="tikShow('rekap')">🏠 Kembali ke Rekap</button></div><div class="btn-row btn-row-right"><button class="btn btn-primary" onclick="tikSimpanMasuk()" id="tikBtnSubmitMasuk">+ Simpan</button><button class="btn btn-ghost" onclick="tikResetFormMasuk()" id="tikBtnCancelMasuk" style="display:none;">Batal Edit</button></div></div></div><div class="card"><h2>Daftar Pemasukan TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th class="sortable" data-sort="nama">Nama</th><th class="sortable" data-sort="tanggalBayar">Tanggal</th><th class="sortable" data-sort="bulan">Bulan</th><th class="num sortable" data-sort="jumlah">Jumlah</th><th class="sortable" data-sort="keterangan">Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikMasukBody"></tbody></table></div></div>
+      <div class="card"><h2>Daftar Pemasukan TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th class="sortable" data-sort="nama">Nama</th><th class="sortable" data-sort="tanggalBayar">Tanggal</th><th class="sortable" data-sort="bulan">Bulan</th><th class="num sortable" data-sort="jumlah">Jumlah</th><th class="sortable" data-sort="keterangan">Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikMasukBody"></tbody></table></div></div>
+      <div class="fab-bar no-print">
+        <button class="btn btn-ghost fab-home" onclick="tikShow('rekap')">🏠 Home</button>
+        <button class="btn btn-primary fab-add" onclick="openInputModal('tikMasuk')">＋ Input</button>
+      </div>
+      <div class="input-modal no-print" id="modalTikMasuk" hidden>
+        <div class="input-modal-backdrop" onclick="closeInputModal('tikMasuk')"></div>
+        <div class="input-modal-box" role="dialog" aria-modal="true" aria-labelledby="tikMasukFormTitle">
+          <div class="input-modal-head"><h2 id="tikMasukFormTitle">Input Pemasukan TIK</h2><button type="button" class="input-modal-close" onclick="closeInputModal('tikMasuk')" aria-label="Tutup">×</button></div>
+          <div class="form-grid"><div class="field"><label>Nama Siswa</label><select id="tikNama"></select></div><div class="field"><label>Tanggal Bayar</label><input id="tikTanggal" type="date"></div><div class="field"><label>Bulan TIK Dari</label><select id="tikDari"></select></div><div class="field"><label>Bulan TIK Sampai</label><select id="tikSampai"></select></div><div class="field"><label>Jumlah (Rp)</label><input id="tikJumlah" type="text" inputmode="numeric"></div><div class="field"><label>Keterangan</label><input id="tikKet" type="text" value="Iuran TIK"></div></div>
+          <div class="input-modal-actions">
+            <button class="btn btn-ghost" id="tikBtnCancelMasuk" onclick="closeInputModal('tikMasuk')">Batal</button>
+            <button class="btn btn-primary" id="tikBtnSubmitMasuk" onclick="tikSimpanMasuk()">+ Simpan</button>
+          </div>
+        </div>
+      </div>
     </section>
     <section class="panel" id="tik-keluar">
-      <div class="card no-print"><h2 id="tikKeluarFormTitle">Input Pengeluaran TIK</h2><div class="form-grid"><div class="field"><label>Tanggal</label><input id="tikKeluarTanggal" type="text" readonly></div><div class="field"><label>Jumlah (Rp)</label><input id="tikKeluarJumlah" type="text" inputmode="numeric"></div><div class="field" style="grid-column:span 2"><label>Keterangan</label><input id="tikKeluarKet" type="text" value="Setoran"></div></div><div class="form-action-row no-print"><div class="no-print back-to-rekap"><button class="btn btn-ghost" onclick="tikShow('rekap')">🏠 Kembali ke Rekap</button></div><div class="btn-row btn-row-right"><button class="btn btn-primary" onclick="tikSimpanKeluar()" id="tikBtnSubmitKeluar">+ Simpan</button><button class="btn btn-ghost" onclick="tikResetFormKeluar()" id="tikBtnCancelKeluar" style="display:none;">Batal Edit</button></div></div></div><div class="card"><h2>Daftar Pengeluaran TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th>Tanggal</th><th class="num">Jumlah</th><th>Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikKeluarBody"></tbody></table></div></div>
+      <div class="card"><h2>Daftar Pengeluaran TIK</h2><div class="month-tbl-wrap"><table><thead><tr><th>No</th><th>Tanggal</th><th class="num">Jumlah</th><th>Keterangan</th><th class="center no-print" style="width:60px;">Aksi</th></tr></thead><tbody id="tikKeluarBody"></tbody></table></div></div>
+      <div class="fab-bar no-print">
+        <button class="btn btn-ghost fab-home" onclick="tikShow('rekap')">🏠 Home</button>
+        <button class="btn btn-primary fab-add" onclick="openInputModal('tikKeluar')">＋ Input</button>
+      </div>
+      <div class="input-modal no-print" id="modalTikKeluar" hidden>
+        <div class="input-modal-backdrop" onclick="closeInputModal('tikKeluar')"></div>
+        <div class="input-modal-box" role="dialog" aria-modal="true" aria-labelledby="tikKeluarFormTitle">
+          <div class="input-modal-head"><h2 id="tikKeluarFormTitle">Input Pengeluaran TIK</h2><button type="button" class="input-modal-close" onclick="closeInputModal('tikKeluar')" aria-label="Tutup">×</button></div>
+          <div class="form-grid"><div class="field"><label>Tanggal</label><input id="tikKeluarTanggal" type="date"></div><div class="field"><label>Jumlah (Rp)</label><input id="tikKeluarJumlah" type="text" inputmode="numeric"></div><div class="field" style="grid-column:span 2"><label>Keterangan</label><input id="tikKeluarKet" type="text" value="Setoran"></div></div>
+          <div class="input-modal-actions">
+            <button class="btn btn-ghost" id="tikBtnCancelKeluar" onclick="closeInputModal('tikKeluar')">Batal</button>
+            <button class="btn btn-primary" id="tikBtnSubmitKeluar" onclick="tikSimpanKeluar()">+ Simpan</button>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -1533,6 +1616,11 @@ function formatBulanKasSingkat(teks){
     .replace(/Desember/g,'Des');
 }
 
+// Tanggal hari ini (zona waktu perangkat) dalam format YYYY-MM-DD.
+function todayISO(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function formatTanggalPendek(d){
   const bln=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
   return d.getDate()+' '+bln[d.getMonth()]+' '+d.getFullYear();
@@ -2118,6 +2206,40 @@ function monthsPaidByStudent(nama){
 }
 
 // Navigasi KPI ke halaman terkait
+
+// ===================== POPUP INPUT PEMASUKAN / PENGELUARAN =====================
+const INPUT_MODALS={
+  masuk:{el:'modalMasuk',reset:()=>resetFormMasuk()},
+  keluar:{el:'modalKeluar',reset:()=>resetFormKeluar()},
+  tikMasuk:{el:'modalTikMasuk',reset:()=>tikResetFormMasuk()},
+  tikKeluar:{el:'modalTikKeluar',reset:()=>tikResetFormKeluar()}
+};
+function anyInputModalOpen(){
+  return Object.values(INPUT_MODALS).some(m=>{ const e=document.getElementById(m.el); return e && !e.hidden; });
+}
+function openInputModal(kind, keepValues){
+  const m=INPUT_MODALS[kind]; const el=m && document.getElementById(m.el);
+  if(!el) return;
+  if(!keepValues) m.reset();
+  el.hidden=false;
+  document.body.classList.add('input-modal-open');
+  const box=el.querySelector('.input-modal-box'); if(box) box.scrollTop=0;
+}
+function closeInputModal(kind, saved){
+  const m=INPUT_MODALS[kind]; const el=m && document.getElementById(m.el);
+  if(!el) return;
+  el.hidden=true;
+  if(!anyInputModalOpen()) document.body.classList.remove('input-modal-open');
+  if(!saved) m.reset();
+}
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  Object.keys(INPUT_MODALS).forEach(k=>{
+    const el=document.getElementById(INPUT_MODALS[k].el);
+    if(el && !el.hidden) closeInputModal(k);
+  });
+});
+
 function showPanel(panelId){
   document.body.dataset.activePanel = String(panelId || '').replace(/^panel-/, '');
 
@@ -2253,8 +2375,7 @@ function updateMasukReadout(){
 
 async function submitPemasukan(){
   const nama = document.getElementById('mNama').value;
-  const existing = editMasukId ? state.pemasukan.find(p=>p.id===editMasukId) : null;
-  const tanggalBayar = existing ? existing.tanggalBayar : new Date().toISOString().slice(0,10);
+  const tanggalBayar = document.getElementById('mTanggalBayar').value || todayISO();
   const bulanPembukuan = tanggalBayar ? tanggalBayar.slice(0,7) : '';
   const bulanDari = document.getElementById('mBulanDari').value;
   const bulanSampai = document.getElementById('mBulanSampai').value;
@@ -2267,19 +2388,16 @@ async function submitPemasukan(){
   const ok=await cloudMutate('kas',currentPeriodIdx,editMasukId ? {op:'updatePemasukan',id:editMasukId,item} : {op:'addPemasukan',item});
   if(!ok) return;
   editMasukId=null; resetFormMasuk(); renderAll();
+  closeInputModal('masuk', true);
 }
 
 function resetFormMasuk(){
   editMasukId = null;
   document.getElementById('formMasukTitle').textContent = 'Input Pemasukan';
   document.getElementById('btnSubmitMasuk').textContent = '+ Simpan';
-  document.getElementById('btnCancelMasuk').style.display = 'none';
   document.getElementById('mNama').value = '';
-  document.getElementById('mTanggalBayar').value = formatTanggalPendek(new Date());
-  document.getElementById('mTanggalBayar').readOnly = true;
-  document.getElementById('mTanggalBayar').readOnly = true;
-  document.getElementById('kTanggal').value = formatTanggalPendek(new Date());
-  document.getElementById('kTanggal').readOnly = true;
+  document.getElementById('mTanggalBayar').value = todayISO();
+  document.getElementById('kTanggal').value = todayISO();
   document.getElementById('mBulanDari').value = '';
   document.getElementById('mBulanSampai').value = '';
   document.getElementById('mBulanDari').disabled = false;
@@ -2293,7 +2411,7 @@ function editPemasukan(id){
   if(!p) return;
   editMasukId = id;
   document.getElementById('mNama').value = p.nama;
-  document.getElementById('mTanggalBayar').value = p.tanggalBayar || '';
+  document.getElementById('mTanggalBayar').value = /^\d{4}-\d{2}-\d{2}$/.test(p.tanggalBayar||'') ? p.tanggalBayar : '';
   document.getElementById('mBulanDari').value = p.bulanDari || '';
   document.getElementById('mBulanSampai').value = p.bulanSampai || '';
   document.getElementById('mBulanDari').disabled = p.nama === 'LAIN-LAIN';
@@ -2304,9 +2422,7 @@ function editPemasukan(id){
   refreshCustomSelect('mNama'); refreshCustomSelect('mBulanDari'); refreshCustomSelect('mBulanSampai');
   document.getElementById('formMasukTitle').textContent = 'Edit Pemasukan #'+id;
   document.getElementById('btnSubmitMasuk').textContent = 'Simpan Perubahan';
-  document.getElementById('btnCancelMasuk').style.display = 'inline-flex';
-  document.querySelector('[data-tab="masuk"]').click();
-  window.scrollTo({top:0, behavior:'smooth'});
+  openInputModal('masuk', true);
 }
 async function deletePemasukan(id){
   if(!await customConfirm('Hapus data pemasukan ini?',{title:'Hapus Pemasukan'})) return;
@@ -2380,8 +2496,7 @@ function renderMasuk(){
 // ===================== FORM: INPUT PENGELUARAN =====================
 let editKeluarId = null;
 async function submitPengeluaran(){
-  const existing = editKeluarId ? state.pengeluaran.find(p=>p.id===editKeluarId) : null;
-  const tanggal = existing ? existing.tanggal : new Date().toISOString().slice(0,10);
+  const tanggal = document.getElementById('kTanggal').value || todayISO();
   const bulanPembukuan = tanggal ? tanggal.slice(0,7) : '';
   const keterangan = document.getElementById('kKeterangan').value.trim();
   const jumlah = parseRibuan(document.getElementById('kJumlah').value);
@@ -2390,15 +2505,14 @@ async function submitPengeluaran(){
   const ok=await cloudMutate('kas',currentPeriodIdx,editKeluarId ? {op:'updatePengeluaran',id:editKeluarId,item} : {op:'addPengeluaran',item});
   if(!ok) return;
   editKeluarId=null; resetFormKeluar(); renderAll();
+  closeInputModal('keluar', true);
 }
 
 function resetFormKeluar(){
   editKeluarId = null;
   document.getElementById('formKeluarTitle').textContent = 'Input Pengeluaran';
   document.getElementById('btnSubmitKeluar').textContent = '+ Simpan';
-  document.getElementById('btnCancelKeluar').style.display = 'none';
-  document.getElementById('kTanggal').value = formatTanggalPendek(new Date());
-  document.getElementById('kTanggal').readOnly = true;
+  document.getElementById('kTanggal').value = todayISO();
   document.getElementById('kKeterangan').value = '';
   document.getElementById('kJumlah').value = '';
 }
@@ -2406,14 +2520,12 @@ function editPengeluaran(id){
   const p = state.pengeluaran.find(x=>x.id===id);
   if(!p) return;
   editKeluarId = id;
-  document.getElementById('kTanggal').value = p.tanggal || '';
+  document.getElementById('kTanggal').value = /^\d{4}-\d{2}-\d{2}$/.test(p.tanggal||'') ? p.tanggal : '';
   document.getElementById('kKeterangan').value = p.keterangan || '';
   document.getElementById('kJumlah').value = Number(p.jumlah||0).toLocaleString('id-ID');
   document.getElementById('formKeluarTitle').textContent = 'Edit Pengeluaran #'+id;
   document.getElementById('btnSubmitKeluar').textContent = 'Simpan Perubahan';
-  document.getElementById('btnCancelKeluar').style.display = 'inline-flex';
-  document.querySelector('[data-tab="keluar"]').click();
-  window.scrollTo({top:0, behavior:'smooth'});
+  openInputModal('keluar', true);
 }
 async function deletePengeluaran(id){
   if(!await customConfirm('Hapus data pengeluaran ini?',{title:'Hapus Pengeluaran'})) return;
@@ -2832,10 +2944,8 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('tikSampai').addEventListener('change', tikUpdateReadout);
   document.getElementById('kJumlah').addEventListener('input', formatRibuanInput);
   document.getElementById('mKeterangan').value = 'Kas Bulanan';
-  document.getElementById('mTanggalBayar').value = formatTanggalPendek(new Date());
-  document.getElementById('mTanggalBayar').readOnly = true;
-  document.getElementById('kTanggal').value = formatTanggalPendek(new Date());
-  document.getElementById('kTanggal').readOnly = true;
+  document.getElementById('mTanggalBayar').value = todayISO();
+  document.getElementById('kTanggal').value = todayISO();
   renderAll();
   hideCloudOverlay();
   // Mode cepat: loadState() sudah menampilkan data lokal; pemeriksaan server berjalan di belakang layar.
@@ -2938,7 +3048,7 @@ function revalidateTikInBackground(){
       if(JSON.stringify(x)!==JSON.stringify(tikState)){
         tikState=x;
         localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
-        if(document.getElementById('tikApp').style.display!=='none'){ try{ renderTik(); }catch(e){ console.error(e); } }
+        if(document.getElementById('tikApp').style.display!=='none' && !anyInputModalOpen()){ try{ renderTik(); }catch(e){ console.error(e); } }
       }
     }
     placeSyncBadge();
@@ -3094,44 +3204,44 @@ function tikRenderRekap(){
  const visibleData=data.filter(d=>d.key<=currentMonthKey);
  let run=0,rows='<tr class="total-row" style="background:var(--paper-2)"><td class="center">Saldo Awal</td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>';visibleData.forEach(d=>{run+=d.masuk-d.keluar;rows+=`<tr><td class="center">${yr2(d.label)}</td><td class="num">${rpCell(d.masuk)}</td><td class="num" style="color:var(--coral)">${rpCell(d.keluar)}</td><td class="num" style="font-weight:700">${rpCell(run)}</td></tr>`});rows+=`<tr class="total-row" style="background:var(--teal-tint);font-weight:700"><td class="center">TIK TERSEDIA</td><td class="num">${rpCell(masuk)}</td><td class="num">${rpCell(keluar)}</td><td class="num">${rpCell(saldo)}</td></tr>`;document.getElementById('tikRekapBody').innerHTML=rows;
 }
-function renderTik(){tikFillStudents();tikFillMonths();tikRenderSiswa();tikRenderLists();tikRenderRekap();document.getElementById('tikTanggal').value=todayText();document.getElementById('tikKeluarTanggal').value=todayText();document.getElementById('tikJumlah').addEventListener('input',formatRibuanInput);document.getElementById('tikKeluarJumlah').addEventListener('input',formatRibuanInput)}
+function renderTik(){tikFillStudents();tikFillMonths();tikRenderSiswa();tikRenderLists();tikRenderRekap();document.getElementById('tikJumlah').addEventListener('input',formatRibuanInput);document.getElementById('tikKeluarJumlah').addEventListener('input',formatRibuanInput)}
 let tikEditMasukId=null;
 async function tikSimpanMasuk(){
   const nama=document.getElementById('tikNama').value,dari=document.getElementById('tikDari').value,sampai=document.getElementById('tikSampai').value||dari,jumlah=parseRibuan(document.getElementById('tikJumlah').value);
   if(!nama||!dari||!jumlah){showAppNotice('Mohon lengkapi Nama, Bulan TIK, dan Jumlah.',false);return}
   const keterangan=document.getElementById('tikKet').value.trim()||'Iuran TIK';
   const item={nama,bulanDari:dari,bulanSampai:sampai,jumlahBulan:Math.abs(monthIndex(sampai)-monthIndex(dari))+1,jumlah,keterangan};
-  if(!tikEditMasukId){const tgl=new Date().toISOString().slice(0,10);Object.assign(item,{tanggalBayar:tgl,bulanPembukuan:tgl.slice(0,7)});}
+  const tgl=document.getElementById('tikTanggal').value||todayISO();
+  Object.assign(item,{tanggalBayar:tgl,bulanPembukuan:tgl.slice(0,7)});
   const ok=await cloudMutate('tik',currentPeriodIdx,tikEditMasukId?{op:'updatePemasukan',id:tikEditMasukId,item}:{op:'addPemasukan',item});
   if(!ok)return;
-  tikEditMasukId=null;tikResetFormMasuk();renderTik();tikShow('masuk')
+  tikEditMasukId=null;tikResetFormMasuk();renderTik();tikShow('masuk');closeInputModal('tikMasuk',true)
 }
 
 function tikResetFormMasuk(){
   tikEditMasukId=null;
   document.getElementById('tikMasukFormTitle').textContent='Input Pemasukan TIK';
   document.getElementById('tikBtnSubmitMasuk').textContent='+ Simpan';
-  document.getElementById('tikBtnCancelMasuk').style.display='none';
   document.getElementById('tikNama').value='';refreshCustomSelect('tikNama');
   document.getElementById('tikDari').value='';refreshCustomSelect('tikDari');
   document.getElementById('tikSampai').value='';refreshCustomSelect('tikSampai');
   document.getElementById('tikJumlah').value='';
   document.getElementById('tikKet').value='Iuran TIK';
+  document.getElementById('tikTanggal').value=todayISO();
 }
 function tikEditMasuk(id){
   const p=tikState.pemasukan.find(x=>x.id===id);
   if(!p)return;
   tikEditMasukId=id;
   document.getElementById('tikNama').value=p.nama;refreshCustomSelect('tikNama');
+  document.getElementById('tikTanggal').value=/^\d{4}-\d{2}-\d{2}$/.test(p.tanggalBayar||'')?p.tanggalBayar:'';
   document.getElementById('tikDari').value=p.bulanDari||'';refreshCustomSelect('tikDari');
   document.getElementById('tikSampai').value=p.bulanSampai||'';refreshCustomSelect('tikSampai');
   document.getElementById('tikJumlah').value=Number(p.jumlah||0).toLocaleString('id-ID');
   document.getElementById('tikKet').value=p.keterangan||'';
   document.getElementById('tikMasukFormTitle').textContent='Edit Pemasukan TIK #'+id;
   document.getElementById('tikBtnSubmitMasuk').textContent='Simpan Perubahan';
-  document.getElementById('tikBtnCancelMasuk').style.display='inline-flex';
-  tikShow('masuk');
-  window.scrollTo({top:0,behavior:'smooth'});
+  openInputModal('tikMasuk',true);
 }
 async function tikHapusMasuk(id){
   if(!await customConfirm('Hapus data pemasukan ini?',{title:'Hapus Pemasukan TIK'}))return;
@@ -3142,20 +3252,18 @@ async function tikSimpanKeluar(){
   const jumlah=parseRibuan(document.getElementById('tikKeluarJumlah').value);
   const keterangan=document.getElementById('tikKeluarKet').value.trim()||'Setoran';
   if(!jumlah){showAppNotice('Mohon isi jumlah.',false);return}
-  const existing=tikEditKeluarId?tikState.pengeluaran.find(p=>p.id===tikEditKeluarId):null;
-  const tgl=existing?existing.tanggal:new Date().toISOString().slice(0,10);
+  const tgl=document.getElementById('tikKeluarTanggal').value||todayISO();
   const item={tanggal:tgl,bulanPembukuan:tgl.slice(0,7),jumlah,keterangan};
   const ok=await cloudMutate('tik',currentPeriodIdx,tikEditKeluarId?{op:'updatePengeluaran',id:tikEditKeluarId,item}:{op:'addPengeluaran',item});
   if(!ok)return;
-  tikEditKeluarId=null;tikResetFormKeluar();renderTik();tikShow('keluar')
+  tikEditKeluarId=null;tikResetFormKeluar();renderTik();tikShow('keluar');closeInputModal('tikKeluar',true)
 }
 
 function tikResetFormKeluar(){
   tikEditKeluarId=null;
   document.getElementById('tikKeluarFormTitle').textContent='Input Pengeluaran TIK';
   document.getElementById('tikBtnSubmitKeluar').textContent='+ Simpan';
-  document.getElementById('tikBtnCancelKeluar').style.display='none';
-  document.getElementById('tikKeluarTanggal').value=todayText();
+  document.getElementById('tikKeluarTanggal').value=todayISO();
   document.getElementById('tikKeluarKet').value='Setoran';
   document.getElementById('tikKeluarJumlah').value='';
 }
@@ -3163,14 +3271,12 @@ function tikEditKeluar(id){
   const p=tikState.pengeluaran.find(x=>x.id===id);
   if(!p)return;
   tikEditKeluarId=id;
-  document.getElementById('tikKeluarTanggal').value=fmtDate(p.tanggal);
+  document.getElementById('tikKeluarTanggal').value=/^\d{4}-\d{2}-\d{2}$/.test(p.tanggal||'')?p.tanggal:'';
   document.getElementById('tikKeluarJumlah').value=Number(p.jumlah||0).toLocaleString('id-ID');
   document.getElementById('tikKeluarKet').value=p.keterangan||'';
   document.getElementById('tikKeluarFormTitle').textContent='Edit Pengeluaran TIK #'+id;
   document.getElementById('tikBtnSubmitKeluar').textContent='Simpan Perubahan';
-  document.getElementById('tikBtnCancelKeluar').style.display='inline-flex';
-  tikShow('keluar');
-  window.scrollTo({top:0,behavior:'smooth'});
+  openInputModal('tikKeluar',true);
 }
 async function tikHapusKeluar(id){
   if(!await customConfirm('Hapus data pengeluaran ini?',{title:'Hapus Pengeluaran TIK'}))return;
