@@ -1814,7 +1814,9 @@ let bgSyncFailCount = {kas:0, tik:0};
 // Tanda tangan data untuk membandingkan apa yang dikirim dengan apa yang tercatat di database.
 function dataSignature(d){
   d=d||{};
-  const rows=(arr)=>(Array.isArray(arr)?arr:[]).map(x=>String(x&&x.id)+':'+(Number(x&&x.jumlah)||0)).sort();
+  const canon=(o)=>{ if(Array.isArray(o)) return o.map(canon); if(o&&typeof o==='object'){ const r={}; Object.keys(o).sort().forEach(k=>{ r[k]=canon(o[k]); }); return r; } return o; };
+  const norm=(x)=>{ const c=canon(x||{}); Object.keys(c).forEach(k=>{ if(typeof c[k]==='number') c[k]=String(c[k]); }); return JSON.stringify(c); };
+  const rows=(arr)=>(Array.isArray(arr)?arr:[]).map(norm).sort();
   return JSON.stringify({
     s:(Array.isArray(d.students)?d.students:[]).map(x=>String(x&&x.nama||'').trim().toLowerCase()).sort(),
     m:rows(d.pemasukan),
@@ -1910,141 +1912,200 @@ window.addEventListener('online',()=>{
   scheduleBackgroundSync('tik',100);
 });
 
-async function cloudMutate(kind, idx, req){
-  // OPTIMISTIC UPDATE: ubah data lokal terlebih dahulu agar UI langsung berubah.
+// Terapkan satu operasi (tambah/ubah/hapus) ke salinan data. Melempar error bila data yang dituju tidak ada.
+function applyMutationToState(kind, data, req){
+  const op=req && req.op;
+  data.students=Array.isArray(data.students)?data.students:[];
+  data.pemasukan=Array.isArray(data.pemasukan)?data.pemasukan:[];
+  data.pengeluaran=Array.isArray(data.pengeluaran)?data.pengeluaran:[];
+  const maxId=(arr)=>arr.reduce((m,x)=>Math.max(m,Number(x&&x.id)||0),0);
+  data.nextMasukId=Math.max(Number(data.nextMasukId)||1, maxId(data.pemasukan)+1);
+  data.nextKeluarId=Math.max(Number(data.nextKeluarId)||1, maxId(data.pengeluaran)+1);
+  const idx=(arr,id)=>arr.findIndex(p=>String(p.id)===String(id));
+  if(op==='addStudent'){
+    const item={...(req.item||{})};
+    if(data.students.some(x=>String(x.nama||'').trim().toLowerCase()===String(item.nama||'').trim().toLowerCase())) throw new Error('Nama siswa sudah ada di database.');
+    if(!item.no) item.no=data.students.length?Math.max(...data.students.map(x=>Number(x.no)||0))+1:1;
+    data.students.push(item);
+  }else if(op==='deleteStudent'){
+    const nm=String(req.nama||'').trim().toLowerCase();
+    const before=data.students.length;
+    data.students=data.students.filter(x=>String(x.nama||'').trim().toLowerCase()!==nm);
+    if(kind==='kas' && data.students.length===before) throw new Error('Siswa tidak ditemukan di database.');
+  }else if(op==='addPemasukan'){
+    const item={...(req.item||{})}; item.id=data.nextMasukId++; data.pemasukan.push(item);
+  }else if(op==='updatePemasukan'){
+    const i=idx(data.pemasukan,req.id); if(i<0) throw new Error('Data pemasukan tidak ditemukan di database (mungkin sudah diubah perangkat lain).');
+    data.pemasukan[i]={...data.pemasukan[i],...(req.item||{}),id:data.pemasukan[i].id};
+  }else if(op==='deletePemasukan'){
+    const i=idx(data.pemasukan,req.id); if(i<0) throw new Error('Data pemasukan tidak ditemukan di database.');
+    data.pemasukan.splice(i,1);
+  }else if(op==='addPengeluaran'){
+    const item={...(req.item||{})}; item.id=data.nextKeluarId++; data.pengeluaran.push(item);
+  }else if(op==='updatePengeluaran'){
+    const i=idx(data.pengeluaran,req.id); if(i<0) throw new Error('Data pengeluaran tidak ditemukan di database (mungkin sudah diubah perangkat lain).');
+    data.pengeluaran[i]={...data.pengeluaran[i],...(req.item||{}),id:data.pengeluaran[i].id};
+  }else if(op==='deletePengeluaran'){
+    const i=idx(data.pengeluaran,req.id); if(i<0) throw new Error('Data pengeluaran tidak ditemukan di database.');
+    data.pengeluaran.splice(i,1);
+  }else{
+    throw new Error('Operasi tidak dikenal: '+op);
+  }
+  return data;
+}
+
+const MUTATE_MESSAGES={
+  addStudent:'Siswa berhasil ditambahkan.',
+  deleteStudent:'Siswa berhasil dihapus.',
+  addPemasukan:'Pemasukan berhasil disimpan.',
+  updatePemasukan:'Pemasukan berhasil diperbarui.',
+  deletePemasukan:'Pemasukan berhasil dihapus.',
+  addPengeluaran:'Pengeluaran berhasil disimpan.',
+  updatePengeluaran:'Pengeluaran berhasil diperbarui.',
+  deletePengeluaran:'Pengeluaran berhasil dihapus.'
+};
+let mutateBusy=false;
+
+// SIMPAN-DULU-KE-DATABASE: perubahan hanya dianggap berhasil bila sudah terbaca kembali dari database.
+// Alur: ambil data terbaru dari database -> terapkan perubahan -> kirim -> baca ulang & cocokkan -> baru tampilkan sukses.
+// Bila gagal, data di perangkat TIDAK diubah dan pengguna diberi tahu (form tetap terbuka agar bisa dicoba lagi).
+async function cloudMutateSnapshot(kind, idx, req){
+  if(mutateBusy){ showAppNotice('Masih menyimpan data sebelumnya, mohon tunggu sebentar.',false); return false; }
+  mutateBusy=true;
+  showCloudOverlay('Menyimpan ke database...');
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   try{
-    if(kind === 'kas'){
-      if(!state) throw new Error('State kas belum siap.');
-      const op=req && req.op;
+    if(!apiReady()) throw new Error('Database belum terhubung.');
+    const getAct=kind==='kas'?'getKasState':'getTikState';
+    const saveAct=kind==='kas'?'saveKasState':'saveTikState';
 
-      if(op === 'addStudent'){
-        const item={...(req.item||{})};
-        if(!item.no){
-          item.no = state.students.length
-            ? Math.max(...state.students.map(s=>Number(s.no)||0))+1 : 1;
-        }
-        state.students.push(item);
-      }else if(op === 'deleteStudent'){
-        state.students = state.students.filter(s =>
-          (s.nama||'').trim().toLowerCase() !== String(req.nama||'').trim().toLowerCase()
-        );
-      }else if(op === 'addPemasukan'){
-        const item={...(req.item||{})};
-        if(item.id==null){
-          item.id = Number(state.nextMasukId||1);
-          state.nextMasukId = item.id + 1;
-        }
-        state.pemasukan.push(item);
-      }else if(op === 'updatePemasukan'){
-        const i=state.pemasukan.findIndex(p=>String(p.id)===String(req.id));
-        if(i>=0) state.pemasukan[i]={...state.pemasukan[i],...(req.item||{}),id:state.pemasukan[i].id};
-      }else if(op === 'deletePemasukan'){
-        state.pemasukan=state.pemasukan.filter(p=>String(p.id)!==String(req.id));
-      }else if(op === 'addPengeluaran'){
-        const item={...(req.item||{})};
-        if(item.id==null){
-          item.id = Number(state.nextKeluarId||1);
-          state.nextKeluarId = item.id + 1;
-        }
-        state.pengeluaran.push(item);
-      }else if(op === 'updatePengeluaran'){
-        const i=state.pengeluaran.findIndex(p=>String(p.id)===String(req.id));
-        if(i>=0) state.pengeluaran[i]={...state.pengeluaran[i],...(req.item||{}),id:state.pengeluaran[i].id};
-      }else if(op === 'deletePengeluaran'){
-        state.pengeluaran=state.pengeluaran.filter(p=>String(p.id)!==String(req.id));
-      }
-
-      backfillKeterangan();
-      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-    }else if(kind === 'tik'){
-      if(!tikState) throw new Error('State TIK belum siap.');
-      const op=req && req.op;
-
-      if(op === 'addPemasukan'){
-        const item={...(req.item||{})};
-        if(item.id==null){
-          item.id = Number(tikState.nextMasukId||1);
-          tikState.nextMasukId = item.id + 1;
-        }
-        tikState.pemasukan.push(item);
-      }else if(op === 'updatePemasukan'){
-        const i=tikState.pemasukan.findIndex(p=>String(p.id)===String(req.id));
-        if(i<0) throw new Error('Data pemasukan TIK yang akan diperbarui tidak ditemukan.');
-        tikState.pemasukan[i]={...tikState.pemasukan[i],...(req.item||{}),id:tikState.pemasukan[i].id};
-      }else if(op === 'deletePemasukan'){
-        tikState.pemasukan=tikState.pemasukan.filter(p=>String(p.id)!==String(req.id));
-      }else if(op === 'addPengeluaran'){
-        const item={...(req.item||{})};
-        if(item.id==null){
-          item.id = Number(tikState.nextKeluarId||1);
-          tikState.nextKeluarId = item.id + 1;
-        }
-        tikState.pengeluaran.push(item);
-      }else if(op === 'updatePengeluaran'){
-        const i=tikState.pengeluaran.findIndex(p=>String(p.id)===String(req.id));
-        if(i<0) throw new Error('Data pengeluaran TIK yang akan diperbarui tidak ditemukan.');
-        tikState.pengeluaran[i]={...tikState.pengeluaran[i],...(req.item||{}),id:tikState.pengeluaran[i].id};
-      }else if(op === 'deletePengeluaran'){
-        tikState.pengeluaran=tikState.pengeluaran.filter(p=>String(p.id)!==String(req.id));
-      }
-
-      localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
+    // Perubahan lama yang belum terkirim (versi sebelumnya) dikirim dulu supaya tidak menimpa data baru.
+    if(hasPendingQueue(kind)){
+      for(let w=0; w<60 && bgSyncRunning[kind]; w++) await sleep(500);
+      if(!bgSyncRunning[kind]) await processBackgroundSync(kind);
+      if(hasPendingQueue(kind)) throw new Error('Masih ada perubahan lama yang belum terkirim ke database.');
     }
 
-    // Masukkan snapshot TERBARU ke antrean. Tidak menunggu server.
-    const snapshot = kind === 'kas'
-      ? JSON.parse(JSON.stringify(state))
-      : JSON.parse(JSON.stringify(tikState));
+    // 1. Dasar = data TERBARU di database (bukan salinan lokal yang mungkin basi).
+    let base=await apiGet(getAct,{periodIdx:String(idx)});
+    const okBase=kind==='kas'?validKas(base):validTik(base);
+    if(!okBase) base=kind==='kas'?state:tikState;
+    if(!base) throw new Error('Data belum siap.');
+    base=JSON.parse(JSON.stringify(base));
 
-    const queueKey = kind === 'kas' ? 'KAS_SYNC_QUEUE' : 'TIK_SYNC_QUEUE';
-    let queue=[];
-    try{ queue=JSON.parse(localStorage.getItem(queueKey)||'[]'); }catch(e){ queue=[]; }
+    // 2. Terapkan perubahan pada salinan.
+    applyMutationToState(kind, base, req);
 
-    queue.push({
-      periodIdx:String(idx),
-      payload:snapshot,
-      createdAt:Date.now()
-    });
-
-    // Semua snapshot lama untuk periode yang sama tidak perlu dikirim lagi.
-    // Simpan hanya snapshot paling baru per periode.
-    const latestByPeriod={};
-    queue.forEach(x=>{ latestByPeriod[String(x.periodIdx)]=x; });
-    queue=Object.values(latestByPeriod);
-    localStorage.setItem(queueKey,JSON.stringify(queue));
-
-    // Beri tahu pengguna bahwa data lokal sudah berubah dan sedang menunggu sinkronisasi.
-    setBackgroundSyncStatus('pending','Perubahan tersimpan di perangkat dan menunggu dikirim ke database.');
-
-    // Jadwalkan sinkronisasi tanpa menahan UI.
-    scheduleBackgroundSync(kind,400);
-
-    cloudOnline=true;
-    placeSyncBadge();
-
-    const successMessages={
-      addStudent:'Siswa berhasil ditambahkan.',
-      deleteStudent:'Siswa berhasil dihapus.',
-      addPemasukan:'Pemasukan berhasil disimpan.',
-      updatePemasukan:'Pemasukan berhasil diperbarui.',
-      deletePemasukan:'Pemasukan berhasil dihapus.',
-      addPengeluaran:'Pengeluaran berhasil disimpan.',
-      updatePengeluaran:'Pengeluaran berhasil diperbarui.',
-      deletePengeluaran:'Pengeluaran berhasil dihapus.'
-    };
-    if(typeof showAppNotice==='function'){
-      showAppNotice(successMessages[op]||'Perubahan berhasil disimpan.',true);
+    // 3. Kirim lalu baca ulang dari database untuk memastikan benar-benar tercatat.
+    let verified=false;
+    for(let attempt=0; attempt<2 && !verified; attempt++){
+      await apiPost(saveAct,{periodIdx:String(idx), payload:JSON.stringify(base)});
+      for(let chk=0; chk<3 && !verified; chk++){
+        await sleep(chk===0?1200:2500);
+        const server=await apiGet(getAct,{periodIdx:String(idx)});
+        verified=sameSavedData(base, server);
+      }
     }
+    if(!verified) throw new Error('Data belum terbaca di database setelah dikirim.');
+
+    // 4. Baru sekarang data lokal diperbarui.
+    if(idx===currentPeriodIdx){
+      if(kind==='kas'){
+        state=base; backfillKeterangan();
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      }else{
+        tikState=base;
+        localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
+        if(idx===KELAS3_PERIOD_IDX && state && Array.isArray(state.students) && state.students.length){
+          tikState.students=state.students.map(x=>({no:x.no,nama:x.nama}));
+        }
+      }
+    }
+    cloudOnline=true; placeSyncBadge();
+    setBackgroundSyncStatus('synced','Perubahan sudah tercatat di database.');
+    showAppNotice((MUTATE_MESSAGES[req.op]||'Perubahan berhasil disimpan.')+' Sudah tercatat di database.',true);
     return true;
   }catch(e){
-    console.error(e);
-    // Jangan membuat input gagal hanya karena sync background.
-    if(typeof showAppNotice==='function'){
-      showAppNotice('Data tersimpan di perangkat. Sinkronisasi akan dicoba lagi.',true);
-    }
-    return true;
+    console.error('cloudMutate:',e);
+    setBackgroundSyncStatus('failed','Gagal menyimpan ke database.');
+    showAppNotice('GAGAL menyimpan ke database. Data belum tersimpan. '+(e&&e.message?e.message+' ':'')+'Periksa koneksi lalu coba lagi.',false);
+    return false;
+  }finally{
+    hideCloudOverlay();
+    mutateBusy=false;
   }
-}// ===================== STATE =====================
+}
+// JALUR CEPAT: hanya mengirim perubahan (bukan seluruh data) lewat SATU permintaan ke server.
+// Server menerapkan perubahan itu di bawah kunci, menyimpannya, lalu membalas hasilnya; balasan itu adalah
+// konfirmasi nyata bahwa data sudah tercatat. Bila server belum memakai Code.gs terbaru, otomatis memakai jalur lama.
+async function cloudMutate(kind, idx, req){
+  if(mutateBusy){ showAppNotice('Masih menyimpan data sebelumnya, mohon tunggu sebentar.',false); return false; }
+  mutateBusy=true;
+  showCloudOverlay('Menyimpan ke database...');
+  let fallback=false;
+  try{
+    if(!apiReady()) throw new Error('Database belum terhubung.');
+    if(hasPendingQueue(kind)){
+      const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+      for(let w=0; w<60 && bgSyncRunning[kind]; w++) await sleep(500);
+      if(!bgSyncRunning[kind]) await processBackgroundSync(kind);
+      if(hasPendingQueue(kind)) throw new Error('Masih ada perubahan lama yang belum terkirim ke database.');
+    }
+    const wire=JSON.parse(JSON.stringify(req));
+    if(/^add(Pemasukan|Pengeluaran)$/.test(wire.op) && wire.item) wire.item.clientId=wire.item.clientId||('c'+Date.now().toString(36)+Math.random().toString(36).slice(2,8));
+    const action=kind==='kas'?'mutateKas':'mutateTik';
+    let res=null, lastErr=null;
+    for(let attempt=0; attempt<2 && !res; attempt++){
+      try{
+        res=await apiGetOnce(action,{periodIdx:String(idx), payload:JSON.stringify(wire)});
+      }catch(e){
+        lastErr=e;
+        const msg=String(e&&e.message||'');
+        if(/tidak dikenal/i.test(msg)){ fallback=true; break; }       // server lama
+        if(attempt>0 && /^delete/.test(wire.op) && /tidak ditemukan/i.test(msg)){ res={data:null,alreadyGone:true}; break; }
+        if(/tidak ditemukan|sudah ada|tidak valid|Operasi/i.test(msg)) break; // kesalahan pasti, jangan diulang
+        await new Promise(r=>setTimeout(r,800));
+      }
+    }
+    if(fallback) throw Object.assign(new Error('fallback'),{isFallback:true});
+    if(!res) throw (lastErr||new Error('Tidak ada balasan dari database.'));
+
+    let fresh=res.data;
+    if(!fresh){ // delete yang ternyata sudah terhapus: ambil data terbaru
+      fresh=await apiGet(kind==='kas'?'getKasState':'getTikState',{periodIdx:String(idx)});
+    }
+    if(!(kind==='kas'?validKas(fresh):validTik(fresh))) throw new Error('Balasan database tidak valid.');
+    if(idx===currentPeriodIdx){
+      if(kind==='kas'){
+        state=fresh; backfillKeterangan();
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      }else{
+        tikState=fresh;
+        localStorage.setItem(TIK_STORAGE_KEY,JSON.stringify(tikState));
+        if(idx===KELAS3_PERIOD_IDX && state && Array.isArray(state.students) && state.students.length){
+          tikState.students=state.students.map(x=>({no:x.no,nama:x.nama}));
+        }
+      }
+    }
+    cloudOnline=true; placeSyncBadge();
+    setBackgroundSyncStatus('synced','Perubahan sudah tercatat di database.');
+    showAppNotice((MUTATE_MESSAGES[req.op]||'Perubahan berhasil disimpan.')+' Sudah tercatat di database.',true);
+    return true;
+  }catch(e){
+    if(e && e.isFallback){ /* lanjut ke jalur lama di bawah */ }
+    else{
+      console.error('cloudMutate:',e);
+      setBackgroundSyncStatus('failed','Gagal menyimpan ke database.');
+      showAppNotice('GAGAL menyimpan ke database. Data belum tersimpan. '+(e&&e.message?e.message+' ':'')+'Periksa koneksi lalu coba lagi.',false);
+      return false;
+    }
+  }finally{
+    hideCloudOverlay();
+    mutateBusy=false;
+  }
+  return cloudMutateSnapshot(kind, idx, req);
+}
+// ===================== STATE =====================
 let STORAGE_KEY = kasStorageKeyFor(currentPeriodIdx);
 let state = null;
 
