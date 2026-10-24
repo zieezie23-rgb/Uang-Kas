@@ -4339,5 +4339,28 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
 .dbk-fn{color:var(--amber);}
 #databaseAccessCode{caret-color:transparent;}
 </style>
+<style id="app-notice-solid-v1">
+/* Notifikasi (simpan / edit / segarkan database): latar solid, kontras tinggi, selalu di atas semua elemen. */
+.app-notice:not(#_){
+  background:#17110a!important;
+  color:#fff6d6!important;
+  border:2px solid var(--amber)!important;
+  border-radius:16px!important;
+  padding:16px 20px!important;
+  min-width:min(300px,calc(100vw - 48px))!important;
+  max-width:calc(100vw - 48px)!important;
+  font-size:17px!important;
+  font-weight:700!important;
+  line-height:1.35!important;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.45),0 18px 50px rgba(0,0,0,.75)!important;
+  z-index:20000!important;
+  text-align:left;
+}
+.app-notice.error:not(#_){border-color:#ff6b6b!important;background:#2a0f0f!important;color:#ffe3e3!important;}
+.app-notice:not(#_) .notice-icon{font-size:30px!important;flex:0 0 auto;}
+.app-notice.ok:not(#_) .notice-icon{color:#4ade80!important;}
+.app-notice.error:not(#_) .notice-icon{color:#ff6b6b!important;}
+.app-notice:not(.show){box-shadow:none!important;}
+</style>
 </body>
 </html>
